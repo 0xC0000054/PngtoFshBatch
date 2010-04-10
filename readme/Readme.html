@@ -1,0 +1,170 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>PngtoFsh Batch Readme</title>
+</head>
+<body>
+<h1 style="font-family: Times New Roman,Times,serif;"><a
+ class="mozTocH1" name="mozTocId230713"></a>PngtoFsh Batch
+Readme</h1>
+<ol id="mozToc">
+<!--mozToc h1 1 h2 2 h3 3 h4 4 h5 5 h6 6--><li><a href="#mozTocId230713">PngtoFsh
+Batch
+Readme</a></li>
+  <li><a href="#mozTocId162482"></a>
+    <ol>
+      <li><a href="#mozTocId693438">Installation</a></li>
+      <li><a href="#mozTocId893193">Adding Files</a></li>
+      <li><a href="#mozTocId460646">Removing files</a></li>
+      <li><a href="#mozTocId748996">Changing File
+options</a></li>
+      <li><a href="#mozTocId927286">Processing</a></li>
+      <li><a href="#mozTocId499226">Command Line Arguments</a></li>
+    </ol>
+  </li>
+</ol>
+<h1 style="font-family: Times New Roman,Times,serif;"><a
+ class="mozTocH1" name="mozTocId162482"></a></h1>
+<h2><a class="mozTocH2" name="mozTocId693438"></a>Installation</h2>
+After unzipping the files the group id in "<span
+ style="font-weight: bold;">groupid.txt</span>" &nbsp;must be changed
+to the one you want to use.<br>
+The Instance range in "<span style="font-weight: bold;">instRange.txt</span>"
+must be changed to your texture instance range assigned by the BSC
+Texture Index,"<span style="font-weight: bold;">instRange.txt</span>"
+uses the same format
+as Sc4Tool.<br>
+<h2 style="font-family: Times New Roman,Times,serif;"><a
+ class="mozTocH2" name="mozTocId893193"></a>Adding Files</h2>
+<span style="font-family: Times New Roman,Times,serif;">The simplest
+way to create a batch list is to drag and drop a group or folder of
+images onto the list, this method will always create a new list.</span><br
+ style="font-family: Times New Roman,Times,serif;">
+<span style="font-family: Times New Roman,Times,serif;">The "Add"
+button can also be used to add images to the list &nbsp;by
+either clicking on the button and browsing for the images or dragging
+and dropping &nbsp;a group or folder of images onto it.</span><br
+ style="font-family: Times New Roman,Times,serif;">
+<span
+ style="font-weight: bold; font-family: Times New Roman,Times,serif;"><br>
+</span><span style="font-family: Times New Roman,Times,serif;"></span><span
+ style="font-family: Times New Roman,Times,serif;">For the program to
+find the alpha map it must be named using the format "filename<span
+ style="font-weight: bold;">_a</span>.bmp".<br>
+<br>
+</span><span
+ style="font-weight: bold; font-family: Times New Roman,Times,serif;"></span><span
+ style="font-family: Times New Roman,Times,serif;">If the
+image is a png that contains transparency or an alpha map is found it
+will be a Dxt3 fsh if the
+file name begins with "hd" and it is at least 256x256 it will be a
+32-bit hd fsh. </span><br
+ style="font-family: Times New Roman,Times,serif;">
+<span style="font-family: Times New Roman,Times,serif;"><br>
+Or if the image does&nbsp; not contain transparency or an alpha map is
+not found an white alpha map will be generated and it will be a Dxt1
+fsh if the file
+name begins with "hd" and it is at least 256x256 it will be a 24-bit hd
+base texture
+fsh.</span><br style="font-family: Times New Roman,Times,serif;">
+In the "Add" function the Group id in the Group box overrides the one
+in "groupid.txt" <br>
+<br style="font-family: Times New Roman,Times,serif;">
+<span style="font-family: Times New Roman,Times,serif;">If the name of
+the image starts with 0x it will use the name as the
+instance id.</span><br style="font-family: Times New Roman,Times,serif;">
+<span style="font-family: Times New Roman,Times,serif;">Opening a group
+or folder
+of images with the program will add the images to a new list.</span><br
+ style="font-family: Times New Roman,Times,serif;">
+<span
+ style="font-weight: bold; font-family: Times New Roman,Times,serif;"></span>
+<h2 style="font-family: Times New Roman,Times,serif;"><a
+ class="mozTocH2" name="mozTocId460646"></a>Removing files</h2>
+<span style="font-family: Times New Roman,Times,serif;">A file may be
+removed by selecting it in the list and clicking
+the&nbsp; "Remove" button.</span><br
+ style="font-family: Times New Roman,Times,serif;">
+<span style="font-family: Times New Roman,Times,serif;">To clear the
+entire list click the "Clear list" button.</span><br
+ style="font-family: Times New Roman,Times,serif;">
+<h2 style="font-family: Times New Roman,Times,serif;"><a
+ class="mozTocH2" name="mozTocId748996"></a>Changing File
+options</h2>
+<span style="font-family: Times New Roman,Times,serif;"><img
+ style="width: 420px; height: 288px;" alt="Changing Fsh Type"
+ src="readme-images/typech420.jpg"><br>
+<br>
+When an image
+is selected in the list it's Group and instance ids &nbsp;and the
+type of fsh can be changed.<br>
+The End format &nbsp;radio buttons select the end digit of the
+instance number.<br>
+<br>
+</span><span style="font-family: Times New Roman,Times,serif;"></span>
+<h2><a class="mozTocH2" name="mozTocId927286"></a>Processing</h2>
+The "Automatically process Mips" function&nbsp; generates Mipmaps for
+the different zoom levels.<br>
+the "Compress dat" function compresses the items when inserting them
+into the dat.<br>
+<br>
+If the "Process" button is used the "Output folder" button changes the
+folder to save the processed files, the program will output the files
+and their mipmaps along with the .TGI files for The Reader to import.<br>
+<br>
+The other way to process the images is to use the "Save dat" button
+this processes the images and saves them into a new dat.<br>
+<br>
+<span style="font-weight: bold;"></span>
+<h2><a class="mozTocH2" name="mozTocId499226"></a>Command Line Arguments</h2>
+The program's Command line arguments are:<br>
+<br>
+PngtoFshBatch.exe&nbsp; <span style="font-weight: bold;"><span
+ style="font-style: italic;">images</span>
+[/outdir:&lt;directory&gt;] [/group: &lt;groupid&gt;] [/mips]
+[/dat:&lt;filename&gt;] [/proc] [/?]</span><br
+ style="font-weight: bold;">
+<br>
+the parameters are: <br>
+<br>
+<span style="font-weight: bold; font-style: italic;">images</span> a
+list or folder of images to process separated by spaces<br>
+<br>
+<span style="font-weight: bold;"></span><span style="font-weight: bold;">/outdir:&lt;directory&gt;</span>
+output the fsh files from <span style="font-weight: bold;">/proc</span>
+into directory.<br>
+<br>
+<span style="font-weight: bold;">/group: &lt;groupid&gt;</span> Assign
+the &lt;groupid&gt; to the files, this parameter overrides <br>
+<br>
+<span style="font-weight: bold;">/mips</span> generate mipmaps for the
+zoom
+levels<br>
+<br>
+<span style="font-weight: bold;">/dat:&lt;filename&gt;</span> process
+images and save them as a dat <span style="font-weight: bold;"><br>
+<br>
+/proc</span> process images and
+save<br>
+<span style="font-weight: bold;"></span><span style="font-weight: bold;"></span><span
+ style="font-weight: bold;"></span><br>
+<span style="font-weight: bold;">/?</span> show the help<br>
+<br>
+Paths containing spaces must be encased in quotes<br>
+Parameters in brackets are optional.<br>
+<br>
+for example:<br>
+<img style="width: 620px; height: 180px;" alt="Command line args"
+ src="readme-images/cmdargs.jpg"><br>
+<span style="font-weight: bold;"><br>
+</span>The specified arguments would take all the images in
+"C\sc4bmps\New Folder" and assign them the group id of &nbsp;1ABE787D,
+generate mipmaps for the zoom levels
+and then save them all into test.dat.<br>
+<br>
+<br>
+<br>
+</body>
+</html>
