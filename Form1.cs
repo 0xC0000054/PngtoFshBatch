@@ -467,14 +467,12 @@ namespace PngtoFshBatchtxt
                     instanceid[3] = uint.Parse(BatchlistView1.Items[c].SubItems[3].Text.Substring(0, 7) + end64, NumberStyles.HexNumber);
                     instanceid[4] = uint.Parse(BatchlistView1.Items[c].SubItems[3].Text, NumberStyles.HexNumber);
 
-                    int i = 0;
                     if (inputdat == null)
                     {
                         dat = new DatFile4();
                     }
-                    i = 4;
 
-                    for (; i >= 0; i--)
+                    for (int i = 4; i >= 0; i--)
                     {
                         if (fi[i] == null)
                         {
@@ -501,8 +499,6 @@ namespace PngtoFshBatchtxt
                     uint instanceid = new uint();
                     FileItem fi = new FileItem();
                     FSHWrapper fshwrap = new FSHWrapper();
-                    FSHImage fshimg = new FSHImage();
-                    fshimg = curimage[c];
                     if (instarray[c].EndsWith("4") || instarray[c].EndsWith("3") || instarray[c].EndsWith("2") || instarray[c].EndsWith("1") || instarray[c].EndsWith("0"))
                     {
                         endreg = Convert.ToChar("4");
@@ -538,7 +534,7 @@ namespace PngtoFshBatchtxt
                     {
                         fi = new FileItem();
                     }
-                    fi.FileObject = fshwrap = new FSHWrapper(fshimg) { RawData = fshimg.RawData };
+                    fi.FileObject = fshwrap = new FSHWrapper(curimage[c]) { RawData = curimage[c].RawData };
                     tgi.InstanceID = instanceid;
                     // CheckInstance(inputdat, tgi.GroupID, tgi.InstanceID);
                     fi.Size = ((IRawData)fi.FileObject).RawData.Length;
@@ -619,7 +615,7 @@ namespace PngtoFshBatchtxt
                     {
                         try
                         {
-                            if (dat.FileName == "" || dat.FileName != saveDatDialog1.FileName)
+                            if (string.IsNullOrEmpty(dat.FileName) || dat.FileName != saveDatDialog1.FileName)
                             {
                                 dat.FileName = saveDatDialog1.FileName;
                                 Datnametxt.Text = Path.GetFileName(dat.FileName);
@@ -679,11 +675,7 @@ namespace PngtoFshBatchtxt
                             for (int x = 0; x < testbmp.Width; x++)
                             {
                                 Color srcpxl = temp.GetPixel(x, y);
-                                testbmp.SetPixel(x, y, Color.FromArgb(srcpxl.A, srcpxl.A, srcpxl.A, srcpxl.A));
-                                while (testbmp.GetPixel(x, y).A < 255)
-                                {
-                                    testbmp.SetPixel(x, y, Color.FromArgb(srcpxl.A,srcpxl.A,srcpxl.A));
-                                }
+                                testbmp.SetPixel(x, y, Color.FromArgb(srcpxl.A,srcpxl.A,srcpxl.A));
                             }
                         }
                         bmpitem.Alpha = testbmp;
@@ -1374,7 +1366,7 @@ namespace PngtoFshBatchtxt
             }
             catch (FileNotFoundException fx)
             {
-                MessageBox.Show(fx.Message + fx.FileName, this.Text,MessageBoxButtons.OK,MessageBoxIcon.Error);
+                MessageBox.Show(fx.Message + fx.FileName, this.Text,MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             catch (Exception ex)
             {
