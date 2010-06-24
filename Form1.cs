@@ -171,8 +171,8 @@ namespace PngtoFshBatchtxt
                 gr.DrawImage(source, new Rectangle(0, 0, width, height)); 
             }
 #if DEBUG
-            string path = Path.Combine(Application.StartupPath,"thumb" + width.ToString() + ".Png");
-            image.Save(path);
+            //string path = Path.Combine(Application.StartupPath,"thumb" + width.ToString() + ".Png");
+            //image.Save(path);
 #endif
             return image;
         }
