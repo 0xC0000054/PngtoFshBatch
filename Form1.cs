@@ -906,7 +906,7 @@ namespace PngtoFshBatchtxt
                 settings = new Settings(Path.Combine(Application.StartupPath, @"PngtoFshBatch.xml"));
                 compDatcb.Checked = bool.Parse(settings.GetSetting("compDatcb_checked", bool.TrueString));
                 autoprocMipscb.Checked = bool.Parse(settings.GetSetting("AutoprocessMips", bool.FalseString));
-                fshwritecompcb.Checked = bool.Parse(settings.GetSetting("fshwritecompcb_checked", bool.TrueString));
+                fshwritecompcb.Checked = bool.Parse(settings.GetSetting("fshwritecompcb_checked", bool.FalseString));
             }
             catch (Exception ex)
             {

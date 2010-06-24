@@ -418,13 +418,12 @@
             // fshwritecompcb
             // 
             this.fshwritecompcb.AutoSize = true;
-            this.fshwritecompcb.Checked = true;
-            this.fshwritecompcb.CheckState = System.Windows.Forms.CheckState.Checked;
             this.fshwritecompcb.Location = new System.Drawing.Point(12, 183);
             this.fshwritecompcb.Name = "fshwritecompcb";
             this.fshwritecompcb.Size = new System.Drawing.Size(128, 17);
             this.fshwritecompcb.TabIndex = 107;
             this.fshwritecompcb.Text = "Fshwrite Compression";
+            this.toolTip1.SetToolTip(this.fshwritecompcb, "Use Fshwrite compression when saving DXT1 and DXT3 fsh images");
             this.fshwritecompcb.UseVisualStyleBackColor = true;
             this.fshwritecompcb.CheckedChanged += new System.EventHandler(this.fshwritecompcb_CheckedChanged);
             // 
