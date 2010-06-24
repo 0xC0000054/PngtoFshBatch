@@ -61,6 +61,7 @@
             this.tgiGrouptxt = new System.Windows.Forms.TextBox();
             this.clearlistbtn = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.fshwritecompcb = new System.Windows.Forms.CheckBox();
             this.DatfuncBox1.SuspendLayout();
             this.InstendBox1.SuspendLayout();
             this.SuspendLayout();
@@ -118,7 +119,7 @@
             this.compDatcb.AutoSize = true;
             this.compDatcb.Checked = true;
             this.compDatcb.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.compDatcb.Location = new System.Drawing.Point(12, 169);
+            this.compDatcb.Location = new System.Drawing.Point(12, 164);
             this.compDatcb.Name = "compDatcb";
             this.compDatcb.Size = new System.Drawing.Size(93, 17);
             this.compDatcb.TabIndex = 3;
@@ -185,7 +186,7 @@
             // 
             // mipbtn
             // 
-            this.mipbtn.Location = new System.Drawing.Point(12, 279);
+            this.mipbtn.Location = new System.Drawing.Point(188, 279);
             this.mipbtn.Name = "mipbtn";
             this.mipbtn.Size = new System.Drawing.Size(106, 23);
             this.mipbtn.TabIndex = 85;
@@ -341,7 +342,7 @@
             "32 Bit ARGB (8:8:8:8)",
             "DXT1 Compressed, no Alpha",
             "DXT3 Compressed, with Alpha "});
-            this.FshtypeBox.Location = new System.Drawing.Point(12, 242);
+            this.FshtypeBox.Location = new System.Drawing.Point(12, 258);
             this.FshtypeBox.Name = "FshtypeBox";
             this.FshtypeBox.Size = new System.Drawing.Size(172, 21);
             this.FshtypeBox.TabIndex = 6;
@@ -355,7 +356,7 @@
             this.tgiInstlbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.tgiInstlbl.AutoSize = true;
             this.tgiInstlbl.BackColor = System.Drawing.SystemColors.Control;
-            this.tgiInstlbl.Location = new System.Drawing.Point(13, 219);
+            this.tgiInstlbl.Location = new System.Drawing.Point(13, 230);
             this.tgiInstlbl.Name = "tgiInstlbl";
             this.tgiInstlbl.Size = new System.Drawing.Size(48, 13);
             this.tgiInstlbl.TabIndex = 105;
@@ -365,7 +366,7 @@
             // 
             this.tgiGrouplbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.tgiGrouplbl.AutoSize = true;
-            this.tgiGrouplbl.Location = new System.Drawing.Point(25, 196);
+            this.tgiGrouplbl.Location = new System.Drawing.Point(25, 207);
             this.tgiGrouplbl.Name = "tgiGrouplbl";
             this.tgiGrouplbl.Size = new System.Drawing.Size(36, 13);
             this.tgiGrouplbl.TabIndex = 104;
@@ -375,7 +376,7 @@
             // 
             this.tgiInstancetxt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.tgiInstancetxt.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.tgiInstancetxt.Location = new System.Drawing.Point(67, 216);
+            this.tgiInstancetxt.Location = new System.Drawing.Point(67, 227);
             this.tgiInstancetxt.MaxLength = 8;
             this.tgiInstancetxt.Name = "tgiInstancetxt";
             this.tgiInstancetxt.Size = new System.Drawing.Size(82, 20);
@@ -388,7 +389,7 @@
             // 
             this.tgiGrouptxt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.tgiGrouptxt.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.tgiGrouptxt.Location = new System.Drawing.Point(67, 190);
+            this.tgiGrouptxt.Location = new System.Drawing.Point(67, 201);
             this.tgiGrouptxt.MaxLength = 8;
             this.tgiGrouptxt.Name = "tgiGrouptxt";
             this.tgiGrouptxt.Size = new System.Drawing.Size(82, 20);
@@ -414,11 +415,25 @@
             this.toolTip1.InitialDelay = 1000;
             this.toolTip1.ReshowDelay = 500;
             // 
+            // fshwritecompcb
+            // 
+            this.fshwritecompcb.AutoSize = true;
+            this.fshwritecompcb.Checked = true;
+            this.fshwritecompcb.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.fshwritecompcb.Location = new System.Drawing.Point(12, 183);
+            this.fshwritecompcb.Name = "fshwritecompcb";
+            this.fshwritecompcb.Size = new System.Drawing.Size(128, 17);
+            this.fshwritecompcb.TabIndex = 107;
+            this.fshwritecompcb.Text = "Fshwrite Compression";
+            this.fshwritecompcb.UseVisualStyleBackColor = true;
+            this.fshwritecompcb.CheckedChanged += new System.EventHandler(this.fshwritecompcb_CheckedChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(493, 310);
+            this.Controls.Add(this.fshwritecompcb);
             this.Controls.Add(this.clearlistbtn);
             this.Controls.Add(this.tgiInstlbl);
             this.Controls.Add(this.tgiGrouplbl);
@@ -483,6 +498,7 @@
         private System.Windows.Forms.Button clearlistbtn;
         internal System.Windows.Forms.ListView BatchlistView1;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.CheckBox fshwritecompcb;
     }
 }
 

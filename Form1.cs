@@ -48,20 +48,18 @@ namespace PngtoFshBatchtxt
                 BitmapItem item = new BitmapItem();
                 item = (BitmapItem)curimage[n].Bitmaps[0];
                 // 0 = 8, 1 = 16, 2 = 32, 3 = 64
-                Image.GetThumbnailImageAbort abort = new Image.GetThumbnailImageAbort(thabort);
+               
                 Bitmap bmp = new Bitmap(item.Bitmap);
-                bmps[0] = (Bitmap)bmp.GetThumbnailImage(8, 8, abort, IntPtr.Zero);
-                bmps[1] = (Bitmap)bmp.GetThumbnailImage(16, 16, abort, IntPtr.Zero);
-                bmps[2] = (Bitmap)bmp.GetThumbnailImage(32, 32, abort, IntPtr.Zero);
-                bmps[3] = (Bitmap)bmp.GetThumbnailImage(64, 64, abort, IntPtr.Zero);
+                bmps[0] = GetBitmapThumbnail(bmp, 8, 8);
+                bmps[1] = GetBitmapThumbnail(bmp, 16, 16);
+                bmps[2] = GetBitmapThumbnail(bmp, 32, 32);
+                bmps[3] = GetBitmapThumbnail(bmp, 64, 64);
                //alpha
                 Bitmap alpha = new Bitmap(item.Alpha);
-                alphas[0] = (Bitmap)alpha.GetThumbnailImage(8, 8, abort, IntPtr.Zero);
-                alphas[1] = (Bitmap)alpha.GetThumbnailImage(16, 16, abort, IntPtr.Zero);
-                alphas[2] = (Bitmap)alpha.GetThumbnailImage(32, 32, abort, IntPtr.Zero);
-                alphas[3] = (Bitmap)alpha.GetThumbnailImage(64, 64, abort, IntPtr.Zero);
-
-                
+                alphas[0] = GetBitmapThumbnail(alpha, 8, 8);
+                alphas[1] = GetBitmapThumbnail(alpha, 16, 16);
+                alphas[2] = GetBitmapThumbnail(alpha, 32, 32);
+                alphas[3] = GetBitmapThumbnail(alpha, 64, 64);
 
                 for (i = 0; i < 4; i++)
                 {
@@ -154,9 +152,29 @@ namespace PngtoFshBatchtxt
             GenerateMips();
             mipsbtn_clicked = true;
         }
-        private bool thabort()
+        /// <summary>
+        /// Creates the mip thumbnail using Graphics.DrawImage
+        /// </summary>
+        /// <param name="source">The Bitmap to draw</param>
+        /// <param name="width">The width of the new bitmap</param>
+        /// <param name="height">The height of the new bitmap</param>
+        /// <returns>The new scaled Bitmap</returns>
+        private Bitmap GetBitmapThumbnail(Bitmap source, int width, int height)
         {
-            return false;
+            Bitmap image = new Bitmap(width, height);
+            using(Graphics gr = Graphics.FromImage(image)) // this is hopfully higher quality that GetThumbnailImage
+            {
+                gr.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                gr.SmoothingMode = SmoothingMode.HighQuality;
+                gr.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                gr.CompositingQuality = CompositingQuality.HighQuality;
+                gr.DrawImage(source, new Rectangle(0, 0, width, height)); 
+            }
+#if DEBUG
+            string path = Path.Combine(Application.StartupPath,"thumb" + width.ToString() + ".Png");
+            image.Save(path);
+#endif
+            return image;
         }
        
         private char endreg;
@@ -760,7 +778,7 @@ namespace PngtoFshBatchtxt
         {
             try
             {
-                if (UseFshWriteDxt && IsDXTFsh(image))
+                if (fshwritecompcb.Checked && IsDXTFsh(image))
                 {
                     Fshwrite fw = new Fshwrite();
                     foreach (BitmapItem bi in image.Bitmaps)
@@ -881,7 +899,6 @@ namespace PngtoFshBatchtxt
         Settings settings = null;
         internal string grppath = null;
         internal string rangepath = null;
-        private bool UseFshWriteDxt = true;
         private void LoadSettings()
         {
             try
@@ -889,7 +906,7 @@ namespace PngtoFshBatchtxt
                 settings = new Settings(Path.Combine(Application.StartupPath, @"PngtoFshBatch.xml"));
                 compDatcb.Checked = bool.Parse(settings.GetSetting("compDatcb_checked", bool.TrueString));
                 autoprocMipscb.Checked = bool.Parse(settings.GetSetting("AutoprocessMips", bool.FalseString));
-                UseFshWriteDxt = bool.Parse(settings.GetSetting("FshWriteDXTComp", bool.TrueString));
+                fshwritecompcb.Checked = bool.Parse(settings.GetSetting("fshwritecompcb_checked", bool.TrueString));
             }
             catch (Exception ex)
             {
@@ -907,7 +924,7 @@ namespace PngtoFshBatchtxt
             if (!IsProcessorFeaturePresent(SSE))
             {
                 MessageBox.Show("A processor that supports SSE is required to for FshWrite save DXT1 and DXT3 fsh images", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                UseFshWriteDxt = false;
+                fshwritecompcb.Enabled = fshwritecompcb.Checked = false;
             }
         }
         private void Form1_Load(object sender, EventArgs e)
@@ -2048,6 +2065,14 @@ namespace PngtoFshBatchtxt
             catch (Exception ex)
             {
                 MessageBox.Show(this, ex.Message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void fshwritecompcb_CheckedChanged(object sender, EventArgs e)
+        {
+            if (settings != null)
+            {
+                settings.PutSetting("fshwritecompcb_checked", fshwritecompcb.Checked.ToString());
             }
         }
     }
