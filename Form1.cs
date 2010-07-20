@@ -11,14 +11,10 @@ using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
 using System.IO;
 using FSHLib;
-using SynapticEffect.SimCity;
-using SynapticEffect.SimCity.DatNamespace;
-using SynapticEffect.SimCity.IO;
-using SynapticEffect.SimCity.IO.FileTypes;
-using SynapticEffect;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Runtime.InteropServices;
+using FshDatIO;
 
 namespace PngtoFshBatchtxt
 {
@@ -290,125 +286,22 @@ namespace PngtoFshBatchtxt
                 }
             }
         }
-        /*private bool isBatchtxt(string batchpath)
-        {
 
-            if (File.Exists(batchpath))
-            {
-                using (StreamReader sr = new StreamReader(batchpath))
-                {
-                    string filetxt = sr.ReadToEnd();
-                    string comp = filetxt.Substring(0, 11);
-                    if (comp.Equals("%Fsh_batch%"))
-                    {
-                        return true;
-                    }
-                }
-                
-            }
-            return false;
-        }
-        internal void loadBatchtxt(string batchpath)
-        {
-            if (BatchlistView1.Items.Count > 0)
-            {
-                ClearandReset();
-            }
-            if (File.Exists(batchpath))
-            {
-                int batchline = CountBatchlines(batchpath);
-                if (isBatchtxt(batchpath) == true)
-                {
-                    using (StreamReader sr = new StreamReader(batchpath))
-                    {
-                        string line = null;
-                        char[] pathsplit = new char[] { '%' };
-                        char[] instsplit = new char[] { '^' };
-                        char[] groupsplit = new char[] { ',' };
-                        patharray = new List<string>(batchline);
-                        instarray = new List<string>(batchline);
-                        grouparray = new List<string>(batchline);
-                        typearray = new List<string>(batchline);
-                        curimage = new List<FSHImage>(batchline);
-                        mip64fsh = new List<FSHImage>(batchline);
-                        mip32fsh = new List<FSHImage>(batchline);
-                        mip16fsh = new List<FSHImage>(batchline);
-                        mip8fsh = new List<FSHImage>(batchline);
-                        int linecnt = -1;
-                        while ((line = sr.ReadLine()) != null)
-                        {
-                            if (line != "")
-                            {
-                                if (line.Equals("%Fsh_batch%") || line.StartsWith("#"))
-                                {
-                                    continue;
-                                }
-                                linecnt++;
-                                string[] pathtemp = line.Split(pathsplit, StringSplitOptions.RemoveEmptyEntries);
-                                patharray.Insert(linecnt, pathtemp[0].Trim());
-                                string[] grouptemp = pathtemp[1].Split(instsplit, StringSplitOptions.RemoveEmptyEntries);
-                                grouparray.Insert(linecnt, grouptemp[0].Trim());
-                                string[] insttemp = grouptemp[1].Split(groupsplit, StringSplitOptions.RemoveEmptyEntries);
-                                instarray.Insert(linecnt, insttemp[0].Trim());
-                                typearray.Insert(linecnt, insttemp[1].Trim());
-                            }
-                        }
-                    }
-                    ArrayList errorarray = new ArrayList();
-                    for (int i = 0; i < batchline; i++)
-                    {
-                        if (File.Exists(patharray[i]))
-                        {
-                            if (Path.GetFileName(patharray[i]).StartsWith("0x", StringComparison.InvariantCultureIgnoreCase))
-                            {
-                               string pathinst = Path.GetFileNameWithoutExtension(patharray[i]).Substring(2,8);
-                               instarray[i] = pathinst;
-                            }
-                            ListViewItem item1 = new ListViewItem(Path.GetFileName(patharray[i]));
-                            Alphasrc(item1, patharray[i]);
-                            item1.SubItems.Add(grouparray[i]);
-                            item1.SubItems.Add(instarray[i]);
-                            BatchlistView1.Items.Add(item1);
-                        }
-                        else
-                        {
-                            errorarray.Add(patharray[i]);
-                        }
-                    }
-                    if (errorarray.Count > 0)
-                    {
-                        MessageBox.Show(this, "Some of paths do not exist", this.Text);
-                    }
-
-                }
-                else
-                {
-                    MessageBox.Show(this, "Not a valid Batch file", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-        }
-        private void loadbatchbtn_Click(object sender, EventArgs e)
-        {
-            if (openFileDialog1.ShowDialog() == DialogResult.OK)
-            {
-                loadBatchtxt(openFileDialog1.FileName);
-            }
-        }*/
         private int typeindex = 0; // store previously selected fsh type
         private void BatchlistView1_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (BatchlistView1.SelectedItems.Count > 0)
             { 
                 string inst = BatchlistView1.SelectedItems[0].SubItems[3].Text;
-                if (inst.EndsWith("4", StringComparison.InvariantCultureIgnoreCase) || inst.EndsWith("3", StringComparison.InvariantCultureIgnoreCase) || inst.EndsWith("2", StringComparison.InvariantCultureIgnoreCase) || inst.EndsWith("1", StringComparison.InvariantCultureIgnoreCase) || inst.EndsWith("0", StringComparison.InvariantCultureIgnoreCase))
+                if (inst.EndsWith("4", StringComparison.OrdinalIgnoreCase) || inst.EndsWith("3", StringComparison.OrdinalIgnoreCase) || inst.EndsWith("2", StringComparison.OrdinalIgnoreCase) || inst.EndsWith("1", StringComparison.OrdinalIgnoreCase) || inst.EndsWith("0", StringComparison.OrdinalIgnoreCase))
                 {
                     Inst0_4rdo.Checked = true;
                 }
-                else if (inst.EndsWith("9", StringComparison.InvariantCultureIgnoreCase) || inst.EndsWith("8", StringComparison.InvariantCultureIgnoreCase) || inst.EndsWith("7", StringComparison.InvariantCultureIgnoreCase) || inst.EndsWith("6", StringComparison.InvariantCultureIgnoreCase) || inst.EndsWith("5", StringComparison.InvariantCultureIgnoreCase))
+                else if (inst.EndsWith("9", StringComparison.OrdinalIgnoreCase) || inst.EndsWith("8", StringComparison.OrdinalIgnoreCase) || inst.EndsWith("7", StringComparison.OrdinalIgnoreCase) || inst.EndsWith("6", StringComparison.OrdinalIgnoreCase) || inst.EndsWith("5", StringComparison.OrdinalIgnoreCase))
                 {
                     Inst5_9rdo.Checked = true;
                 }
-                else if (inst.EndsWith("E", StringComparison.InvariantCultureIgnoreCase) || inst.EndsWith("D", StringComparison.InvariantCultureIgnoreCase) || inst.EndsWith("C", StringComparison.InvariantCultureIgnoreCase) || inst.EndsWith("B", StringComparison.InvariantCultureIgnoreCase) || inst.EndsWith("A", StringComparison.InvariantCultureIgnoreCase))
+                else if (inst.EndsWith("E", StringComparison.OrdinalIgnoreCase) || inst.EndsWith("D", StringComparison.OrdinalIgnoreCase) || inst.EndsWith("C", StringComparison.OrdinalIgnoreCase) || inst.EndsWith("B", StringComparison.OrdinalIgnoreCase) || inst.EndsWith("A", StringComparison.OrdinalIgnoreCase))
                 {
                     InstA_Erdo.Checked = true;
                 }
@@ -436,22 +329,18 @@ namespace PngtoFshBatchtxt
                 }
             }
         }
-        internal DatFile4 dat = null;
+        internal DatFile dat = null;
         internal bool compress_datmips = false;
         
-        internal void RebuildDat(DatFile4 inputdat)
+        internal void RebuildDat(DatFile inputdat)
         {
             if (mipsbtn_clicked && mip64fsh != null && mip32fsh != null && mip16fsh != null && mip8fsh != null && curimage != null)
             {
                 for (int c = 0; c < BatchlistView1.Items.Count; c++)
                 {
-
-                    TGIEntry tgi = new TGIEntry();
-                    tgi.TypeID = uint.Parse("7ab50e44", NumberStyles.HexNumber);
-                    tgi.GroupID = uint.Parse(BatchlistView1.Items[c].SubItems[2].Text, NumberStyles.HexNumber);
+                    uint group = uint.Parse(BatchlistView1.Items[c].SubItems[2].Text, NumberStyles.HexNumber);
                     uint[] instanceid = new uint[5];
-                    FileItem[] fi = new FileItem[5];
-                    FSHWrapper[] fshwrap = new FSHWrapper[5];
+                    FshWrapper[] fshwrap = new FshWrapper[5];
                     FSHImage[] fshimg = new FSHImage[5];
                     fshimg[0] = mip8fsh[c]; fshimg[1] = mip16fsh[c]; fshimg[2] = mip32fsh[c];
                     fshimg[3] = mip64fsh[c]; fshimg[4] = curimage[c];
@@ -487,21 +376,15 @@ namespace PngtoFshBatchtxt
 
                     if (inputdat == null)
                     {
-                        dat = new DatFile4();
+                        dat = new DatFile();
                     }
 
                     for (int i = 4; i >= 0; i--)
                     {
-                        if (fi[i] == null)
-                        {
-                            fi[i] = new FileItem();
-                        }
-                        fi[i].FileObject = fshwrap[i] = new FSHWrapper(fshimg[i]) { RawData = fshimg[i].RawData };
-                        tgi.InstanceID = instanceid[i];
-                        // CheckInstance(inputdat, tgi.GroupID, tgi.InstanceID);
-                        fi[i].Size = ((IRawData)fi[i].FileObject).RawData.Length;
-
-                        inputdat.Insert(fi[i], tgi, false, compress_datmips);
+                       
+                        fshwrap[i] = new FshWrapper(fshimg[i]) { UseFshWrite = fshwritecompcb.Checked };
+                        
+                        inputdat.Add(fshwrap[i], group, instanceid[i], compress_datmips);
                        // Debug.WriteLine("Bmp: " + c.ToString() + " zoom: " + i.ToString());
                     }
                 }
@@ -511,12 +394,9 @@ namespace PngtoFshBatchtxt
                 for (int c = 0; c < BatchlistView1.Items.Count; c++)
                 {
 
-                    TGIEntry tgi = new TGIEntry();
-                    tgi.TypeID = uint.Parse("7ab50e44", NumberStyles.HexNumber);
-                    tgi.GroupID = uint.Parse(BatchlistView1.Items[c].SubItems[2].Text, NumberStyles.HexNumber);
+                    uint Group = uint.Parse(BatchlistView1.Items[c].SubItems[2].Text, NumberStyles.HexNumber);
                     uint instanceid = new uint();
-                    FileItem fi = new FileItem();
-                    FSHWrapper fshwrap = new FSHWrapper();
+                    FshWrapper fshwrap = new FshWrapper();
                     if (instarray[c].EndsWith("4") || instarray[c].EndsWith("3") || instarray[c].EndsWith("2") || instarray[c].EndsWith("1") || instarray[c].EndsWith("0"))
                     {
                         endreg = Convert.ToChar("4");
@@ -545,49 +425,13 @@ namespace PngtoFshBatchtxt
 
                     if (inputdat == null)
                     {
-                        dat = new DatFile4();
+                        dat = new DatFile();
                     }
 
-                    if (fi == null)
-                    {
-                        fi = new FileItem();
-                    }
-                    fi.FileObject = fshwrap = new FSHWrapper(curimage[c]) { RawData = curimage[c].RawData };
-                    tgi.InstanceID = instanceid;
-                    // CheckInstance(inputdat, tgi.GroupID, tgi.InstanceID);
-                    fi.Size = ((IRawData)fi.FileObject).RawData.Length;
+                   
+                    fshwrap = new FshWrapper(curimage[c]) { UseFshWrite = fshwritecompcb.Checked};
 
-                    inputdat.Insert(fi, tgi, false, compress_datmips);
-                }
-            }
-        }
-        private void CheckInstance(DatFile4 checkdat, uint group, uint instance)
-        {
-            for (int n = 0; n < checkdat.Files.Count; n++)
-            {
-                FileItem chkitem = (FileItem)checkdat.Files[n];
-                DatIndex4 chkindex = checkdat.Indexes[chkitem.IndexNumber];
-                if (chkindex.TypeID == uint.Parse("7ab50e44", NumberStyles.HexNumber) && chkindex.GroupID == group)
-                {
-                    if (chkindex.InstanceID == instance)
-                    {
-                        if (chkindex.Flags != IndexFlags.New)
-                        {
-                            TGIEntry remtgi = new TGIEntry();
-                            remtgi.TypeID = chkindex.TypeID;
-                            remtgi.GroupID = chkindex.GroupID;
-                            remtgi.InstanceID = chkindex.InstanceID;
-                            checkdat.Remove(remtgi);
-                        }
-                        else 
-                        {
-                            TGIEntry remtgi = new TGIEntry();
-                            remtgi.TypeID = chkindex.TypeID;
-                            remtgi.GroupID = chkindex.GroupID;
-                            remtgi.InstanceID = chkindex.InstanceID;
-                            checkdat.Indexes.Remove(checkdat.Indexes.Find(remtgi.TypeID, remtgi.GroupID, remtgi.InstanceID));
-                        }
-                    }
+                    inputdat.Add(fshwrap, Group, instanceid, compress_datmips);
                 }
             }
         }
@@ -596,7 +440,7 @@ namespace PngtoFshBatchtxt
         {
             if (dat == null)
             {
-                dat = new DatFile4();
+                dat = new DatFile();
             } 
             
             try
@@ -627,19 +471,19 @@ namespace PngtoFshBatchtxt
                     RebuildDat(dat);
                 }
 
-                if (dat.Files.Count > 0)
+                if (dat.Indexes.Count > 0)
                 {
                     if (saveDatDialog1.ShowDialog(this) == DialogResult.OK)
                     {
                         try
                         {
-                            if (string.IsNullOrEmpty(dat.FileName) || dat.FileName != saveDatDialog1.FileName)
+                            /*if (string.IsNullOrEmpty(dat.FileName) || dat.FileName != saveDatDialog1.FileName)
                             {
                                 dat.FileName = saveDatDialog1.FileName;
                                 Datnametxt.Text = Path.GetFileName(dat.FileName);
-                            }
+                            }*/
 
-                            dat.Save();
+                            dat.Save(saveDatDialog1.FileName);
                             dat.Close();
                             ClearandReset();
                         }
@@ -663,7 +507,7 @@ namespace PngtoFshBatchtxt
 
         private void newDatbtn_Click(object sender, EventArgs e)
         {
-            this.dat = new DatFile4();
+            this.dat = new DatFile();
             Datnametxt.Text = "Dat in Memory";
         }
 
@@ -953,7 +797,6 @@ namespace PngtoFshBatchtxt
             hexstring += hexcode;
 
             ReadRangetxt(rangepath, false);
-            bool copied = false;
             for (int c = 0; c < charArray.Length; c++)
             {
                 int index;
@@ -966,14 +809,8 @@ namespace PngtoFshBatchtxt
                 }
                 else
                 {
-                    if (!copied)
-                    {
-                        char[] id = DatFile4.GenerateGUID().ToString("X").ToCharArray();
-                        Array.Copy(id, charArray, 5);
-                        c = 5;
-                        copied = true;
-                    }
-                    index = ra.Next(5, hexstring.Length);
+                   
+                    index = ra.Next(0, hexstring.Length);
                     charArray[c] = hexstring[index];
                 }
 
@@ -1162,7 +999,7 @@ namespace PngtoFshBatchtxt
             {
                 for (int f = 0; f < filenames.Length; f++)
                 {
-                    if (filenames[f].StartsWith("/proc", StringComparison.InvariantCultureIgnoreCase) || filenames[f].StartsWith("/mips", StringComparison.InvariantCultureIgnoreCase) || filenames[f].StartsWith("/dat:", StringComparison.InvariantCultureIgnoreCase) || filenames[f].StartsWith("/outdir:", StringComparison.InvariantCultureIgnoreCase) || filenames[f].StartsWith("/?", StringComparison.InvariantCultureIgnoreCase) || filenames[f].StartsWith("/group:", StringComparison.InvariantCultureIgnoreCase))
+                    if (filenames[f].StartsWith("/proc", StringComparison.OrdinalIgnoreCase) || filenames[f].StartsWith("/mips", StringComparison.OrdinalIgnoreCase) || filenames[f].StartsWith("/dat:", StringComparison.OrdinalIgnoreCase) || filenames[f].StartsWith("/outdir:", StringComparison.OrdinalIgnoreCase) || filenames[f].StartsWith("/?", StringComparison.OrdinalIgnoreCase) || filenames[f].StartsWith("/group:", StringComparison.OrdinalIgnoreCase))
                     {
                         continue;
                     }
@@ -1299,7 +1136,7 @@ namespace PngtoFshBatchtxt
 
                 for (int n = 0; n < patharray.Count; n++)
                 {
-                    if (Path.GetFileName(patharray[n]).StartsWith("0x", StringComparison.InvariantCultureIgnoreCase))
+                    if (Path.GetFileName(patharray[n]).StartsWith("0x", StringComparison.OrdinalIgnoreCase))
                     {
                         string pathinst = Path.GetFileNameWithoutExtension(patharray[n]).Substring(2, 8);
                         instarray.Insert(n, pathinst);
@@ -1310,7 +1147,7 @@ namespace PngtoFshBatchtxt
                     }
                     using (Bitmap temp = new Bitmap(patharray[n]))
                     {
-                        if (!Path.GetFileName(patharray[n]).StartsWith("0x", StringComparison.InvariantCultureIgnoreCase))
+                        if (!Path.GetFileName(patharray[n]).StartsWith("0x", StringComparison.OrdinalIgnoreCase))
                         {
                             if (temp.Width >= 128 && temp.Height >= 128)
                             {
@@ -1342,7 +1179,7 @@ namespace PngtoFshBatchtxt
                         }
                         else if (temp.PixelFormat == PixelFormat.Format32bppArgb)
                         {
-                            if (temp.Width >= 256 && temp.Height >= 256 && fn.StartsWith("hd", StringComparison.InvariantCultureIgnoreCase))
+                            if (temp.Width >= 256 && temp.Height >= 256 && fn.StartsWith("hd", StringComparison.OrdinalIgnoreCase))
                             {
                                 typearray.Insert(n, "ThirtyTwoBit");
                             }
@@ -1353,7 +1190,7 @@ namespace PngtoFshBatchtxt
                         }
                         else
                         {
-                            if (temp.Width >= 256 && temp.Height >= 256 && fn.StartsWith("hd", StringComparison.InvariantCultureIgnoreCase))
+                            if (temp.Width >= 256 && temp.Height >= 256 && fn.StartsWith("hd", StringComparison.OrdinalIgnoreCase))
                             {
                                 typearray.Insert(n, "TwentyFourBit");
                             }
@@ -1496,7 +1333,7 @@ namespace PngtoFshBatchtxt
 
                 for (int n = dif; n < patharray.Count; n++)
                 {
-                    if (Path.GetFileName(patharray[n]).StartsWith("0x", StringComparison.InvariantCultureIgnoreCase))
+                    if (Path.GetFileName(patharray[n]).StartsWith("0x", StringComparison.OrdinalIgnoreCase))
                     {
                         string pathinst = Path.GetFileNameWithoutExtension(patharray[n]).Substring(2, 8);
                         instarray.Insert(n, pathinst);
@@ -1508,7 +1345,7 @@ namespace PngtoFshBatchtxt
 
                     using (Bitmap temp = new Bitmap(patharray[n]))
                     {
-                        if (!Path.GetFileName(patharray[n]).StartsWith("0x", StringComparison.InvariantCultureIgnoreCase))
+                        if (!Path.GetFileName(patharray[n]).StartsWith("0x", StringComparison.OrdinalIgnoreCase))
                         {
                             if (temp.Width >= 128 && temp.Height >= 128)
                             {
@@ -1535,7 +1372,7 @@ namespace PngtoFshBatchtxt
                         }
                         else if (Path.GetExtension(patharray[n]).Equals(".png",StringComparison.OrdinalIgnoreCase) && temp.PixelFormat == PixelFormat.Format32bppArgb)
                         {
-                            if (temp.Width >= 256 && temp.Height >= 256 && fn.StartsWith("hd", StringComparison.InvariantCultureIgnoreCase))
+                            if (temp.Width >= 256 && temp.Height >= 256 && fn.StartsWith("hd", StringComparison.OrdinalIgnoreCase))
                             {
                                 typearray.Insert(n, "ThirtyTwoBit");
                             }
@@ -1546,7 +1383,7 @@ namespace PngtoFshBatchtxt
                         }
                         else
                         {
-                            if (temp.Width >= 256 && temp.Height >= 256 && fn.StartsWith("hd", StringComparison.InvariantCultureIgnoreCase))
+                            if (temp.Width >= 256 && temp.Height >= 256 && fn.StartsWith("hd", StringComparison.OrdinalIgnoreCase))
                             {
                                 typearray.Insert(n, "TwentyFourBit");
                             }
@@ -1678,7 +1515,7 @@ namespace PngtoFshBatchtxt
                 int index = BatchlistView1.SelectedItems[0].Index;
                 if (tgiGrouptxt.Text.Length > 0 && tgiGrouptxt.Text.Length == 8)
                 {
-                    if (!tgiGrouptxt.Text.Equals(grouparray[index], StringComparison.InvariantCultureIgnoreCase))
+                    if (!tgiGrouptxt.Text.Equals(grouparray[index], StringComparison.OrdinalIgnoreCase))
                     {
                         grouparray[index] = tgiGrouptxt.Text;
                         BatchlistView1.SelectedItems[0].SubItems[2].Text = grouparray[index];
@@ -1694,7 +1531,7 @@ namespace PngtoFshBatchtxt
                 int index = BatchlistView1.SelectedItems[0].Index;
                 if (tgiInstancetxt.Text.Length > 0 && tgiInstancetxt.Text.Length == 8)
                 {
-                    if (!tgiInstancetxt.Text.Equals(instarray[index], StringComparison.InvariantCultureIgnoreCase))
+                    if (!tgiInstancetxt.Text.Equals(instarray[index], StringComparison.OrdinalIgnoreCase))
                     {
                         instarray.Insert(index, tgiInstancetxt.Text);
                         FormatRefresh(index);
