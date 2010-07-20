@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using System.IO;
 using FSHLib;
 using System.Collections;
+using FshDatIO;
 
 namespace PngtoFshBatchtxt
 {
@@ -50,7 +51,7 @@ namespace PngtoFshBatchtxt
                     {
                         FileInfo fi = new FileInfo("null");
                         FileAttributes attr = new FileAttributes();
-                        if (!args[a].StartsWith("/proc", StringComparison.InvariantCultureIgnoreCase) && !args[a].StartsWith("/mips", StringComparison.InvariantCultureIgnoreCase) && !args[a].StartsWith("/d", StringComparison.InvariantCultureIgnoreCase) && !args[a].StartsWith("/o", StringComparison.InvariantCultureIgnoreCase) && !args[a].StartsWith("/?", StringComparison.InvariantCultureIgnoreCase) && !args[a].StartsWith("/group:", StringComparison.InvariantCultureIgnoreCase))
+                        if (!args[a].StartsWith("/proc", StringComparison.OrdinalIgnoreCase) && !args[a].StartsWith("/mips", StringComparison.OrdinalIgnoreCase) && !args[a].StartsWith("/d", StringComparison.OrdinalIgnoreCase) && !args[a].StartsWith("/o", StringComparison.OrdinalIgnoreCase) && !args[a].StartsWith("/?", StringComparison.OrdinalIgnoreCase) && !args[a].StartsWith("/group:", StringComparison.OrdinalIgnoreCase))
                         {
                             attr = File.GetAttributes(args[a]);
                             fi = new FileInfo(args[a]);
@@ -104,15 +105,15 @@ namespace PngtoFshBatchtxt
                                 }
                             }
                         }
-                        else if ((args[a].StartsWith("/proc", StringComparison.InvariantCultureIgnoreCase)|| args[a].StartsWith("/dat:", StringComparison.InvariantCultureIgnoreCase) || args[a].StartsWith("/outdir:", StringComparison.InvariantCultureIgnoreCase) || args[a].StartsWith("/mips", StringComparison.InvariantCultureIgnoreCase) || args[a].StartsWith("/group:", StringComparison.InvariantCultureIgnoreCase)))
+                        else if ((args[a].StartsWith("/proc", StringComparison.OrdinalIgnoreCase)|| args[a].StartsWith("/dat:", StringComparison.OrdinalIgnoreCase) || args[a].StartsWith("/outdir:", StringComparison.OrdinalIgnoreCase) || args[a].StartsWith("/mips", StringComparison.OrdinalIgnoreCase) || args[a].StartsWith("/group:", StringComparison.OrdinalIgnoreCase)))
                         {
                             char[] splitchar = new char[] { ':' };
-                            if (args[a].StartsWith("/dat:", StringComparison.InvariantCultureIgnoreCase) || args[a].StartsWith("/o", StringComparison.InvariantCultureIgnoreCase))
+                            if (args[a].StartsWith("/dat:", StringComparison.OrdinalIgnoreCase) || args[a].StartsWith("/o", StringComparison.OrdinalIgnoreCase))
                             {
                                 int strlen;
                                 string teststr;
                                 // test for an empty path string
-                                if (args[a].StartsWith("/dat:", StringComparison.InvariantCultureIgnoreCase))
+                                if (args[a].StartsWith("/dat:", StringComparison.OrdinalIgnoreCase))
                                 {
                                     strlen = 5;
                                 }
@@ -137,7 +138,7 @@ namespace PngtoFshBatchtxt
 
                             }
 
-                            if (args[a].StartsWith("/proc", StringComparison.InvariantCultureIgnoreCase))
+                            if (args[a].StartsWith("/proc", StringComparison.OrdinalIgnoreCase))
                             {
                                 if (fcnt > 0)
                                 {
@@ -145,7 +146,7 @@ namespace PngtoFshBatchtxt
                                     form1.processbatchbtn_Click(null, null);
                                 }
                             }
-                            else if (args[a].StartsWith("/mips", StringComparison.InvariantCultureIgnoreCase))
+                            else if (args[a].StartsWith("/mips", StringComparison.OrdinalIgnoreCase))
                             {
                                 if (fcnt > 0)
                                 {
@@ -153,7 +154,7 @@ namespace PngtoFshBatchtxt
                                     form1.autoprocMipscb.Checked = true;
                                 }
                             }
-                            else if (args[a].StartsWith("/dat:", StringComparison.InvariantCultureIgnoreCase))
+                            else if (args[a].StartsWith("/dat:", StringComparison.OrdinalIgnoreCase))
                             {
                                 if (fcnt > 0)
                                 {
@@ -171,9 +172,9 @@ namespace PngtoFshBatchtxt
                                             {
                                                 if (form1.dat == null)
                                                 {
-                                                    form1.dat = new SynapticEffect.SimCity.IO.DatFile4();
+                                                    form1.dat = new DatFile();
                                                 }
-                                                form1.dat.FileName = dat[1].Trim();
+                                                form1.dat.Filename = dat[1].Trim();
                                                 if (form1.autoprocMipscb.Checked)
                                                 {
                                                     if (form1.mipsbtn_clicked == false)
@@ -207,7 +208,7 @@ namespace PngtoFshBatchtxt
                                 }
 
                             }
-                            else if (args[a].StartsWith("/group:", StringComparison.InvariantCultureIgnoreCase))
+                            else if (args[a].StartsWith("/group:", StringComparison.OrdinalIgnoreCase))
                             {
                                 string[] group = new string[2];
                                 string groupid = null;
@@ -260,7 +261,7 @@ namespace PngtoFshBatchtxt
                                     }
                                 }
                             }
-                            else if (args[a].StartsWith("/outdir:", StringComparison.InvariantCultureIgnoreCase))
+                            else if (args[a].StartsWith("/outdir:", StringComparison.OrdinalIgnoreCase))
                             {
                                 string[] dir = new string[2];
                                 dir[0] = args[a].Substring(0, 8);
