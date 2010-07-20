@@ -489,7 +489,7 @@ namespace PngtoFshBatchtxt
                         }
                         catch (Exception ex)
                         {
-                            MessageBox.Show(this,ex.Message,this.Text,MessageBoxButtons.OK,MessageBoxIcon.Error);
+                            throw ex;
                         }
                         finally
                         {
