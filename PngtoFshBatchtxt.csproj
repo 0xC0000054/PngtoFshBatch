@@ -36,7 +36,7 @@
   <ItemGroup>
     <Reference Include="FshDatIO, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\readfshdat\FshDatIO\bin\Debug\FshDatIO.dll</HintPath>
+      <HintPath>..\readfshdat\FshDatIO\bin\Release\FshDatIO.dll</HintPath>
     </Reference>
     <Reference Include="FSHLib, Version=0.3.1.32075, Culture=neutral">
       <SpecificVersion>False</SpecificVersion>
