@@ -34,17 +34,13 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FshDatIO, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\readfshdat\FshDatIO\bin\Debug\FshDatIO.dll</HintPath>
+    </Reference>
     <Reference Include="FSHLib, Version=0.3.1.32075, Culture=neutral">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Fshlib_vista\Fshlib_vista\FSHLib.dll</HintPath>
-    </Reference>
-    <Reference Include="SynapticEffect, Version=0.9.2.0, Culture=neutral">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\SynapticEffect.DLL</HintPath>
-    </Reference>
-    <Reference Include="SynapticEffect.SimCity, Version=0.3.1.41619, Culture=neutral">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\SynapticEffect.SimCity.DLL</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
