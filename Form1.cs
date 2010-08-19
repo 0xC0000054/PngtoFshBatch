@@ -157,7 +157,7 @@ namespace PngtoFshBatchtxt
         /// <returns>The new scaled Bitmap</returns>
         private Bitmap GetBitmapThumbnail(Bitmap source, int width, int height)
         {
-            Bitmap image = new Bitmap(width, height);
+            /*Bitmap image = new Bitmap(width, height);
             using(Graphics gr = Graphics.FromImage(image)) // this is hopfully higher quality that GetThumbnailImage
             {
                 gr.InterpolationMode = InterpolationMode.HighQualityBicubic;
@@ -165,7 +165,8 @@ namespace PngtoFshBatchtxt
                 gr.PixelOffsetMode = PixelOffsetMode.HighQuality;
                 gr.CompositingQuality = CompositingQuality.HighQuality;
                 gr.DrawImage(source, new Rectangle(0, 0, width, height)); 
-            }
+            }*/
+            Bitmap image = SuperSample.SuperSample.GetBitmapThumbnail(source, width, height);
 #if DEBUG
             //string path = Path.Combine(Application.StartupPath,"thumb" + width.ToString() + ".Png");
             //image.Save(path);
