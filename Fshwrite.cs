@@ -108,7 +108,7 @@ namespace PngtoFshBatchtxt
                 }
             }
         }
-        private Bitmap BlendDXTBmp(Bitmap colorbmp, Bitmap bmpalpha)
+        private static Bitmap BlendDXTBmp(Bitmap colorbmp, Bitmap bmpalpha)
         {
             Bitmap image = null;
             if (colorbmp != null && bmpalpha != null)
@@ -161,7 +161,7 @@ namespace PngtoFshBatchtxt
         private List<Bitmap> alphalist = null;
         private List<byte[]> dirnames = null;
         private List<int> codelist = null;
-        private int GetBmpDataSize(Bitmap bmp, int code)
+        private static int GetBmpDataSize(Bitmap bmp, int code)
         {
             int ret = -1;
             switch (code)
