@@ -487,9 +487,9 @@ namespace PngtoFshBatchtxt
                             dat.Close();
                             ClearandReset();
                         }
-                        catch (Exception ex)
+                        catch (Exception)
                         {
-                            throw ex;
+                            throw;
                         }
                         finally
                         {
@@ -596,10 +596,10 @@ namespace PngtoFshBatchtxt
             {
                 MessageBox.Show(this, ag.Message + "\n" + "Param = " + ag.ParamName + " Actual value: " + ag.ActualValue.ToString(), this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 batch_processed = false;
-                throw ex;
+                throw;
             }
         }
         internal string Getfilepath(string filepath, string addtopath, string outdir)
@@ -642,9 +642,9 @@ namespace PngtoFshBatchtxt
                     image.Save(fs);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
         /// <summary>
@@ -954,9 +954,9 @@ namespace PngtoFshBatchtxt
             {
                 throw fx;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
         internal bool ValidateHexString(string str)
@@ -1300,17 +1300,17 @@ namespace PngtoFshBatchtxt
                     {
                         int rem = (rl - filesrem);
                         patharray.RemoveAt(rem);
-                        patharray.Capacity = (patharray.Capacity - 1);
-                        grouparray.Capacity = (grouparray.Capacity - 1);
-                        instarray.Capacity = (instarray.Capacity - 1);
-                        typearray.Capacity = (typearray.Capacity - 1);
+                        SetListCapacity(patharray, (patharray.Capacity - 1));
+                        SetListCapacity(grouparray, (grouparray.Capacity - 1));
+                        SetListCapacity(instarray, (instarray.Capacity - 1));
+                        SetListCapacity(typearray, (typearray.Capacity - 1));
                         filesrem++; 
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
         private void BuildAddList(int fcnt,int dif)
@@ -1411,9 +1411,9 @@ namespace PngtoFshBatchtxt
             {
                 MessageBox.Show(fx.Message + fx.FileName, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             } 
         }
         private void addbtn_Click(object sender, EventArgs e)
@@ -1448,15 +1448,16 @@ namespace PngtoFshBatchtxt
                     mip16fsh = new List<FSHImage>(fcnt);
                     mip8fsh = new List<FSHImage>(fcnt);
                 }
-                curimage.Capacity = cnt;
-                mip64fsh.Capacity = cnt;
-                mip32fsh.Capacity = cnt;
-                mip16fsh.Capacity = cnt;
-                mip8fsh.Capacity = cnt;
-                patharray.Capacity = cnt;
-                grouparray.Capacity = cnt;
-                instarray.Capacity = cnt;
-                typearray.Capacity = cnt;
+                SetListCapacity(curimage, cnt);
+                SetListCapacity(mip64fsh, cnt);
+                SetListCapacity(mip32fsh, cnt);
+                SetListCapacity(mip16fsh, cnt);
+                SetListCapacity(mip8fsh, cnt);
+
+                SetListCapacity(patharray, cnt);
+                SetListCapacity(grouparray, cnt);
+                SetListCapacity(instarray, cnt);
+                SetListCapacity(typearray, cnt);
                 try
                 {
                     for (int f = 0; f < PngopenDialog.FileNames.Length; f++)
@@ -1719,6 +1720,27 @@ namespace PngtoFshBatchtxt
             tgiInstancetxt.Text = null;
             FshtypeBox.SelectedIndex = 2;
         }
+        /// <summary>
+        /// Sets the capacity of the List if the current capacity is less than the new value
+        /// </summary>
+        /// <param name="list">The list to set</param>
+        /// <param name="capacity">The value to set it to</param>
+        private void SetListCapacity(List<string> list, int capacity)
+        {
+            if (list.Capacity < capacity)
+                list.Capacity = capacity;
+        }
+        /// <summary>
+        /// Sets the capacity of the List if the current capacity is less than the new value
+        /// </summary>
+        /// <param name="list">The list to set</param>
+        /// <param name="capacity">The value to set it to</param>
+        private void SetListCapacity(List<FSHImage> list, int capacity)
+        {
+            if (list.Capacity < capacity)
+                list.Capacity = capacity;
+        }
+
         private void addbtn_DragDrop(object sender, DragEventArgs e)
         {
             string[] files = GetFilesfromDirectory((string[])e.Data.GetData(DataFormats.FileDrop));
@@ -1750,15 +1772,16 @@ namespace PngtoFshBatchtxt
                 mip16fsh = new List<FSHImage>(fcnt);
                 mip8fsh = new List<FSHImage>(fcnt);
             }
-            curimage.Capacity = cnt;
-            mip64fsh.Capacity = cnt;
-            mip32fsh.Capacity = cnt;
-            mip16fsh.Capacity = cnt;
-            mip8fsh.Capacity = cnt;
-            patharray.Capacity = cnt;
-            grouparray.Capacity = cnt;
-            instarray.Capacity = cnt;
-            typearray.Capacity = cnt;
+            SetListCapacity(curimage, cnt);
+            SetListCapacity(mip64fsh, cnt);
+            SetListCapacity(mip32fsh, cnt);
+            SetListCapacity(mip16fsh, cnt);
+            SetListCapacity(mip8fsh, cnt);
+
+            SetListCapacity(patharray, cnt);
+            SetListCapacity(grouparray, cnt);
+            SetListCapacity(instarray, cnt);
+            SetListCapacity(typearray, cnt);
             try 
 	        {
                 for (int f = 0; f < files.Length; f++)
