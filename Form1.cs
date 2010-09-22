@@ -511,6 +511,45 @@ namespace PngtoFshBatchtxt
             this.dat = new DatFile();
             Datnametxt.Text = "Dat in Memory";
         }
+        /// <summary>
+        /// Extracts the alpha channel bitmap from a transparent png
+        /// </summary>
+        /// <param name="source">The 32-bit input png</param>
+        /// <returns>The extreacted alpha channel bitmap</returns>
+        private unsafe static Bitmap GetAlphaFromTransparency(Bitmap source)
+        {
+            Bitmap dest = new Bitmap(source.Width, source.Height, PixelFormat.Format24bppRgb);
+            Rectangle rect = new Rectangle(0, 0, source.Width, source.Height);
+
+            BitmapData src = source.LockBits(rect, ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+            BitmapData dst = dest.LockBits(rect, ImageLockMode.WriteOnly, PixelFormat.Format24bppRgb);
+
+            byte* srcpxl = (byte*)src.Scan0.ToPointer();
+            byte* dstpxl = (byte*)dst.Scan0.ToPointer();
+
+            int srcofs = src.Stride - source.Width * 4;
+            int dstofs = dst.Stride - dest.Width * 4;
+
+            for (int y = 0; y < dest.Height; y++)
+            {
+                for (int x = 0; x < dest.Width; x++)
+                {
+                    dstpxl[0] = srcpxl[3];
+                    dstpxl[1] = srcpxl[3];
+                    dstpxl[2] = srcpxl[3];
+
+                    srcpxl += 4; 
+                    dstpxl += 3; 
+                }
+                srcpxl += srcofs;
+                dstpxl += dstofs;
+            }
+
+            dest.UnlockBits(dst);
+            source.UnlockBits(src);
+
+            return dest;
+        }
 
         internal bool batch_processed = false;
         internal void ProcessBatch()
@@ -522,7 +561,7 @@ namespace PngtoFshBatchtxt
                     Bitmap temp = new Bitmap(patharray[c]);
                     bmpitem = new BitmapItem();
 
-                    bmpitem.Bitmap = new Bitmap(patharray[c]);
+                    bmpitem.Bitmap = temp;
                     string alname = Path.Combine(Path.GetDirectoryName(patharray[c]), Path.GetFileNameWithoutExtension(patharray[c]) + "_a" + Path.GetExtension(patharray[c]));
                     if (File.Exists(alname))
                     {
@@ -531,28 +570,24 @@ namespace PngtoFshBatchtxt
                     }
                     else if (Path.GetExtension(patharray[c]).Equals(".png",StringComparison.OrdinalIgnoreCase) && temp.PixelFormat == PixelFormat.Format32bppArgb)
                     {
-                        Bitmap testbmp = new Bitmap(temp.Width, temp.Height, PixelFormat.Format32bppArgb);
-
-                        for (int y = 0; y < testbmp.Height; y++)
-                        {
-                            for (int x = 0; x < testbmp.Width; x++)
-                            {
-                                Color srcpxl = temp.GetPixel(x, y);
-                                testbmp.SetPixel(x, y, Color.FromArgb(srcpxl.A,srcpxl.A,srcpxl.A));
-                            }
-                        }
-                        bmpitem.Alpha = testbmp;
+                        bmpitem.Alpha = GetAlphaFromTransparency(temp);
                     }
                     else
                     {
-                        Bitmap alpha = new Bitmap(temp.Width, temp.Height);
-                        for (int y = 0; y < alpha.Height; y++)
-                        {
-                            for (int x = 0; x < alpha.Width; x++)
-                            {
-                                alpha.SetPixel(x, y, Color.White);
-                            }
-                        }
+                        Bitmap alpha = new Bitmap(temp.Width, temp.Height, PixelFormat.Format24bppRgb);
+                        BitmapData data = alpha.LockBits(new Rectangle(0, 0, alpha.Width, alpha.Height), ImageLockMode.WriteOnly, PixelFormat.Format24bppRgb);
+
+                        int len = data.Stride * alpha.Height;
+                        byte[] pixelData = new byte[len];
+                        for (int i = 0; i < len; i++)
+		                {
+                            pixelData[i] = 255;
+		                }
+
+                        Marshal.Copy(pixelData, 0, data.Scan0, len); 
+                           
+                        alpha.UnlockBits(data);
+
                         bmpitem.Alpha = alpha;
                     }
                     if (typearray[c].ToUpper() == FSHBmpType.ThirtyTwoBit.ToString().ToUpper())
@@ -578,11 +613,12 @@ namespace PngtoFshBatchtxt
                             curimage.Insert(c, new FSHImage());
                             curimage[c].Bitmaps.Add(bmpitem);
                             curimage[c].UpdateDirty();
-
+                            Stopwatch sw = new Stopwatch();
                             using (MemoryStream mstream = new MemoryStream())
                             {
                                 SaveFsh(mstream, curimage[c]);
-                                if (IsDXTFsh(curimage[c]))
+                                
+                                if (IsDXTFsh(curimage[c]) && fshwritecompcb.Checked)
                                 {
                                     curimage[c] = new FSHImage(mstream);
                                 }
