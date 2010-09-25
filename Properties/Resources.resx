@@ -117,5 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="AlphaGenString" xml:space="preserve">
+    <value>Generated Alpha</value>
+  </data>
+  <data name="AlphaTransString" xml:space="preserve">
+    <value>From Transparency</value>
+  </data>
+  <data name="FshWriteSSERequiredError" xml:space="preserve">
+    <value>A processor that supports SSE is required to for FshWrite save DXT1 and DXT3 fsh images</value>
+  </data>
 </root>
