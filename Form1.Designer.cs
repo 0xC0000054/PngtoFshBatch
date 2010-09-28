@@ -85,7 +85,7 @@
             this.batchListView.Name = "batchListView";
             this.batchListView.Size = new System.Drawing.Size(467, 128);
             this.batchListView.TabIndex = 0;
-            this.toolTip1.SetToolTip(this.batchListView, Properties.Resources.batchListView_Tooltip);
+            this.toolTip1.SetToolTip(this.batchListView, "The list of images to convert.\r\nDragging files or folders onto the list will create a new list");
             this.batchListView.UseCompatibleStateImageBehavior = false;
             this.batchListView.View = System.Windows.Forms.View.Details;
             this.batchListView.SelectedIndexChanged += new System.EventHandler(this.batchListView1_SelectedIndexChanged);
@@ -122,8 +122,8 @@
             this.compDatcb.Name = "compDatcb";
             this.compDatcb.Size = new System.Drawing.Size(93, 17);
             this.compDatcb.TabIndex = 3;
-            this.compDatcb.Text = Properties.Resources.compDatcb_Text;
-            this.toolTip1.SetToolTip(this.compDatcb, Properties.Resources.compDatcb_Tooltip);
+            this.compDatcb.Text = "Compress dat";
+            this.toolTip1.SetToolTip(this.compDatcb, "Change the end diget of the instance id");
             this.compDatcb.UseVisualStyleBackColor = true;
             this.compDatcb.CheckedChanged += new System.EventHandler(this.compDatcb_CheckedChanged);
             // 
