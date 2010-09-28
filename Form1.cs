@@ -36,10 +36,8 @@ namespace PngtoFshBatchtxt
 
         private void GenerateMips()
         {
-            for (int n = 0; n < BatchlistView1.Items.Count; n++)
+            for (int n = 0; n < batchListView.Items.Count; n++)
             {
-                int i = 0;
-
                 Bitmap[] bmps = new Bitmap[4];
                 Bitmap[] alphas = new Bitmap[4];
 
@@ -64,7 +62,7 @@ namespace PngtoFshBatchtxt
                     alphas[3] = GetBitmapThumbnail(alpha, 64, 64);
                 }
 
-                for (i = 0; i < 4; i++)
+                for (int i = 0; i < 4; i++)
                 {
                     if (bmps[i] != null && alphas[i] != null)
                     {
@@ -139,7 +137,7 @@ namespace PngtoFshBatchtxt
             {
                 if (mip64fsh.Count > 0 && mip32fsh.Count > 0 && mip16fsh.Count > 0 && mip8fsh.Count > 0)
                 {
-                    for (int n = 0; n < BatchlistView1.Items.Count; n++)
+                    for (int n = 0; n < batchListView.Items.Count; n++)
                     {
                         mip64fsh[n] = null;
                         mip32fsh[n] = null;
@@ -164,8 +162,8 @@ namespace PngtoFshBatchtxt
         /// <returns>The new scaled Bitmap</returns>
         private static Bitmap GetBitmapThumbnail(Bitmap source, int width, int height)
         {
-            /*Bitmap image = new Bitmap(width, height);
-            using(Graphics gr = Graphics.FromImage(image)) // this is hopfully higher quality that GetThumbnailImage
+            /*Bitmap temp = new Bitmap(width, height);
+            using(Graphics gr = Graphics.FromImage(temp)) // this is hopfully higher quality that GetThumbnailImage
             {
                 gr.InterpolationMode = InterpolationMode.HighQualityBicubic;
                 gr.SmoothingMode = SmoothingMode.HighQuality;
@@ -176,7 +174,7 @@ namespace PngtoFshBatchtxt
             Bitmap image = SuperSample.SuperSample.GetBitmapThumbnail(source, width, height);
 #if DEBUG
             //string path = Path.Combine(Application.StartupPath,"thumb" + width.ToString() + ".Png");
-            //image.Save(path);
+            //temp.Save(path);
 #endif
             return image;
         }
@@ -193,7 +191,7 @@ namespace PngtoFshBatchtxt
                 using (StreamWriter sw = new StreamWriter(fs)) 
                 {
                     sw.WriteLine("7ab50e44\t\n");
-                    sw.WriteLine(string.Format("{0:X8}", BatchlistView1.Items[cnt].SubItems[2].Text + "\n"));
+                    sw.WriteLine(string.Format("{0:X8}", batchListView.Items[cnt].SubItems[2].Text + "\n"));
                     if (instarray[cnt].EndsWith("4") || instarray[cnt].EndsWith("3") || instarray[cnt].EndsWith("2") || instarray[cnt].EndsWith("1") || instarray[cnt].EndsWith("0"))
                     {
                         endreg = Convert.ToChar("4");
@@ -221,19 +219,19 @@ namespace PngtoFshBatchtxt
                     switch (zoom)
                     {
                         case 0:
-                            sw.WriteLine(string.Format("{0:X8}", BatchlistView1.Items[cnt].SubItems[3].Text.Substring(0, 7) + end8));
+                            sw.WriteLine(string.Format("{0:X8}", batchListView.Items[cnt].SubItems[3].Text.Substring(0, 7) + end8));
                             break;
                         case 1:
-                            sw.WriteLine(string.Format("{0:X8}", BatchlistView1.Items[cnt].SubItems[3].Text.Substring(0, 7) + end16));
+                            sw.WriteLine(string.Format("{0:X8}", batchListView.Items[cnt].SubItems[3].Text.Substring(0, 7) + end16));
                             break;
                         case 2:
-                            sw.WriteLine(string.Format("{0:X8}", BatchlistView1.Items[cnt].SubItems[3].Text.Substring(0, 7) + end32));
+                            sw.WriteLine(string.Format("{0:X8}", batchListView.Items[cnt].SubItems[3].Text.Substring(0, 7) + end32));
                             break;
                         case 3:
-                            sw.WriteLine(string.Format("{0:X8}", BatchlistView1.Items[cnt].SubItems[3].Text.Substring(0, 7) + end64));
+                            sw.WriteLine(string.Format("{0:X8}", batchListView.Items[cnt].SubItems[3].Text.Substring(0, 7) + end64));
                             break;
                         case 4:
-                            sw.WriteLine(string.Format("{0:X8}", BatchlistView1.Items[cnt].SubItems[3].Text));
+                            sw.WriteLine(string.Format("{0:X8}", batchListView.Items[cnt].SubItems[3].Text));
                             break;
                     }
                 } 
@@ -290,11 +288,11 @@ namespace PngtoFshBatchtxt
         }
 
         private int typeindex = 0; // store previously selected fsh type
-        private void BatchlistView1_SelectedIndexChanged(object sender, EventArgs e)
+        private void batchListView1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (BatchlistView1.SelectedItems.Count > 0)
+            if (batchListView.SelectedItems.Count > 0)
             { 
-                string inst = BatchlistView1.SelectedItems[0].SubItems[3].Text;
+                string inst = batchListView.SelectedItems[0].SubItems[3].Text;
                 if (inst.EndsWith("4", StringComparison.OrdinalIgnoreCase) || inst.EndsWith("3", StringComparison.OrdinalIgnoreCase) || inst.EndsWith("2", StringComparison.OrdinalIgnoreCase) || inst.EndsWith("1", StringComparison.OrdinalIgnoreCase) || inst.EndsWith("0", StringComparison.OrdinalIgnoreCase))
                 {
                     Inst0_4rdo.Checked = true;
@@ -307,9 +305,9 @@ namespace PngtoFshBatchtxt
                 {
                     InstA_Erdo.Checked = true;
                 }
-                tgiGrouptxt.Text = BatchlistView1.SelectedItems[0].SubItems[2].Text;
-                tgiInstancetxt.Text = BatchlistView1.SelectedItems[0].SubItems[3].Text;
-                int index = BatchlistView1.SelectedItems[0].Index;
+                tgiGrouptxt.Text = batchListView.SelectedItems[0].SubItems[2].Text;
+                tgiInstancetxt.Text = batchListView.SelectedItems[0].SubItems[3].Text;
+                int index = batchListView.SelectedItems[0].Index;
                 switch (typearray[index].ToUpperInvariant())
                 { 
                     case "TWENTYFOURBIT":
@@ -338,9 +336,9 @@ namespace PngtoFshBatchtxt
         {
             if (mipsbtn_clicked && mip64fsh != null && mip32fsh != null && mip16fsh != null && mip8fsh != null && curimage != null)
             {
-                for (int c = 0; c < BatchlistView1.Items.Count; c++)
+                for (int c = 0; c < batchListView.Items.Count; c++)
                 {
-                    uint group = uint.Parse(BatchlistView1.Items[c].SubItems[2].Text, NumberStyles.HexNumber);
+                    uint group = uint.Parse(batchListView.Items[c].SubItems[2].Text, NumberStyles.HexNumber);
                     uint[] instanceid = new uint[5];
                     FshWrapper[] fshwrap = new FshWrapper[5];
                     FSHImage[] fshimg = new FSHImage[5];
@@ -370,11 +368,11 @@ namespace PngtoFshBatchtxt
                         end16 = Convert.ToChar("B");
                         end8 = Convert.ToChar("A");
                     }
-                    instanceid[0] = uint.Parse(BatchlistView1.Items[c].SubItems[3].Text.Substring(0, 7) + end8, NumberStyles.HexNumber);
-                    instanceid[1] = uint.Parse(BatchlistView1.Items[c].SubItems[3].Text.Substring(0, 7) + end16, NumberStyles.HexNumber);
-                    instanceid[2] = uint.Parse(BatchlistView1.Items[c].SubItems[3].Text.Substring(0, 7) + end32, NumberStyles.HexNumber);
-                    instanceid[3] = uint.Parse(BatchlistView1.Items[c].SubItems[3].Text.Substring(0, 7) + end64, NumberStyles.HexNumber);
-                    instanceid[4] = uint.Parse(BatchlistView1.Items[c].SubItems[3].Text, NumberStyles.HexNumber);
+                    instanceid[0] = uint.Parse(batchListView.Items[c].SubItems[3].Text.Substring(0, 7) + end8, NumberStyles.HexNumber);
+                    instanceid[1] = uint.Parse(batchListView.Items[c].SubItems[3].Text.Substring(0, 7) + end16, NumberStyles.HexNumber);
+                    instanceid[2] = uint.Parse(batchListView.Items[c].SubItems[3].Text.Substring(0, 7) + end32, NumberStyles.HexNumber);
+                    instanceid[3] = uint.Parse(batchListView.Items[c].SubItems[3].Text.Substring(0, 7) + end64, NumberStyles.HexNumber);
+                    instanceid[4] = uint.Parse(batchListView.Items[c].SubItems[3].Text, NumberStyles.HexNumber);
 
                     if (inputdat == null)
                     {
@@ -393,10 +391,10 @@ namespace PngtoFshBatchtxt
             }
             else if (!autoprocMipscb.Checked && curimage != null)
             {
-                for (int c = 0; c < BatchlistView1.Items.Count; c++)
+                for (int c = 0; c < batchListView.Items.Count; c++)
                 {
 
-                    uint Group = uint.Parse(BatchlistView1.Items[c].SubItems[2].Text, NumberStyles.HexNumber);
+                    uint Group = uint.Parse(batchListView.Items[c].SubItems[2].Text, NumberStyles.HexNumber);
                     uint instanceid = new uint();
                     FshWrapper fshwrap = new FshWrapper();
                     if (instarray[c].EndsWith("4") || instarray[c].EndsWith("3") || instarray[c].EndsWith("2") || instarray[c].EndsWith("1") || instarray[c].EndsWith("0"))
@@ -423,7 +421,7 @@ namespace PngtoFshBatchtxt
                         end16 = Convert.ToChar("B");
                         end8 = Convert.ToChar("A");
                     }
-                    instanceid = uint.Parse(BatchlistView1.Items[c].SubItems[3].Text, NumberStyles.HexNumber);
+                    instanceid = uint.Parse(batchListView.Items[c].SubItems[3].Text, NumberStyles.HexNumber);
 
                     if (inputdat == null)
                     {
@@ -529,35 +527,50 @@ namespace PngtoFshBatchtxt
         /// <returns>The extreacted alpha channel bitmap</returns>
         private unsafe static Bitmap GetAlphaFromTransparency(Bitmap source)
         {
-            Bitmap dest = new Bitmap(source.Width, source.Height, PixelFormat.Format24bppRgb);
-            Rectangle rect = new Rectangle(0, 0, source.Width, source.Height);
+            Bitmap dest = null;             
+            Bitmap temp = new Bitmap(source.Width, source.Height, PixelFormat.Format24bppRgb);
 
-            BitmapData src = source.LockBits(rect, ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-            BitmapData dst = dest.LockBits(rect, ImageLockMode.WriteOnly, PixelFormat.Format24bppRgb);
-
-            byte* srcpxl = (byte*)src.Scan0.ToPointer();
-            byte* dstpxl = (byte*)dst.Scan0.ToPointer();
-
-            int srcofs = src.Stride - source.Width * 4;
-            int dstofs = dst.Stride - dest.Width * 4;
-
-            for (int y = 0; y < dest.Height; y++)
+            try
             {
-                for (int x = 0; x < dest.Width; x++)
+                Rectangle rect = new Rectangle(0, 0, source.Width, source.Height);
+
+                BitmapData src = source.LockBits(rect, ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+                BitmapData dst = temp.LockBits(rect, ImageLockMode.WriteOnly, PixelFormat.Format24bppRgb);
+
+                byte* srcpxl = (byte*)src.Scan0.ToPointer();
+                byte* dstpxl = (byte*)dst.Scan0.ToPointer();
+
+                int srcofs = src.Stride - source.Width * 4;
+                int dstofs = dst.Stride - temp.Width * 4;
+
+                for (int y = 0; y < temp.Height; y++)
                 {
-                    dstpxl[0] = srcpxl[3];
-                    dstpxl[1] = srcpxl[3];
-                    dstpxl[2] = srcpxl[3];
+                    for (int x = 0; x < temp.Width; x++)
+                    {
+                        dstpxl[0] = srcpxl[3];
+                        dstpxl[1] = srcpxl[3];
+                        dstpxl[2] = srcpxl[3];
 
-                    srcpxl += 4; 
-                    dstpxl += 3; 
+                        srcpxl += 4;
+                        dstpxl += 3;
+                    }
+                    srcpxl += srcofs;
+                    dstpxl += dstofs;
                 }
-                srcpxl += srcofs;
-                dstpxl += dstofs;
-            }
 
-            dest.UnlockBits(dst);
-            source.UnlockBits(src);
+                temp.UnlockBits(dst);
+                source.UnlockBits(src);
+
+                dest = temp;
+            }
+            finally
+            {
+                if (temp != null)
+                {
+                    temp.Dispose();
+                    temp = null;
+                }
+            }
 
             return dest;
         }
@@ -567,77 +580,90 @@ namespace PngtoFshBatchtxt
         {
             try
             {
-                for (int c = 0; c < BatchlistView1.Items.Count; c++)
+                for (int c = 0; c < batchListView.Items.Count; c++)
                 {
-                    Bitmap temp = new Bitmap(patharray[c]);
-                    bmpitem = new BitmapItem();
+                    
+                    using(Bitmap temp = new Bitmap(patharray[c]))
+	                {
+		                bmpitem = new BitmapItem();
 
-                    bmpitem.Bitmap = temp;
-                    string alname = Path.Combine(Path.GetDirectoryName(patharray[c]), Path.GetFileNameWithoutExtension(patharray[c]) + "_a" + Path.GetExtension(patharray[c]));
-                    if (File.Exists(alname))
-                    {
-                        Bitmap alpha = new Bitmap(alname);
-                        bmpitem.Alpha = alpha;
-                    }
-                    else if (Path.GetExtension(patharray[c]).Equals(".png",StringComparison.OrdinalIgnoreCase) && temp.PixelFormat == PixelFormat.Format32bppArgb)
-                    {
-                        bmpitem.Alpha = GetAlphaFromTransparency(temp);
-                    }
-                    else
-                    {
-                        Bitmap alpha = new Bitmap(temp.Width, temp.Height, PixelFormat.Format24bppRgb);
-                        BitmapData data = alpha.LockBits(new Rectangle(0, 0, alpha.Width, alpha.Height), ImageLockMode.WriteOnly, PixelFormat.Format24bppRgb);
-
-                        int len = data.Stride * alpha.Height;
-                        byte[] pixelData = new byte[len];
-                        for (int i = 0; i < len; i++)
-		                {
-                            pixelData[i] = 255;
-		                }
-
-                        Marshal.Copy(pixelData, 0, data.Scan0, len); 
-                           
-                        alpha.UnlockBits(data);
-
-                        bmpitem.Alpha = alpha;
-                    }
-                    if (typearray[c].ToUpper() == FSHBmpType.ThirtyTwoBit.ToString().ToUpper())
-                    {
-                        bmpitem.BmpType = FSHBmpType.ThirtyTwoBit;
-                    }
-                    else if (typearray[c].ToUpper() == FSHBmpType.TwentyFourBit.ToString().ToUpper())
-                    {
-                        bmpitem.BmpType = FSHBmpType.TwentyFourBit;
-                    }
-                    else if (typearray[c].ToUpper() == FSHBmpType.DXT1.ToString().ToUpper())
-                    {
-                        bmpitem.BmpType = FSHBmpType.DXT1;
-                    }
-                    else if (typearray[c].ToUpper() == FSHBmpType.DXT3.ToString().ToUpper())
-                    {
-                        bmpitem.BmpType = FSHBmpType.DXT3;
-                    }
-                    if (temp.Width >= 128 && temp.Height >= 128)
-                    {
-                        if (c <= curimage.Capacity)
+                        bmpitem.Bitmap = temp;
+                        string alname = Path.Combine(Path.GetDirectoryName(patharray[c]), Path.GetFileNameWithoutExtension(patharray[c]) + "_a" + Path.GetExtension(patharray[c]));
+                        if (File.Exists(alname))
                         {
-                            curimage.Insert(c, new FSHImage());
-                            curimage[c].Bitmaps.Add(bmpitem);
-                            curimage[c].UpdateDirty();
-
-                            using (MemoryStream mstream = new MemoryStream())
+                            Bitmap alpha = new Bitmap(alname);
+                            bmpitem.Alpha = alpha;
+                        }
+                        else if (Path.GetExtension(patharray[c]).Equals(".png",StringComparison.OrdinalIgnoreCase) && temp.PixelFormat == PixelFormat.Format32bppArgb)
+                        {
+                            bmpitem.Alpha = GetAlphaFromTransparency(temp);
+                        }
+                        else
+                        {
+                            Bitmap alpha = new Bitmap(temp.Width, temp.Height, PixelFormat.Format24bppRgb);
+                            try
                             {
-                                SaveFsh(mstream, curimage[c]);
-                                
-                                if (IsDXTFsh(curimage[c]) && fshwritecompcb.Checked)
+                                BitmapData data = alpha.LockBits(new Rectangle(0, 0, alpha.Width, alpha.Height), ImageLockMode.WriteOnly, PixelFormat.Format24bppRgb);
+
+                                int len = data.Stride * alpha.Height;
+                                byte[] pixelData = new byte[len];
+                                for (int i = 0; i < len; i++)
                                 {
-                                    curimage[c] = new FSHImage(mstream);
+                                    pixelData[i] = 255;
+                                }
+
+                                Marshal.Copy(pixelData, 0, data.Scan0, len);
+
+                                alpha.UnlockBits(data);
+
+                                bmpitem.Alpha = alpha.Clone(new Rectangle(0,0,alpha.Width, alpha.Height), alpha.PixelFormat);
+                            }
+                            finally
+                            {
+                                if (alpha != null)
+                                {
+                                    alpha.Dispose();
+                                    alpha = null;
                                 }
                             }
                         }
-                    }
-                    temp.Dispose();
-                    temp = null;
+                        if (typearray[c].ToUpper() == FSHBmpType.ThirtyTwoBit.ToString().ToUpper())
+                        {
+                            bmpitem.BmpType = FSHBmpType.ThirtyTwoBit;
+                        }
+                        else if (typearray[c].ToUpper() == FSHBmpType.TwentyFourBit.ToString().ToUpper())
+                        {
+                            bmpitem.BmpType = FSHBmpType.TwentyFourBit;
+                        }
+                        else if (typearray[c].ToUpper() == FSHBmpType.DXT1.ToString().ToUpper())
+                        {
+                            bmpitem.BmpType = FSHBmpType.DXT1;
+                        }
+                        else if (typearray[c].ToUpper() == FSHBmpType.DXT3.ToString().ToUpper())
+                        {
+                            bmpitem.BmpType = FSHBmpType.DXT3;
+                        }
+                        if (temp.Width >= 128 && temp.Height >= 128)
+                        {
+                            if (c <= curimage.Capacity)
+                            {
+                                curimage.Insert(c, new FSHImage());
+                                curimage[c].Bitmaps.Add(bmpitem);
+                                curimage[c].UpdateDirty();
+
+                                using (MemoryStream mstream = new MemoryStream())
+                                {
+                                    SaveFsh(mstream, curimage[c]);
+                                
+                                    if (IsDXTFsh(curimage[c]) && fshwritecompcb.Checked)
+                                    {
+                                        curimage[c] = new FSHImage(mstream);
+                                    }
+                                }
+                            }
+                        } 
+	                }
+                    
                 }
                 batch_processed = true;
             }
@@ -666,7 +692,7 @@ namespace PngtoFshBatchtxt
         /// Saves a fsh using either FshWrite or FSHLib
         /// </summary>
         /// <param name="fs">The stream to save to</param>
-        /// <param name="image">The image to save</param>
+        /// <param name="temp">The temp to save</param>
         private void SaveFsh(Stream fs, FSHImage image)
         {
             try
@@ -699,7 +725,7 @@ namespace PngtoFshBatchtxt
         /// <summary>
         /// Test if the fsh only contains DXT1 or DXT3 items
         /// </summary>
-        /// <param name="image">The image to test</param>
+        /// <param name="temp">The temp to test</param>
         /// <returns>True if successful otherwise false</returns>
         private static bool IsDXTFsh(FSHImage image)
         {
@@ -737,7 +763,7 @@ namespace PngtoFshBatchtxt
                     mipbtn_Click(sender, e);
                 }
                
-                for (int c = 0; c < BatchlistView1.Items.Count; c++)
+                for (int c = 0; c < batchListView.Items.Count; c++)
                 {
                     string filepath;
 
@@ -1166,14 +1192,14 @@ namespace PngtoFshBatchtxt
                 }
             }
             
-            BatchlistView1.SelectedItems[0].SubItems[3].Text = instarray[index];
+            batchListView.SelectedItems[0].SubItems[3].Text = instarray[index];
             tgiInstancetxt.Text = instarray[index];
         }
         private void Format_radios_changed(object sender, EventArgs e)
         {
-            if (BatchlistView1.SelectedItems.Count > 0)
+            if (batchListView.SelectedItems.Count > 0)
             {
-                FormatRefresh(BatchlistView1.SelectedItems[0].Index);
+                FormatRefresh(batchListView.SelectedItems[0].Index);
             }
             else
             {
@@ -1278,11 +1304,11 @@ namespace PngtoFshBatchtxt
                         Alphasrc(item1, patharray[i]);
                         item1.SubItems.Add(grouparray[i]);
                         item1.SubItems.Add(instarray[i]);
-                        BatchlistView1.Items.Add(item1);
+                        batchListView.Items.Add(item1);
                     }
                 }
-                /*Debug.Assert(patharray.Count == BatchlistView1.Items.Count,"The number of items in the batch and patharray lists do not match"
-                    ,string.Concat("patharray count: " + patharray.Count.ToString()," does not match ", "BatchlistView count: " +BatchlistView1.Items.Count.ToString()));*/
+                /*Debug.Assert(patharray.Count == batchListView.Items.Count,"The number of items in the batch and patharray lists do not match"
+                    ,string.Concat("patharray count: " + patharray.Count.ToString()," does not match ", "BatchlistView count: " +batchListView.Items.Count.ToString()));*/
             }
             catch (FileNotFoundException fx)
             {
@@ -1296,11 +1322,11 @@ namespace PngtoFshBatchtxt
        
         private void rembtn_Click(object sender, EventArgs e)
         {
-            if (BatchlistView1.SelectedItems.Count > 0 && BatchlistView1.Items.Count > 1)
+            if (batchListView.SelectedItems.Count > 0 && batchListView.Items.Count > 1)
             {
                 try
                 {
-                    int index = BatchlistView1.SelectedItems[0].Index;
+                    int index = batchListView.SelectedItems[0].Index;
                     grouparray.RemoveAt(index);
                     instarray.RemoveAt(index);
                     typearray.RemoveAt(index);
@@ -1323,17 +1349,17 @@ namespace PngtoFshBatchtxt
                             mip8fsh.RemoveAt(index);
                         }
                     }
-                    BatchlistView1.Items.RemoveAt(index);
-                    ListViewItem selitem = BatchlistView1.Items[0];
+                    batchListView.Items.RemoveAt(index);
+                    ListViewItem selitem = batchListView.Items[0];
                     selitem.Selected = true;
-                    BatchlistView1.Refresh();
+                    batchListView.Refresh();
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show(this, ex.Message, this.Text);
                 }
             }
-            else if (BatchlistView1.SelectedItems.Count > 0 && BatchlistView1.Items.Count == 1)
+            else if (batchListView.SelectedItems.Count > 0 && batchListView.Items.Count == 1)
             {
                 ClearandReset();
             }
@@ -1469,7 +1495,7 @@ namespace PngtoFshBatchtxt
                         Alphasrc(item1, patharray[i]);
                         item1.SubItems.Add(grouparray[i]);
                         item1.SubItems.Add(instarray[i]);
-                        BatchlistView1.Items.Insert(i, item1);
+                        batchListView.Items.Insert(i, item1);
                     }
                 }
             }
@@ -1577,15 +1603,15 @@ namespace PngtoFshBatchtxt
 
         private void tgiGrouptxt_TextChanged(object sender, EventArgs e)
         {                
-            if (BatchlistView1.SelectedItems.Count > 0)
+            if (batchListView.SelectedItems.Count > 0)
             {
-                int index = BatchlistView1.SelectedItems[0].Index;
+                int index = batchListView.SelectedItems[0].Index;
                 if (tgiGrouptxt.Text.Length > 0 && tgiGrouptxt.Text.Length == 8)
                 {
                     if (!tgiGrouptxt.Text.Equals(grouparray[index], StringComparison.OrdinalIgnoreCase))
                     {
                         grouparray[index] = tgiGrouptxt.Text;
-                        BatchlistView1.SelectedItems[0].SubItems[2].Text = grouparray[index];
+                        batchListView.SelectedItems[0].SubItems[2].Text = grouparray[index];
                     }
                 }
             }
@@ -1593,9 +1619,9 @@ namespace PngtoFshBatchtxt
 
         private void tgiInstancetxt_TextChanged(object sender, EventArgs e)
         {
-            if (BatchlistView1.SelectedItems.Count > 0)
+            if (batchListView.SelectedItems.Count > 0)
             {
-                int index = BatchlistView1.SelectedItems[0].Index;
+                int index = batchListView.SelectedItems[0].Index;
                 if (tgiInstancetxt.Text.Length > 0 && tgiInstancetxt.Text.Length == 8)
                 {
                     if (!tgiInstancetxt.Text.Equals(instarray[index], StringComparison.OrdinalIgnoreCase))
@@ -1609,9 +1635,9 @@ namespace PngtoFshBatchtxt
 
         private void FshtypeBox_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            if (BatchlistView1.SelectedItems.Count > 0)
+            if (batchListView.SelectedItems.Count > 0)
             {
-                int index = BatchlistView1.SelectedItems[0].Index;
+                int index = batchListView.SelectedItems[0].Index;
                 string seltype = null;
                 using (Bitmap b = new Bitmap(patharray[index]))
                 {
@@ -1638,16 +1664,18 @@ namespace PngtoFshBatchtxt
             }
         }
 
-        private void BatchlistView1_DragEnter(object sender, DragEventArgs e)
+        private void batchListView1_DragEnter(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop, false) == true)
             {
                 e.Effect = DragDropEffects.Copy;
             }
         }
+        
         private static string[] GetFilesfromDirectory(string[] filenames)
         {
             ArrayList flist = new ArrayList();
+
             for (int f = 0; f < filenames.Length; f++)
             {
                 if ((File.GetAttributes(filenames[f]) & FileAttributes.Directory) == FileAttributes.Directory)
@@ -1698,10 +1726,10 @@ namespace PngtoFshBatchtxt
             return (string[])flist.ToArray(typeof(string));
         }
 
-        private void BatchlistView1_DragDrop(object sender, DragEventArgs e)
+        private void batchListView1_DragDrop(object sender, DragEventArgs e)
         {
             string[] files = GetFilesfromDirectory((string[])e.Data.GetData(DataFormats.FileDrop));
-            if (BatchlistView1.Items.Count > 0)
+            if (batchListView.Items.Count > 0)
             {
                 ClearandReset();
             }
@@ -1748,7 +1776,7 @@ namespace PngtoFshBatchtxt
         }
         private void ClearandReset()
         {
-            BatchlistView1.Items.Clear();
+            batchListView.Items.Clear();
             if (patharray != null && instarray != null && grouparray != null && typearray != null)
             {
                 patharray.Clear();
@@ -1909,9 +1937,9 @@ namespace PngtoFshBatchtxt
         private void FshtypeBox_DrawItem(object sender, DrawItemEventArgs e)
         {
             ComboBox cb = sender as ComboBox;
-            if (BatchlistView1.SelectedItems.Count > 0)
+            if (batchListView.SelectedItems.Count > 0)
             {
-                if (!Checkhdimgsize(BatchlistView1.SelectedItems[0].Index))
+                if (!Checkhdimgsize(batchListView.SelectedItems[0].Index))
                 {
                     if (e.Index == 0 || e.Index == 1)
                     {
@@ -1951,9 +1979,9 @@ namespace PngtoFshBatchtxt
 
         private void FshtypeBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (BatchlistView1.SelectedItems.Count > 0)
+            if (batchListView.SelectedItems.Count > 0)
             { 
-                if (!Checkhdimgsize(BatchlistView1.SelectedItems[0].Index))
+                if (!Checkhdimgsize(batchListView.SelectedItems[0].Index))
                 {
                     // if it is not 256 disable hd fsh
                     if (FshtypeBox.SelectedIndex == 0 || FshtypeBox.SelectedIndex == 1)

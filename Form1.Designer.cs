@@ -29,13 +29,13 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.BatchlistView1 = new System.Windows.Forms.ListView();
-            this.BitmapHeader1 = new System.Windows.Forms.ColumnHeader();
+            this.batchListView = new System.Windows.Forms.ListView();
+            this.bitmapHeader = new System.Windows.Forms.ColumnHeader();
             this.alphaHeader = new System.Windows.Forms.ColumnHeader();
-            this.GroupHeader1 = new System.Windows.Forms.ColumnHeader();
-            this.InstanceHeader = new System.Windows.Forms.ColumnHeader();
+            this.groupHeader = new System.Windows.Forms.ColumnHeader();
+            this.instanceHeader = new System.Windows.Forms.ColumnHeader();
             this.compDatcb = new System.Windows.Forms.CheckBox();
-            this.DatfuncBox1 = new System.Windows.Forms.GroupBox();
+            this.datFuncBox = new System.Windows.Forms.GroupBox();
             this.Datnametxt = new System.Windows.Forms.Label();
             this.datlbl = new System.Windows.Forms.Label();
             this.newDatbtn = new System.Windows.Forms.Button();
@@ -62,56 +62,55 @@
             this.clearlistbtn = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.fshwritecompcb = new System.Windows.Forms.CheckBox();
-            this.DatfuncBox1.SuspendLayout();
+            this.datFuncBox.SuspendLayout();
             this.InstendBox1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // BatchlistView1
+            // batchListView
             // 
-            this.BatchlistView1.AllowDrop = true;
-            this.BatchlistView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            this.batchListView.AllowDrop = true;
+            this.batchListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.BatchlistView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.BitmapHeader1,
+            this.batchListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.bitmapHeader,
             this.alphaHeader,
-            this.GroupHeader1,
-            this.InstanceHeader});
-            this.BatchlistView1.FullRowSelect = true;
-            this.BatchlistView1.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-            this.BatchlistView1.HideSelection = false;
-            this.BatchlistView1.Location = new System.Drawing.Point(12, 12);
-            this.BatchlistView1.MultiSelect = false;
-            this.BatchlistView1.Name = "BatchlistView1";
-            this.BatchlistView1.Size = new System.Drawing.Size(467, 128);
-            this.BatchlistView1.TabIndex = 0;
-            this.toolTip1.SetToolTip(this.BatchlistView1, "The list of images to convert.\r\nDragging files or folders onto the list will crea" +
-                    "te a new list");
-            this.BatchlistView1.UseCompatibleStateImageBehavior = false;
-            this.BatchlistView1.View = System.Windows.Forms.View.Details;
-            this.BatchlistView1.SelectedIndexChanged += new System.EventHandler(this.BatchlistView1_SelectedIndexChanged);
-            this.BatchlistView1.DragDrop += new System.Windows.Forms.DragEventHandler(this.BatchlistView1_DragDrop);
-            this.BatchlistView1.DragEnter += new System.Windows.Forms.DragEventHandler(this.BatchlistView1_DragEnter);
+            this.groupHeader,
+            this.instanceHeader});
+            this.batchListView.FullRowSelect = true;
+            this.batchListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+            this.batchListView.HideSelection = false;
+            this.batchListView.Location = new System.Drawing.Point(12, 12);
+            this.batchListView.MultiSelect = false;
+            this.batchListView.Name = "batchListView";
+            this.batchListView.Size = new System.Drawing.Size(467, 128);
+            this.batchListView.TabIndex = 0;
+            this.toolTip1.SetToolTip(this.batchListView, Properties.Resources.batchListView_Tooltip);
+            this.batchListView.UseCompatibleStateImageBehavior = false;
+            this.batchListView.View = System.Windows.Forms.View.Details;
+            this.batchListView.SelectedIndexChanged += new System.EventHandler(this.batchListView1_SelectedIndexChanged);
+            this.batchListView.DragDrop += new System.Windows.Forms.DragEventHandler(this.batchListView1_DragDrop);
+            this.batchListView.DragEnter += new System.Windows.Forms.DragEventHandler(this.batchListView1_DragEnter);
             // 
-            // BitmapHeader1
+            // bitmapHeader
             // 
-            this.BitmapHeader1.Text = "Bitmap";
-            this.BitmapHeader1.Width = 96;
+            this.bitmapHeader.Text = "Bitmap";
+            this.bitmapHeader.Width = 96;
             // 
             // alphaHeader
             // 
             this.alphaHeader.Text = "Alpha";
             this.alphaHeader.Width = 115;
             // 
-            // GroupHeader1
+            // groupHeader
             // 
-            this.GroupHeader1.Text = "Group";
-            this.GroupHeader1.Width = 96;
+            this.groupHeader.Text = "Group";
+            this.groupHeader.Width = 96;
             // 
-            // InstanceHeader
+            // instanceHeader
             // 
-            this.InstanceHeader.Text = "Instance";
-            this.InstanceHeader.Width = 96;
+            this.instanceHeader.Text = "Instance";
+            this.instanceHeader.Width = 96;
             // 
             // compDatcb
             // 
@@ -123,24 +122,24 @@
             this.compDatcb.Name = "compDatcb";
             this.compDatcb.Size = new System.Drawing.Size(93, 17);
             this.compDatcb.TabIndex = 3;
-            this.compDatcb.Text = "Compress dat ";
-            this.toolTip1.SetToolTip(this.compDatcb, "Compress the items in the saved dat");
+            this.compDatcb.Text = Properties.Resources.compDatcb_Text;
+            this.toolTip1.SetToolTip(this.compDatcb, Properties.Resources.compDatcb_Tooltip);
             this.compDatcb.UseVisualStyleBackColor = true;
             this.compDatcb.CheckedChanged += new System.EventHandler(this.compDatcb_CheckedChanged);
             // 
-            // DatfuncBox1
+            // datFuncBox
             // 
-            this.DatfuncBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.DatfuncBox1.Controls.Add(this.Datnametxt);
-            this.DatfuncBox1.Controls.Add(this.datlbl);
-            this.DatfuncBox1.Controls.Add(this.newDatbtn);
-            this.DatfuncBox1.Controls.Add(this.saveDatbtn);
-            this.DatfuncBox1.Location = new System.Drawing.Point(312, 146);
-            this.DatfuncBox1.Name = "DatfuncBox1";
-            this.DatfuncBox1.Size = new System.Drawing.Size(167, 64);
-            this.DatfuncBox1.TabIndex = 12;
-            this.DatfuncBox1.TabStop = false;
-            this.DatfuncBox1.Text = "Dat Functions";
+            this.datFuncBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.datFuncBox.Controls.Add(this.Datnametxt);
+            this.datFuncBox.Controls.Add(this.datlbl);
+            this.datFuncBox.Controls.Add(this.newDatbtn);
+            this.datFuncBox.Controls.Add(this.saveDatbtn);
+            this.datFuncBox.Location = new System.Drawing.Point(312, 146);
+            this.datFuncBox.Name = "datFuncBox";
+            this.datFuncBox.Size = new System.Drawing.Size(167, 64);
+            this.datFuncBox.TabIndex = 12;
+            this.datFuncBox.TabStop = false;
+            this.datFuncBox.Text = "Dat Functions";
             // 
             // Datnametxt
             // 
@@ -445,17 +444,17 @@
             this.Controls.Add(this.outfolderbtn);
             this.Controls.Add(this.processbatchbtn);
             this.Controls.Add(this.compDatcb);
-            this.Controls.Add(this.DatfuncBox1);
+            this.Controls.Add(this.datFuncBox);
             this.Controls.Add(this.mipbtn);
-            this.Controls.Add(this.BatchlistView1);
+            this.Controls.Add(this.batchListView);
             this.Controls.Add(this.autoprocMipscb);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MinimumSize = new System.Drawing.Size(499, 342);
             this.Name = "Form1";
             this.Text = "Png to Fsh Batch";
             this.Load += new System.EventHandler(this.Form1_Load);
-            this.DatfuncBox1.ResumeLayout(false);
-            this.DatfuncBox1.PerformLayout();
+            this.datFuncBox.ResumeLayout(false);
+            this.datFuncBox.PerformLayout();
             this.InstendBox1.ResumeLayout(false);
             this.InstendBox1.PerformLayout();
             this.ResumeLayout(false);
@@ -465,10 +464,10 @@
 
         #endregion
 
-        private System.Windows.Forms.ColumnHeader BitmapHeader1;
+        private System.Windows.Forms.ColumnHeader bitmapHeader;
         private System.Windows.Forms.ColumnHeader alphaHeader;
         private System.Windows.Forms.CheckBox compDatcb;
-        private System.Windows.Forms.GroupBox DatfuncBox1;
+        private System.Windows.Forms.GroupBox datFuncBox;
         private System.Windows.Forms.Label Datnametxt;
         private System.Windows.Forms.Label datlbl;
         private System.Windows.Forms.Button newDatbtn;
@@ -477,8 +476,8 @@
         internal System.Windows.Forms.Button processbatchbtn;
         private System.Windows.Forms.SaveFileDialog saveDatDialog1;
         internal System.Windows.Forms.CheckBox autoprocMipscb;
-        private System.Windows.Forms.ColumnHeader GroupHeader1;
-        private System.Windows.Forms.ColumnHeader InstanceHeader;
+        private System.Windows.Forms.ColumnHeader groupHeader;
+        private System.Windows.Forms.ColumnHeader instanceHeader;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.Button outfolderbtn;
         private System.Windows.Forms.FolderBrowserDialog OutputBrowserDialog1;
@@ -495,7 +494,7 @@
         private System.Windows.Forms.TextBox tgiInstancetxt;
         internal System.Windows.Forms.TextBox tgiGrouptxt;
         private System.Windows.Forms.Button clearlistbtn;
-        internal System.Windows.Forms.ListView BatchlistView1;
+        internal System.Windows.Forms.ListView batchListView;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.CheckBox fshwritecompcb;
     }
