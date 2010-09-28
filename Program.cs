@@ -21,7 +21,9 @@ namespace PngtoFshBatchtxt
             bool cmdlineonly = false;
             if (args.Length > 0)
             {
-                using (Form1 form1 = new Form1())
+                Form1 runform = null;
+                Form1 form1 = new Form1();
+                try
                 {
                     form1.autoprocMipscb.Checked = false;
                     form1.compress_datmips = true;
@@ -229,14 +231,14 @@ namespace PngtoFshBatchtxt
                                 }
                                 if (groupid != null)
                                 {
-                                    if (form1.ValidateHexString(groupid))
+                                    if (Form1.ValidateHexString(groupid))
                                     {
                                         if (fcnt > 0)
                                         {
-                                            for (int c = 0; c < form1.BatchlistView1.Items.Count; c++)
+                                            for (int c = 0; c < form1.batchListView.Items.Count; c++)
                                             {
                                                 form1.grouparray.Insert(c, groupid);
-                                                form1.BatchlistView1.Items[c].SubItems[2].Text = form1.grouparray[c];
+                                                form1.batchListView.Items[c].SubItems[2].Text = form1.grouparray[c];
                                             }
                                         }
                                         else
@@ -250,10 +252,10 @@ namespace PngtoFshBatchtxt
                                         if (fcnt > 0)
                                         {
                                             string errgrp = "1ABE787D";
-                                            for (int c = 0; c < form1.BatchlistView1.Items.Count; c++)
+                                            for (int c = 0; c < form1.batchListView.Items.Count; c++)
                                             {
                                                 form1.grouparray.Insert(c, errgrp);
-                                                form1.BatchlistView1.Items[c].SubItems[2].Text = form1.grouparray[c];
+                                                form1.batchListView.Items[c].SubItems[2].Text = form1.grouparray[c];
                                             }
                                         }
 
@@ -286,20 +288,30 @@ namespace PngtoFshBatchtxt
                             form1.BuildPngList();
                             pnglistbuilt = true;
                         }
-
+                        
                     }
-                    if (!cmdlineonly)
-                    {
-                        Application.Run(form1);
-                    }
+                    runform = form1; 
+                    
+                }
+                finally
+                {
+                    form1.Dispose();
+                    form1 = null;
+                }
+                if (!cmdlineonly)
+                {
+                    Application.Run(form1);
+                }
+                else
+                {
+                    runform.Dispose();
+                    runform = null;
                 }
             }
             else
             {
                 Application.Run(new Form1());
             }
-
-            
         }
         static void showhelp()
         {
