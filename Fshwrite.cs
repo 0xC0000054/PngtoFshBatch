@@ -123,49 +123,64 @@ namespace PngtoFshBatchtxt
         private static Bitmap BlendDXTBmp(Bitmap colorbmp, Bitmap bmpalpha)
         {
             Bitmap image = null;
-            if (colorbmp != null && bmpalpha != null)
+            Bitmap temp = null;
+            try
             {
-                image = new Bitmap(colorbmp.Width, colorbmp.Height, PixelFormat.Format32bppArgb);
-            }
-            if (colorbmp.Size != bmpalpha.Size)
-            {
-                throw new ArgumentException("The bitmap and alpha must be equal size");
-            }
-            BitmapData colordata = colorbmp.LockBits(new Rectangle(0, 0, colorbmp.Width, colorbmp.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-            BitmapData alphadata = bmpalpha.LockBits(new Rectangle(0, 0, bmpalpha.Width, bmpalpha.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-            BitmapData bdata = image.LockBits(new Rectangle(0, 0, image.Width, image.Height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
-            IntPtr scan0 = bdata.Scan0;
-            unsafe
-            {
-                byte* clrdata = (byte*)(void*)colordata.Scan0;
-                byte* aldata = (byte*)(void*)alphadata.Scan0;
-                byte* destdata = (byte*)(void*)scan0;
-                int offset = bdata.Stride - image.Width * 4;
-                int clroffset = colordata.Stride - image.Width * 4;
-                int aloffset = alphadata.Stride - image.Width * 4;
-                for (int y = 0; y < image.Height; y++)
+                if (colorbmp != null && bmpalpha != null)
                 {
-                    for (int x = 0; x < image.Width; x++)
-                    {
-                        destdata[3] = aldata[0];
-                        destdata[0] = clrdata[0];
-                        destdata[1] = clrdata[1];
-                        destdata[2] = clrdata[2];
-
-
-                        destdata += 4;
-                        clrdata += 4;
-                        aldata += 4;
-                    }
-                    destdata += offset;
-                    clrdata += clroffset;
-                    aldata += aloffset;
+                    temp = new Bitmap(colorbmp.Width, colorbmp.Height, PixelFormat.Format32bppArgb);
                 }
+                if (colorbmp.Size != bmpalpha.Size)
+                {
+                    throw new ArgumentException("The bitmap and alpha must be equal size");
+                }
+                Rectangle tempRect = new Rectangle(0, 0, temp.Width, temp.Height);
+                BitmapData colordata = colorbmp.LockBits(new Rectangle(0, 0, colorbmp.Width, colorbmp.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+                BitmapData alphadata = bmpalpha.LockBits(new Rectangle(0, 0, bmpalpha.Width, bmpalpha.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+                BitmapData bdata = temp.LockBits(tempRect, ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
+                IntPtr scan0 = bdata.Scan0;
+                unsafe
+                {
+                    byte* clrdata = (byte*)(void*)colordata.Scan0;
+                    byte* aldata = (byte*)(void*)alphadata.Scan0;
+                    byte* destdata = (byte*)(void*)scan0;
+                    int offset = bdata.Stride - temp.Width * 4;
+                    int clroffset = colordata.Stride - temp.Width * 4;
+                    int aloffset = alphadata.Stride - temp.Width * 4;
+                    for (int y = 0; y < temp.Height; y++)
+                    {
+                        for (int x = 0; x < temp.Width; x++)
+                        {
+                            destdata[3] = aldata[0];
+                            destdata[0] = clrdata[0];
+                            destdata[1] = clrdata[1];
+                            destdata[2] = clrdata[2];
 
+
+                            destdata += 4;
+                            clrdata += 4;
+                            aldata += 4;
+                        }
+                        destdata += offset;
+                        clrdata += clroffset;
+                        aldata += aloffset;
+                    }
+
+                }
+                colorbmp.UnlockBits(colordata);
+                bmpalpha.UnlockBits(alphadata);
+                temp.UnlockBits(bdata);
+
+                image = temp.Clone(tempRect, temp.PixelFormat);
             }
-            colorbmp.UnlockBits(colordata);
-            bmpalpha.UnlockBits(alphadata);
-            image.UnlockBits(bdata);
+            finally
+            {
+                if (temp != null)
+                {
+                    temp.Dispose();
+                    temp = null;
+                }
+            }
             return image;
         }
 
