@@ -30,10 +30,10 @@
         {
             this.components = new System.ComponentModel.Container();
             this.batchListView = new System.Windows.Forms.ListView();
-            this.bitmapHeader = new System.Windows.Forms.ColumnHeader();
-            this.alphaHeader = new System.Windows.Forms.ColumnHeader();
-            this.groupHeader = new System.Windows.Forms.ColumnHeader();
-            this.instanceHeader = new System.Windows.Forms.ColumnHeader();
+            this.bitmapHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.alphaHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.groupHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.instanceHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.compDatcb = new System.Windows.Forms.CheckBox();
             this.datFuncBox = new System.Windows.Forms.GroupBox();
             this.Datnametxt = new System.Windows.Forms.Label();
@@ -85,7 +85,8 @@
             this.batchListView.Name = "batchListView";
             this.batchListView.Size = new System.Drawing.Size(467, 128);
             this.batchListView.TabIndex = 0;
-            this.toolTip1.SetToolTip(this.batchListView, "The list of images to convert.\r\nDragging files or folders onto the list will create a new list");
+            this.toolTip1.SetToolTip(this.batchListView, "The list of images to convert.\r\nDragging files or folders onto the list will crea" +
+                    "te a new list");
             this.batchListView.UseCompatibleStateImageBehavior = false;
             this.batchListView.View = System.Windows.Forms.View.Details;
             this.batchListView.SelectedIndexChanged += new System.EventHandler(this.batchListView1_SelectedIndexChanged);
@@ -120,7 +121,7 @@
             this.compDatcb.CheckState = System.Windows.Forms.CheckState.Checked;
             this.compDatcb.Location = new System.Drawing.Point(12, 164);
             this.compDatcb.Name = "compDatcb";
-            this.compDatcb.Size = new System.Drawing.Size(93, 17);
+            this.compDatcb.Size = new System.Drawing.Size(90, 17);
             this.compDatcb.TabIndex = 3;
             this.compDatcb.Text = "Compress dat";
             this.toolTip1.SetToolTip(this.compDatcb, "Change the end diget of the instance id");
@@ -347,8 +348,8 @@
             this.FshtypeBox.TabIndex = 6;
             this.toolTip1.SetToolTip(this.FshtypeBox, "Change the fsh type of the selected item");
             this.FshtypeBox.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.FshtypeBox_DrawItem);
-            this.FshtypeBox.SelectionChangeCommitted += new System.EventHandler(this.FshtypeBox_SelectionChangeCommitted);
             this.FshtypeBox.SelectedIndexChanged += new System.EventHandler(this.FshtypeBox_SelectedIndexChanged);
+            this.FshtypeBox.SelectionChangeCommitted += new System.EventHandler(this.FshtypeBox_SelectionChangeCommitted);
             // 
             // tgiInstlbl
             // 

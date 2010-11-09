@@ -449,7 +449,7 @@ namespace PngtoFshBatchtxt
                 {
                     this.Cursor = Cursors.WaitCursor;
                     Application.DoEvents();
-                    this.batchProcessThread = new Thread(new ThreadStart(ProcessBatch)) { IsBackground = true };
+                    this.batchProcessThread = new Thread(new ThreadStart(ProcessBatch)) { Priority = ThreadPriority.AboveNormal, IsBackground = true };
                     this.batchProcessThread.Start();
                     while (batchProcessThread.IsAlive)
                     {
@@ -749,7 +749,7 @@ namespace PngtoFshBatchtxt
                 {
                     this.Cursor = Cursors.WaitCursor;
                     Application.DoEvents();
-                    this.batchProcessThread = new Thread(new ThreadStart(ProcessBatch)) { IsBackground = true };
+                    this.batchProcessThread = new Thread(new ThreadStart(ProcessBatch)) {Priority = ThreadPriority.AboveNormal, IsBackground = true };
                     this.batchProcessThread.Start();
                     while (batchProcessThread.IsAlive)
                     {
@@ -1082,7 +1082,7 @@ namespace PngtoFshBatchtxt
             }
             return false;
         }
-        internal int Countpngs(string[] filenames)
+        internal static int Countpngs(string[] filenames)
         {                
             int fcnt = 0;
             try
@@ -1141,7 +1141,7 @@ namespace PngtoFshBatchtxt
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, this.Text);
+                MessageBox.Show(ex.Message, Resources.ProgramName);
                 return 0;
             }
 
