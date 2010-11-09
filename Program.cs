@@ -5,6 +5,7 @@ using System.IO;
 using FSHLib;
 using System.Collections;
 using FshDatIO;
+using PngtoFshBatchtxt.Properties;
 
 namespace PngtoFshBatchtxt
 {
@@ -205,7 +206,7 @@ namespace PngtoFshBatchtxt
                                     }
                                     catch (Exception ex)
                                     {
-                                        MessageBox.Show(ex.Message, form1.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                        MessageBox.Show(ex.Message, Resources.ProgramName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                                     }
                                 }
 
@@ -317,7 +318,7 @@ namespace PngtoFshBatchtxt
         }
         static void showhelp()
         {
-            MessageBox.Show("Command line arguments:\n\n PngtoFshBatch images [/outdir:<directory>] [/mips] [/group: <groupid>] [/dat:<filename>] [/proc] [/?] \n\n images a list or folder of images to process seperated by spaces \n /? show this help\n /proc process images and save\n /mips generate mipmaps for the zoom levels\n /dat:<filename> process images and save them as a dat\n /outdir:<directory> output the fsh files from /proc into directory.\n /group: <groupid> Assign the <groupid> to the files \n\n Paths containing spaces must be encased in quotes", "Png to Fsh Batch");
+            MessageBox.Show("Command line arguments:\n\n PngtoFshBatch images [/outdir:<directory>] [/mips] [/group: <groupid>] [/dat:<filename>] [/proc] [/?] \n\n images a list or folder of images to process seperated by spaces \n /? show this help\n /proc process images and save\n /mips generate mipmaps for the zoom levels\n /dat:<filename> process images and save them as a dat\n /outdir:<directory> output the fsh files from /proc into directory.\n /group: <groupid> Assign the <groupid> to the files \n\n Paths containing spaces must be encased in quotes", Resources.ProgramName);
         }
     }
 }
