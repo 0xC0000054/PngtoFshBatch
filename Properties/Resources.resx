@@ -126,4 +126,7 @@
   <data name="FshWriteSSERequiredError" xml:space="preserve">
     <value>A processor that supports SSE is required to for FshWrite save DXT1 and DXT3 fsh images</value>
   </data>
+  <data name="ProgramName" xml:space="preserve">
+    <value>Png to Fsh Batch</value>
+  </data>
 </root>

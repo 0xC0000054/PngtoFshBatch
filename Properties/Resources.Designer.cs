@@ -86,5 +86,14 @@ namespace PngtoFshBatchtxt.Properties {
                 return ResourceManager.GetString("FshWriteSSERequiredError", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Png to Fsh Batch.
+        /// </summary>
+        internal static string ProgramName {
+            get {
+                return ResourceManager.GetString("ProgramName", resourceCulture);
+            }
+        }
     }
 }
