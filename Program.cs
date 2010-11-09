@@ -32,7 +32,7 @@ namespace PngtoFshBatchtxt
                     form1.rangepath = Path.Combine(loc, @"instRange.txt");
                     cmdlineonly = false;
 
-                    int fcnt = form1.Countpngs(args);
+                    int fcnt = Form1.Countpngs(args);
                     bool pnglistbuilt = false;
                     int imgarg = -1 + fcnt;
                     int imgcnt = -1;
@@ -176,7 +176,7 @@ namespace PngtoFshBatchtxt
                                                 {
                                                     form1.dat = new DatFile();
                                                 }
-                                                form1.dat.Filename = dat[1].Trim();
+                                                
                                                 if (form1.autoprocMipscb.Checked)
                                                 {
                                                     if (form1.mipsbtn_clicked == false)
@@ -197,7 +197,7 @@ namespace PngtoFshBatchtxt
                                                     }
                                                     form1.RebuildDat(form1.dat);
                                                 }
-                                                form1.dat.Save();
+                                                form1.dat.Save(dat[1].Trim());
                                                 form1.dat.Close();
                                                 form1.dat = null;
                                             }
@@ -283,6 +283,7 @@ namespace PngtoFshBatchtxt
                             cmdlineonly = true;
                             Program.showhelp();
                         }
+
                         if (form1.patharray != null && form1.patharray.Count > 0 && form1.patharray.Count == fcnt && !cmdlineonly && !pnglistbuilt)
                         {
                             form1.BuildPngList();
@@ -298,6 +299,7 @@ namespace PngtoFshBatchtxt
                     form1.Dispose();
                     form1 = null;
                 }
+
                 if (!cmdlineonly)
                 {
                     Application.Run(form1);
