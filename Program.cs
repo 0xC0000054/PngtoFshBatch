@@ -43,12 +43,7 @@ namespace PngtoFshBatchtxt
                         form1.instarray = new List<string>(fcnt);
                         form1.grouparray = new List<string>(fcnt);
                         form1.typearray = new List<string>(fcnt);
-                        form1.curimage = new List<FSHImage>(fcnt);
-                        form1.mip64fsh = new List<FSHImage>(fcnt);
-                        form1.mip32fsh = new List<FSHImage>(fcnt);
-                        form1.mip16fsh = new List<FSHImage>(fcnt);
-                        form1.mip8fsh = new List<FSHImage>(fcnt);
-
+                        form1.batchFshList = new List<BatchFshContainer>(fcnt);
                     }
                     for (int a = 0; a < args.Length; a++)
                     {
