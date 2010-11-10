@@ -694,7 +694,7 @@ namespace PngtoFshBatchtxt
         }
         internal static string Getfilepath(string filepath, string addtopath, string outdir)
         {
-            if (outdir != null)
+            if (!string.IsNullOrEmpty(outdir))
             {
                 return Path.Combine(outdir, Path.GetFileNameWithoutExtension(filepath) + addtopath + ".fsh");
             }
@@ -937,16 +937,8 @@ namespace PngtoFshBatchtxt
             {
                 settings.PutSetting("AutoprocessMips", autoprocMipscb.Checked.ToString());
             }
-            if (autoprocMipscb.Checked)
-            {
-                mipbtn.Enabled = false;
-            }
-            else
-            {
-                mipbtn.Enabled = true;
-            }
         }
-        internal string outfolder = null;
+        internal string outfolder = string.Empty;
         private void outfolderbtn_Click(object sender, EventArgs e)
         {
             if (OutputBrowserDialog1.ShowDialog() == DialogResult.OK)
