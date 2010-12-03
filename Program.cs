@@ -22,10 +22,9 @@ namespace PngtoFshBatchtxt
             bool cmdlineonly = false;
             if (args.Length > 0)
             {
-                Form1 runform = null;
-                Form1 form1 = new Form1();
-                try
+                using (Form1 form1 = new Form1())
                 {
+
                     form1.autoprocMipscb.Checked = false;
                     form1.compress_datmips = true;
                     string loc = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
@@ -103,7 +102,7 @@ namespace PngtoFshBatchtxt
                                 }
                             }
                         }
-                        else if ((args[a].StartsWith("/proc", StringComparison.OrdinalIgnoreCase)|| args[a].StartsWith("/dat:", StringComparison.OrdinalIgnoreCase) || args[a].StartsWith("/outdir:", StringComparison.OrdinalIgnoreCase) || args[a].StartsWith("/mips", StringComparison.OrdinalIgnoreCase) || args[a].StartsWith("/group:", StringComparison.OrdinalIgnoreCase)))
+                        else if ((args[a].StartsWith("/proc", StringComparison.OrdinalIgnoreCase) || args[a].StartsWith("/dat:", StringComparison.OrdinalIgnoreCase) || args[a].StartsWith("/outdir:", StringComparison.OrdinalIgnoreCase) || args[a].StartsWith("/mips", StringComparison.OrdinalIgnoreCase) || args[a].StartsWith("/group:", StringComparison.OrdinalIgnoreCase)))
                         {
                             char[] splitchar = new char[] { ':' };
                             if (args[a].StartsWith("/dat:", StringComparison.OrdinalIgnoreCase) || args[a].StartsWith("/o", StringComparison.OrdinalIgnoreCase))
@@ -172,7 +171,7 @@ namespace PngtoFshBatchtxt
                                                 {
                                                     form1.dat = new DatFile();
                                                 }
-                                                
+
                                                 if (form1.autoprocMipscb.Checked)
                                                 {
                                                     if (form1.mipsbtn_clicked == false)
@@ -244,7 +243,7 @@ namespace PngtoFshBatchtxt
                                     }
                                     else
                                     {
-                                        
+
                                         if (fcnt > 0)
                                         {
                                             string errgrp = "1ABE787D";
@@ -285,25 +284,14 @@ namespace PngtoFshBatchtxt
                             form1.BuildPngList();
                             pnglistbuilt = true;
                         }
-                        
-                    }
-                    runform = form1; 
-                    
-                }
-                finally
-                {
-                    form1.Dispose();
-                    form1 = null;
-                }
 
-                if (!cmdlineonly)
-                {
-                    Application.Run(form1);
-                }
-                else
-                {
-                    runform.Dispose();
-                    runform = null;
+                    }
+
+
+                    if (!cmdlineonly)
+                    {
+                        Application.Run(form1);
+                    }
                 }
             }
             else
