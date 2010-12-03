@@ -1131,7 +1131,7 @@ namespace PngtoFshBatchtxt
                     else
                     {
                         FileInfo fi = new FileInfo(filenames[f]);
-                        if (fi.Extension.Equals(".png") || fi.Extension.Equals(".bmp"))
+                        if (fi.Extension.Equals(".png", StringComparison.OrdinalIgnoreCase) || fi.Extension.Equals(".bmp", StringComparison.OrdinalIgnoreCase))
                         {
 
                             if (Path.GetFileName(filenames[f]).Contains("_a"))
