@@ -1687,7 +1687,7 @@ namespace PngtoFshBatchtxt
                     for (int i = 0; i < fa.Count; i++)
                     {
                         FileInfo fi = (FileInfo)fa[i];
-                        if (fi.Extension.Equals(".png") || fi.Extension.Equals(".bmp"))
+                        if (fi.Extension.Equals(".png", StringComparison.OrdinalIgnoreCase) || fi.Extension.Equals(".bmp", StringComparison.OrdinalIgnoreCase))
                         {
                             if (Path.GetFileName(fi.FullName).Contains("_a"))
                             {
@@ -1703,7 +1703,7 @@ namespace PngtoFshBatchtxt
                 else
                 {
                         FileInfo fi = new FileInfo(filenames[f]);
-                        if (fi.Extension.Equals(".png") || fi.Extension.Equals(".bmp"))
+                        if (fi.Extension.Equals(".png", StringComparison.OrdinalIgnoreCase) || fi.Extension.Equals(".bmp", StringComparison.OrdinalIgnoreCase))
                         {
 
                             if (Path.GetFileName(filenames[f]).Contains("_a"))
@@ -1741,7 +1741,7 @@ namespace PngtoFshBatchtxt
                 if (fi.Exists)
                 {
 
-                    if (fi.Extension.Equals(".png") || fi.Extension.Equals(".bmp"))
+                    if (fi.Extension.Equals(".png", StringComparison.OrdinalIgnoreCase) || fi.Extension.Equals(".bmp", StringComparison.OrdinalIgnoreCase))
                     {
                         if (Path.GetFileName(files[f]).Contains("_a"))
                         {
@@ -1858,7 +1858,7 @@ namespace PngtoFshBatchtxt
                     if (fi.Exists)
                     {
 
-                        if (fi.Extension.Equals(".png") || fi.Extension.Equals(".bmp"))
+                        if (fi.Extension.Equals(".png", StringComparison.OrdinalIgnoreCase) || fi.Extension.Equals(".bmp", StringComparison.OrdinalIgnoreCase))
                         {
                             if (Path.GetFileName(files[f]).Contains("_a"))
                             {
