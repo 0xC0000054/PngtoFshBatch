@@ -88,7 +88,7 @@ namespace PngtoFshBatchtxt
                             }
 
                         }
-                        else if (fi.Extension.Equals(".png") || fi.Extension.Equals(".bmp"))
+                        else if (fi.Extension.Equals(".png", StringComparison.OrdinalIgnoreCase) || fi.Extension.Equals(".bmp", StringComparison.OrdinalIgnoreCase))
                         {
                             if (fi.Exists)
                             {
