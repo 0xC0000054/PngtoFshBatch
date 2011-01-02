@@ -866,7 +866,7 @@ namespace PngtoFshBatchtxt
         private const uint SSE = 2;
 
         [return: MarshalAs(UnmanagedType.Bool)]
-        [DllImport("kernel32.dll")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1060:MovePInvokesToNativeMethodsClass"), DllImport("kernel32.dll")]
         private static extern bool IsProcessorFeaturePresent(uint ProcessorFeature);
 
         private void CheckForSSE()
@@ -1375,46 +1375,7 @@ namespace PngtoFshBatchtxt
             }
 
         }
-        /// <summary>
-        /// Checks the list for images 64 x 64 or smaller
-        /// </summary>
-        /// <param name="dif">The index to start checking the list at</param>
-        private void CheckSize(int dif)
-        {
-            try
-            {
-                ArrayList remlist = new ArrayList();  // list of file indexes to remove.              
-
-                for (int n = dif; n < patharray.Count; n++)
-                {
-                    using (Bitmap bmp = new Bitmap(patharray[n]))
-                    {
-                        if (bmp.Width <= 64 && bmp.Height <= 64)
-                        {
-                            remlist.Add(n);
-                        }
-                    }
-                }                    
-                if (remlist.Count > 0)
-                {
-                    int filesrem = 0; // offset the index by  the number of files removed.  
-                    foreach (int rl in remlist)
-                    {
-                        int rem = (rl - filesrem);
-                        patharray.RemoveAt(rem);
-                        SetListCapacity(patharray, (patharray.Capacity - 1));
-                        SetListCapacity(grouparray, (grouparray.Capacity - 1));
-                        SetListCapacity(instarray, (instarray.Capacity - 1));
-                        SetListCapacity(typearray, (typearray.Capacity - 1));
-                        filesrem++; 
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
+       
         private void BuildAddList(int fcnt,int dif)
         {
             try
