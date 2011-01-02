@@ -14,7 +14,7 @@ namespace PngtoFshBatchtxt
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
-        [STAThread]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope"), STAThread]
         static void Main(string[] args)
         {
             Application.EnableVisualStyles();
@@ -135,73 +135,64 @@ namespace PngtoFshBatchtxt
 
                             }
 
-                            if (args[a].StartsWith("/proc", StringComparison.OrdinalIgnoreCase))
+                            if (args[a].StartsWith("/proc", StringComparison.OrdinalIgnoreCase) && (fcnt > 0))
                             {
-                                if (fcnt > 0)
+                                cmdlineonly = true;
+                                form1.processbatchbtn_Click(null, null);
+                            }
+                            else if (args[a].StartsWith("/mips", StringComparison.OrdinalIgnoreCase) && (fcnt > 0))
+                            {
+                                cmdlineonly = true;
+                                form1.autoprocMipscb.Checked = true;
+                            }
+                            else if (args[a].StartsWith("/dat:", StringComparison.OrdinalIgnoreCase) && (fcnt > 0))
+                            {
+                                try
                                 {
                                     cmdlineonly = true;
-                                    form1.processbatchbtn_Click(null, null);
-                                }
-                            }
-                            else if (args[a].StartsWith("/mips", StringComparison.OrdinalIgnoreCase))
-                            {
-                                if (fcnt > 0)
-                                {
-                                    cmdlineonly = true;
-                                    form1.autoprocMipscb.Checked = true;
-                                }
-                            }
-                            else if (args[a].StartsWith("/dat:", StringComparison.OrdinalIgnoreCase))
-                            {
-                                if (fcnt > 0)
-                                {
-                                    try
+                                    string[] dat = new string[2];
+                                    dat[0] = args[a].Substring(0, 5);
+                                    dat[1] = args[a].Substring(5, args[a].Length - 5);
+                                    if (!string.IsNullOrEmpty(dat[1]))
                                     {
-                                        cmdlineonly = true;
-                                        string[] dat = new string[2];
-                                        dat[0] = args[a].Substring(0, 5);
-                                        dat[1] = args[a].Substring(5, args[a].Length - 5);
-                                        if (!string.IsNullOrEmpty(dat[1]))
+
+                                        string path = Path.GetDirectoryName(dat[1]);
+                                        if (Directory.Exists(path))
                                         {
-
-                                            string path = Path.GetDirectoryName(dat[1]);
-                                            if (Directory.Exists(path))
+                                            if (form1.dat == null)
                                             {
-                                                if (form1.dat == null)
-                                                {
-                                                    form1.dat = new DatFile();
-                                                }
+                                                form1.dat = new DatFile();
+                                            }
 
-                                                if (form1.autoprocMipscb.Checked)
+                                            if (form1.autoprocMipscb.Checked)
+                                            {
+                                                if (form1.mipsbtn_clicked == false)
                                                 {
-                                                    if (form1.mipsbtn_clicked == false)
-                                                    {
-                                                        form1.mipbtn_Click(null, null);
-                                                        form1.RebuildDat(form1.dat);
-                                                    }
-                                                    else
-                                                    {
-                                                        form1.RebuildDat(form1.dat);
-                                                    }
+                                                    form1.mipbtn_Click(null, null);
+                                                    form1.RebuildDat(form1.dat);
                                                 }
                                                 else
                                                 {
-                                                    if (form1.batch_processed == false)
-                                                    {
-                                                        form1.ProcessBatch();
-                                                    }
                                                     form1.RebuildDat(form1.dat);
                                                 }
-                                                form1.dat.Save(dat[1].Trim());
-                                                form1.dat.Close();
-                                                form1.dat = null;
                                             }
+                                            else
+                                            {
+                                                if (form1.batch_processed == false)
+                                                {
+                                                    form1.ProcessBatch();
+                                                }
+                                                form1.RebuildDat(form1.dat);
+                                            }
+                                            form1.dat.Save(dat[1].Trim());
+                                            form1.dat.Close();
+                                            form1.dat = null;
                                         }
                                     }
-                                    catch (Exception ex)
-                                    {
-                                        MessageBox.Show(ex.Message, Resources.ProgramName, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    MessageBox.Show(ex.Message, Resources.ProgramName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 }
 
                             }
