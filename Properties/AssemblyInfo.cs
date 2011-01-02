@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("PngtoFshBatch")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("null45")]
 [assembly: AssemblyProduct("PngtoFshBatch")]
 [assembly: AssemblyCopyright("Copyright © 2011")]
 [assembly: AssemblyTrademark("")]
