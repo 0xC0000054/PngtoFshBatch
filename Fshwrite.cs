@@ -93,14 +93,14 @@ namespace PngtoFshBatchtxt
         {
             return IntPtr.Size == 8 ? true : false;
         }
-        private sealed class Squish_32
+        private static class Squish_32
         {
-            [DllImport("Squish_Win32.dll")]
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1060:MovePInvokesToNativeMethodsClass"), DllImport("Squish_Win32.dll")]
             internal static extern unsafe void SquishCompressImage(byte* rgba, int width, int height, byte* blocks, int flags);
         }
-        private sealed class Squish_64
+        private static class Squish_64
         {
-            [DllImport("squish_x64.dll")]
+            [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1060:MovePInvokesToNativeMethodsClass"), DllImport("squish_x64.dll")]
             internal static extern unsafe void SquishCompressImage(byte* rgba, int width, int height, byte* blocks, int flags);
         }
         private static unsafe void CompressImageWrapper(byte[] rgba, int width, int height, byte[] blocks, int flags)
