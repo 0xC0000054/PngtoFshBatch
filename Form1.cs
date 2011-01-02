@@ -597,16 +597,15 @@ namespace PngtoFshBatchtxt
 	                {
 		                bmpitem = new BitmapItem();
 
-                        bmpitem.Bitmap = temp;
+                        bmpitem.Bitmap = temp.Clone(new Rectangle(0, 0, temp.Width, temp.Height), PixelFormat.Format24bppRgb);
                         string alname = Path.Combine(Path.GetDirectoryName(patharray[c]), Path.GetFileNameWithoutExtension(patharray[c]) + "_a" + Path.GetExtension(patharray[c]));
                         if (File.Exists(alname))
                         {
-                            Bitmap alpha = new Bitmap(alname);
-
-                            bmpitem.Alpha = alpha.Clone(new Rectangle(0, 0, alpha.Width, alpha.Height), PixelFormat.Format24bppRgb);
-
-                            alpha.Dispose();
-                            alpha = null;
+                            using (Bitmap alpha = new Bitmap(alname))
+                            {
+                                bmpitem.Alpha = alpha.Clone(new Rectangle(0, 0, alpha.Width, alpha.Height), PixelFormat.Format24bppRgb);
+                            }
+                           
                         }
                         else if (Path.GetExtension(patharray[c]).Equals(".png",StringComparison.OrdinalIgnoreCase) && temp.PixelFormat == PixelFormat.Format32bppArgb)
                         {
