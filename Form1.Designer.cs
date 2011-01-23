@@ -45,7 +45,6 @@
             this.datlbl = new System.Windows.Forms.Label();
             this.newDatbtn = new System.Windows.Forms.Button();
             this.saveDatbtn = new System.Windows.Forms.Button();
-            this.mipbtn = new System.Windows.Forms.Button();
             this.processbatchbtn = new System.Windows.Forms.Button();
             this.saveDatDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.autoprocMipscb = new System.Windows.Forms.CheckBox();
@@ -67,8 +66,12 @@
             this.clearlistbtn = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.fshwritecompcb = new System.Windows.Forms.CheckBox();
+            this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.toolStripProgressStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.datFuncBox.SuspendLayout();
             this.InstendBox1.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // batchListView
@@ -88,7 +91,7 @@
             this.batchListView.Location = new System.Drawing.Point(12, 12);
             this.batchListView.MultiSelect = false;
             this.batchListView.Name = "batchListView";
-            this.batchListView.Size = new System.Drawing.Size(467, 128);
+            this.batchListView.Size = new System.Drawing.Size(467, 132);
             this.batchListView.TabIndex = 0;
             this.toolTip1.SetToolTip(this.batchListView, "The list of images to convert.\r\nDragging files or folders onto the list will crea" +
                     "te a new list");
@@ -124,7 +127,7 @@
             this.compDatcb.AutoSize = true;
             this.compDatcb.Checked = true;
             this.compDatcb.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.compDatcb.Location = new System.Drawing.Point(12, 164);
+            this.compDatcb.Location = new System.Drawing.Point(12, 184);
             this.compDatcb.Name = "compDatcb";
             this.compDatcb.Size = new System.Drawing.Size(90, 17);
             this.compDatcb.TabIndex = 3;
@@ -140,7 +143,7 @@
             this.datFuncBox.Controls.Add(this.datlbl);
             this.datFuncBox.Controls.Add(this.newDatbtn);
             this.datFuncBox.Controls.Add(this.saveDatbtn);
-            this.datFuncBox.Location = new System.Drawing.Point(312, 146);
+            this.datFuncBox.Location = new System.Drawing.Point(315, 150);
             this.datFuncBox.Name = "datFuncBox";
             this.datFuncBox.Size = new System.Drawing.Size(167, 64);
             this.datFuncBox.TabIndex = 12;
@@ -189,21 +192,10 @@
             this.saveDatbtn.UseVisualStyleBackColor = true;
             this.saveDatbtn.Click += new System.EventHandler(this.saveDatbtn_Click);
             // 
-            // mipbtn
-            // 
-            this.mipbtn.Location = new System.Drawing.Point(188, 279);
-            this.mipbtn.Name = "mipbtn";
-            this.mipbtn.Size = new System.Drawing.Size(106, 23);
-            this.mipbtn.TabIndex = 85;
-            this.mipbtn.Text = "Generate Mipmaps";
-            this.mipbtn.UseVisualStyleBackColor = true;
-            this.mipbtn.Visible = false;
-            this.mipbtn.Click += new System.EventHandler(this.mipbtn_Click);
-            // 
             // processbatchbtn
             // 
             this.processbatchbtn.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.processbatchbtn.Location = new System.Drawing.Point(399, 279);
+            this.processbatchbtn.Location = new System.Drawing.Point(399, 281);
             this.processbatchbtn.Name = "processbatchbtn";
             this.processbatchbtn.Size = new System.Drawing.Size(75, 23);
             this.processbatchbtn.TabIndex = 14;
@@ -222,7 +214,7 @@
             // 
             this.autoprocMipscb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.autoprocMipscb.AutoSize = true;
-            this.autoprocMipscb.Location = new System.Drawing.Point(12, 146);
+            this.autoprocMipscb.Location = new System.Drawing.Point(12, 150);
             this.autoprocMipscb.Name = "autoprocMipscb";
             this.autoprocMipscb.Size = new System.Drawing.Size(153, 17);
             this.autoprocMipscb.TabIndex = 2;
@@ -239,7 +231,7 @@
             // outfolderbtn
             // 
             this.outfolderbtn.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.outfolderbtn.Location = new System.Drawing.Point(300, 279);
+            this.outfolderbtn.Location = new System.Drawing.Point(300, 281);
             this.outfolderbtn.Name = "outfolderbtn";
             this.outfolderbtn.Size = new System.Drawing.Size(93, 23);
             this.outfolderbtn.TabIndex = 11;
@@ -259,7 +251,7 @@
             this.InstendBox1.Controls.Add(this.InstA_Erdo);
             this.InstendBox1.Controls.Add(this.Inst5_9rdo);
             this.InstendBox1.Controls.Add(this.Inst0_4rdo);
-            this.InstendBox1.Location = new System.Drawing.Point(171, 146);
+            this.InstendBox1.Location = new System.Drawing.Point(174, 150);
             this.InstendBox1.Name = "InstendBox1";
             this.InstendBox1.Size = new System.Drawing.Size(80, 78);
             this.InstendBox1.TabIndex = 7;
@@ -312,7 +304,7 @@
             // rembtn
             // 
             this.rembtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.rembtn.Location = new System.Drawing.Point(399, 216);
+            this.rembtn.Location = new System.Drawing.Point(399, 223);
             this.rembtn.Name = "rembtn";
             this.rembtn.Size = new System.Drawing.Size(75, 23);
             this.rembtn.TabIndex = 16;
@@ -325,7 +317,7 @@
             // 
             this.addbtn.AllowDrop = true;
             this.addbtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.addbtn.Location = new System.Drawing.Point(318, 216);
+            this.addbtn.Location = new System.Drawing.Point(318, 223);
             this.addbtn.Name = "addbtn";
             this.addbtn.Size = new System.Drawing.Size(75, 23);
             this.addbtn.TabIndex = 13;
@@ -347,7 +339,7 @@
             "32 Bit ARGB (8:8:8:8)",
             "DXT1 Compressed, no Alpha",
             "DXT3 Compressed, with Alpha "});
-            this.FshtypeBox.Location = new System.Drawing.Point(12, 258);
+            this.FshtypeBox.Location = new System.Drawing.Point(12, 283);
             this.FshtypeBox.Name = "FshtypeBox";
             this.FshtypeBox.Size = new System.Drawing.Size(172, 21);
             this.FshtypeBox.TabIndex = 6;
@@ -361,7 +353,7 @@
             this.tgiInstlbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.tgiInstlbl.AutoSize = true;
             this.tgiInstlbl.BackColor = System.Drawing.SystemColors.Control;
-            this.tgiInstlbl.Location = new System.Drawing.Point(13, 230);
+            this.tgiInstlbl.Location = new System.Drawing.Point(13, 255);
             this.tgiInstlbl.Name = "tgiInstlbl";
             this.tgiInstlbl.Size = new System.Drawing.Size(48, 13);
             this.tgiInstlbl.TabIndex = 105;
@@ -371,7 +363,7 @@
             // 
             this.tgiGrouplbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.tgiGrouplbl.AutoSize = true;
-            this.tgiGrouplbl.Location = new System.Drawing.Point(25, 207);
+            this.tgiGrouplbl.Location = new System.Drawing.Point(25, 232);
             this.tgiGrouplbl.Name = "tgiGrouplbl";
             this.tgiGrouplbl.Size = new System.Drawing.Size(36, 13);
             this.tgiGrouplbl.TabIndex = 104;
@@ -381,7 +373,7 @@
             // 
             this.tgiInstancetxt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.tgiInstancetxt.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.tgiInstancetxt.Location = new System.Drawing.Point(67, 227);
+            this.tgiInstancetxt.Location = new System.Drawing.Point(67, 252);
             this.tgiInstancetxt.MaxLength = 8;
             this.tgiInstancetxt.Name = "tgiInstancetxt";
             this.tgiInstancetxt.Size = new System.Drawing.Size(82, 20);
@@ -394,7 +386,7 @@
             // 
             this.tgiGrouptxt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.tgiGrouptxt.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.tgiGrouptxt.Location = new System.Drawing.Point(67, 201);
+            this.tgiGrouptxt.Location = new System.Drawing.Point(67, 226);
             this.tgiGrouptxt.MaxLength = 8;
             this.tgiGrouptxt.Name = "tgiGrouptxt";
             this.tgiGrouptxt.Size = new System.Drawing.Size(82, 20);
@@ -406,7 +398,7 @@
             // clearlistbtn
             // 
             this.clearlistbtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.clearlistbtn.Location = new System.Drawing.Point(399, 245);
+            this.clearlistbtn.Location = new System.Drawing.Point(399, 252);
             this.clearlistbtn.Name = "clearlistbtn";
             this.clearlistbtn.Size = new System.Drawing.Size(75, 23);
             this.clearlistbtn.TabIndex = 106;
@@ -422,8 +414,9 @@
             // 
             // fshwritecompcb
             // 
+            this.fshwritecompcb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.fshwritecompcb.AutoSize = true;
-            this.fshwritecompcb.Location = new System.Drawing.Point(12, 183);
+            this.fshwritecompcb.Location = new System.Drawing.Point(12, 167);
             this.fshwritecompcb.Name = "fshwritecompcb";
             this.fshwritecompcb.Size = new System.Drawing.Size(128, 17);
             this.fshwritecompcb.TabIndex = 107;
@@ -432,11 +425,38 @@
             this.fshwritecompcb.UseVisualStyleBackColor = true;
             this.fshwritecompcb.CheckedChanged += new System.EventHandler(this.fshwritecompcb_CheckedChanged);
             // 
+            // toolStripProgressBar1
+            // 
+            this.toolStripProgressBar1.Enabled = false;
+            this.toolStripProgressBar1.Name = "toolStripProgressBar1";
+            this.toolStripProgressBar1.Size = new System.Drawing.Size(300, 16);
+            this.toolStripProgressBar1.Step = 1;
+            this.toolStripProgressBar1.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripProgressBar1,
+            this.toolStripProgressStatus});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 317);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(493, 22);
+            this.statusStrip1.SizingGrip = false;
+            this.statusStrip1.TabIndex = 108;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // toolStripProgressStatus
+            // 
+            this.toolStripProgressStatus.Name = "toolStripProgressStatus";
+            this.toolStripProgressStatus.Size = new System.Drawing.Size(39, 17);
+            this.toolStripProgressStatus.Text = "Ready";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(493, 310);
+            this.ClientSize = new System.Drawing.Size(493, 339);
+            this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.fshwritecompcb);
             this.Controls.Add(this.clearlistbtn);
             this.Controls.Add(this.tgiInstlbl);
@@ -451,7 +471,6 @@
             this.Controls.Add(this.processbatchbtn);
             this.Controls.Add(this.compDatcb);
             this.Controls.Add(this.datFuncBox);
-            this.Controls.Add(this.mipbtn);
             this.Controls.Add(this.batchListView);
             this.Controls.Add(this.autoprocMipscb);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -463,6 +482,8 @@
             this.datFuncBox.PerformLayout();
             this.InstendBox1.ResumeLayout(false);
             this.InstendBox1.PerformLayout();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -478,7 +499,6 @@
         private System.Windows.Forms.Label datlbl;
         private System.Windows.Forms.Button newDatbtn;
         private System.Windows.Forms.Button saveDatbtn;
-        internal System.Windows.Forms.Button mipbtn;
         internal System.Windows.Forms.Button processbatchbtn;
         private System.Windows.Forms.SaveFileDialog saveDatDialog1;
         internal System.Windows.Forms.CheckBox autoprocMipscb;
@@ -503,6 +523,9 @@
         internal System.Windows.Forms.ListView batchListView;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.CheckBox fshwritecompcb;
+        private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar1;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripProgressStatus;
     }
 }
 
