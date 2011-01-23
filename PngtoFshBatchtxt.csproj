@@ -33,6 +33,8 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -64,9 +66,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Fshlib_vista\Fshlib_vista\FSHLib.dll</HintPath>
     </Reference>
-    <Reference Include="SuperSample, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Documents and Settings\Nicholas\My Documents\Visual Studio 2008\Projects\SuperSample\bin\Release\SuperSample.dll</HintPath>
+    <Reference Include="SuperSample">
+      <HintPath>..\..\..\Users\Nicholas\Documents\Visual Studio 2008\Projects\SuperSample\bin\Release\SuperSample.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -123,6 +124,9 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
