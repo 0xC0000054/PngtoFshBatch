@@ -123,10 +123,29 @@
   <data name="AlphaTransString" xml:space="preserve">
     <value>From Transparency</value>
   </data>
+  <data name="BuildingDatStatusTextFormat" xml:space="preserve">
+    <value>Building Dat ({0} of {1})</value>
+    <comment>RebuildDat</comment>
+  </data>
   <data name="FshWriteSSERequiredError" xml:space="preserve">
     <value>A processor that supports SSE is required to for FshWrite save DXT1 and DXT3 fsh images</value>
   </data>
+  <data name="ProcessingMipsStatusTextFormat" xml:space="preserve">
+    <value>Processing Mipmaps ({0} of {1})</value>
+    <comment>GenerateMips</comment>
+  </data>
+  <data name="ProcessingStatusTextFormat" xml:space="preserve">
+    <value>Processing Image ({0} of {1})</value>
+    <comment>ProcessBatch</comment>
+  </data>
   <data name="ProgramName" xml:space="preserve">
     <value>Png to Fsh Batch</value>
+  </data>
+  <data name="SavingFshProgressTextFormat" xml:space="preserve">
+    <value>Saving Fsh ({0} of {1})</value>
+    <comment>processbatchbtn_Click</comment>
+  </data>
+  <data name="StatusTextReset" xml:space="preserve">
+    <value>Ready</value>
   </data>
 </root>

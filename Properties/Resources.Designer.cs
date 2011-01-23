@@ -79,6 +79,15 @@ namespace PngtoFshBatchtxt.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Building Dat ({0} of {1}).
+        /// </summary>
+        internal static string BuildingDatStatusTextFormat {
+            get {
+                return ResourceManager.GetString("BuildingDatStatusTextFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A processor that supports SSE is required to for FshWrite save DXT1 and DXT3 fsh images.
         /// </summary>
         internal static string FshWriteSSERequiredError {
@@ -88,11 +97,47 @@ namespace PngtoFshBatchtxt.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Processing Mipmaps ({0} of {1}).
+        /// </summary>
+        internal static string ProcessingMipsStatusTextFormat {
+            get {
+                return ResourceManager.GetString("ProcessingMipsStatusTextFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Processing Image ({0} of {1}).
+        /// </summary>
+        internal static string ProcessingStatusTextFormat {
+            get {
+                return ResourceManager.GetString("ProcessingStatusTextFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Png to Fsh Batch.
         /// </summary>
         internal static string ProgramName {
             get {
                 return ResourceManager.GetString("ProgramName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saving Fsh ({0} of {1}).
+        /// </summary>
+        internal static string SavingFshProgressTextFormat {
+            get {
+                return ResourceManager.GetString("SavingFshProgressTextFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ready.
+        /// </summary>
+        internal static string StatusTextReset {
+            get {
+                return ResourceManager.GetString("StatusTextReset", resourceCulture);
             }
         }
     }
