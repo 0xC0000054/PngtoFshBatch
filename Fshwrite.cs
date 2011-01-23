@@ -67,10 +67,18 @@ namespace PngtoFshBatchtxt
             byte[] pixelData = new byte[image.Width * image.Height * 4];
 
             BitmapData data = image.LockBits(new Rectangle(0, 0, image.Width, image.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-            
-            int len = data.Stride * data.Height;
-            byte[] temp = new byte[len];
-            Marshal.Copy(data.Scan0, temp, 0, len);
+            byte[] temp = null;
+            try
+            {
+
+                int len = data.Stride * data.Height;
+                temp = new byte[len];
+                Marshal.Copy(data.Scan0, temp, 0, len);
+            }
+            finally
+            {
+                image.UnlockBits(data);
+            }
             
             image.UnlockBits(data);
                
@@ -91,7 +99,7 @@ namespace PngtoFshBatchtxt
         }
         private static bool Is64bit()
         {
-            return IntPtr.Size == 8 ? true : false;
+            return (IntPtr.Size == 8);
         }
         private static class Squish_32
         {
