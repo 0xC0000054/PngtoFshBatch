@@ -80,8 +80,6 @@ namespace PngtoFshBatchtxt
                 image.UnlockBits(data);
             }
             
-            image.UnlockBits(data);
-               
             pixelData = SwapRGB(temp);
             
             // Compute size of compressed block area, and allocate 
@@ -128,33 +126,36 @@ namespace PngtoFshBatchtxt
                 }
             }
         }
-        private static Bitmap BlendDXTBmp(Bitmap colorbmp, Bitmap bmpalpha)
+        private static Bitmap BlendDXTBmp(Bitmap colorbmp, Bitmap alphabmp)
         {
             Bitmap image = null;
             Bitmap temp = null;
             try
             {
-                if (colorbmp != null && bmpalpha != null)
+                if (colorbmp != null && alphabmp != null)
                 {
                     temp = new Bitmap(colorbmp.Width, colorbmp.Height, PixelFormat.Format32bppArgb);
                 }
-                if (colorbmp.Size != bmpalpha.Size)
+                if (colorbmp.Size != alphabmp.Size)
                 {
                     throw new ArgumentException("The bitmap and alpha must be equal size");
                 }
                 Rectangle tempRect = new Rectangle(0, 0, temp.Width, temp.Height);
-                BitmapData colordata = colorbmp.LockBits(new Rectangle(0, 0, colorbmp.Width, colorbmp.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-                BitmapData alphadata = bmpalpha.LockBits(new Rectangle(0, 0, bmpalpha.Width, bmpalpha.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+                BitmapData colordata = colorbmp.LockBits(new Rectangle(0, 0, colorbmp.Width, colorbmp.Height), ImageLockMode.ReadOnly, colorbmp.PixelFormat);
+                BitmapData alphadata = alphabmp.LockBits(new Rectangle(0, 0, alphabmp.Width, alphabmp.Height), ImageLockMode.ReadOnly, alphabmp.PixelFormat);
                 BitmapData bdata = temp.LockBits(tempRect, ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
                 IntPtr scan0 = bdata.Scan0;
                 unsafe
                 {
+                    int clrBpp = (Bitmap.GetPixelFormatSize(colorbmp.PixelFormat) / 8);
+                    int alphaBpp = (Bitmap.GetPixelFormatSize(alphabmp.PixelFormat) / 8);
+
                     byte* clrdata = (byte*)(void*)colordata.Scan0;
                     byte* aldata = (byte*)(void*)alphadata.Scan0;
                     byte* destdata = (byte*)(void*)scan0;
                     int offset = bdata.Stride - temp.Width * 4;
-                    int clroffset = colordata.Stride - temp.Width * 4;
-                    int aloffset = alphadata.Stride - temp.Width * 4;
+                    int clroffset = colordata.Stride - temp.Width * clrBpp;
+                    int aloffset = alphadata.Stride - temp.Width * alphaBpp;
                     for (int y = 0; y < temp.Height; y++)
                     {
                         for (int x = 0; x < temp.Width; x++)
@@ -166,8 +167,8 @@ namespace PngtoFshBatchtxt
 
 
                             destdata += 4;
-                            clrdata += 4;
-                            aldata += 4;
+                            clrdata += clrBpp;
+                            aldata += alphaBpp;
                         }
                         destdata += offset;
                         clrdata += clroffset;
@@ -176,7 +177,7 @@ namespace PngtoFshBatchtxt
 
                 }
                 colorbmp.UnlockBits(colordata);
-                bmpalpha.UnlockBits(alphadata);
+                alphabmp.UnlockBits(alphadata);
                 temp.UnlockBits(bdata);
 
                 image = temp.Clone(tempRect, temp.PixelFormat);
