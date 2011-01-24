@@ -268,7 +268,7 @@ namespace PngtoFshBatchtxt
 			{
 				using (Bitmap bmp = new Bitmap(path))
 				{
-					if (Path.GetExtension(path).ToLowerInvariant().Equals(".png") && bmp.PixelFormat == PixelFormat.Format32bppArgb)
+					if (Path.GetExtension(path).ToUpperInvariant().Equals(".PNG") && bmp.PixelFormat == PixelFormat.Format32bppArgb)
 					{
 						item.SubItems.Add(Resources.AlphaTransString);
 					}
@@ -1281,7 +1281,6 @@ namespace PngtoFshBatchtxt
 		{
 			try
 			{
-				//CheckSize(0);
 				if (tgiGrouptxt.Text.Length > 0 && tgiGrouptxt.Text.Length == 8)
 				{
 					for (int j = 0; j < patharray.Count; j++)
@@ -1383,10 +1382,7 @@ namespace PngtoFshBatchtxt
 			{
 				MessageBox.Show(fx.Message + fx.FileName, this.Text,MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
-			catch (Exception ex)
-			{
-				MessageBox.Show(this, ex.Message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
-			} 
+			
 		}
 	   
 		private void rembtn_Click(object sender, EventArgs e)
@@ -1426,7 +1422,7 @@ namespace PngtoFshBatchtxt
 
 		}
 	   
-		private void BuildAddList(int fcnt,int dif)
+		private void BuildAddList(int dif)
 		{
 			try
 			{
@@ -1576,7 +1572,7 @@ namespace PngtoFshBatchtxt
 					{
 						dif = 0;
 					}
-					BuildAddList(fcnt,dif);
+					BuildAddList(dif);
 				}
 				catch (Exception ex)
 				{
@@ -1894,7 +1890,7 @@ namespace PngtoFshBatchtxt
 				{
 					dif = 0;
 				}
-				BuildAddList(fcnt,dif);
+				BuildAddList(dif);
 			}
 			catch (Exception ex)
 			{
