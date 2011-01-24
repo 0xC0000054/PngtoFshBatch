@@ -499,7 +499,7 @@ namespace PngtoFshBatchtxt
                     if (dat.Indexes.Count > 0)
                     {
                         
-
+                   
                         try
                         {
                             /*if (string.IsNullOrEmpty(dat.FileName) || dat.FileName != saveDatDialog1.FileName)
@@ -602,21 +602,21 @@ namespace PngtoFshBatchtxt
                     this.Invoke(new SetProgressBarValueDelegate(SetProgressBarValue), new object[] { c, Resources.ProcessingStatusTextFormat });
 					using(Bitmap temp = new Bitmap(patharray[c]))
 					{
-						bmpitem = new BitmapItem();
+						BitmapItem item = new BitmapItem();
 
-						bmpitem.Bitmap = temp.Clone(new Rectangle(0, 0, temp.Width, temp.Height), PixelFormat.Format24bppRgb);
+						item.Bitmap = temp.Clone(new Rectangle(0, 0, temp.Width, temp.Height), PixelFormat.Format24bppRgb);
 						string alname = Path.Combine(Path.GetDirectoryName(patharray[c]), Path.GetFileNameWithoutExtension(patharray[c]) + "_a" + Path.GetExtension(patharray[c]));
 						if (File.Exists(alname))
 						{
 							using (Bitmap alpha = new Bitmap(alname))
 							{
-								bmpitem.Alpha = alpha.Clone(new Rectangle(0, 0, alpha.Width, alpha.Height), PixelFormat.Format24bppRgb);
+								item.Alpha = alpha.Clone(new Rectangle(0, 0, alpha.Width, alpha.Height), PixelFormat.Format24bppRgb);
 							}
 						   
 						}
 						else if (Path.GetExtension(patharray[c]).Equals(".png",StringComparison.OrdinalIgnoreCase) && temp.PixelFormat == PixelFormat.Format32bppArgb)
 						{
-							bmpitem.Alpha = GetAlphaFromTransparency(temp);
+							item.Alpha = GetAlphaFromTransparency(temp);
 						}
 						else
 						{
@@ -636,7 +636,7 @@ namespace PngtoFshBatchtxt
 
 								alpha.UnlockBits(data);
 
-								bmpitem.Alpha = alpha.Clone(new Rectangle(0, 0, alpha.Width, alpha.Height), alpha.PixelFormat);
+								item.Alpha = alpha.Clone(new Rectangle(0, 0, alpha.Width, alpha.Height), alpha.PixelFormat);
 							}
 							finally
 							{
@@ -649,40 +649,39 @@ namespace PngtoFshBatchtxt
 						}
 						if (typearray[c].ToUpper() == FSHBmpType.ThirtyTwoBit.ToString().ToUpper())
 						{
-							bmpitem.BmpType = FSHBmpType.ThirtyTwoBit;
+							item.BmpType = FSHBmpType.ThirtyTwoBit;
 						}
 						else if (typearray[c].ToUpper() == FSHBmpType.TwentyFourBit.ToString().ToUpper())
 						{
-							bmpitem.BmpType = FSHBmpType.TwentyFourBit;
+							item.BmpType = FSHBmpType.TwentyFourBit;
 						}
 						else if (typearray[c].ToUpper() == FSHBmpType.DXT1.ToString().ToUpper())
 						{
-							bmpitem.BmpType = FSHBmpType.DXT1;
+							item.BmpType = FSHBmpType.DXT1;
 						}
 						else if (typearray[c].ToUpper() == FSHBmpType.DXT3.ToString().ToUpper())
 						{
-							bmpitem.BmpType = FSHBmpType.DXT3;
+							item.BmpType = FSHBmpType.DXT3;
 						}
 
 						if (c <= batchFshList.Capacity)
 						{
 							FSHImage fsh = new FSHImage();
 								
-							fsh.Bitmaps.Add(bmpitem);
+							fsh.Bitmaps.Add(item);
 							fsh.UpdateDirty();
+                            batchFshList.Insert(c, new BatchFshContainer(fsh));
 
-							batchFshList.Insert(c, new BatchFshContainer(fsh));
+                            using (MemoryStream mstream = new MemoryStream())
+                            {
+                                SaveFsh(mstream, batchFshList[c].MainImage);
 
-							using (MemoryStream mstream = new MemoryStream())
-							{
-								SaveFsh(mstream, batchFshList[c].MainImage);
-								
-								if (IsDXTFsh(batchFshList[c].MainImage) && fshwritecompcb.Checked)
-								{
-									batchFshList[c].MainImage = new FSHImage(mstream);
-								}
-							}
-						}
+                                if (IsDXTFsh(batchFshList[c].MainImage) && fshwritecompcb.Checked)
+                                {
+                                    batchFshList[c].MainImage = new FSHImage(mstream);
+                                }
+                            }
+                        }
 					}
 					
 				}
@@ -698,6 +697,7 @@ namespace PngtoFshBatchtxt
 				throw;
 			}
 		}
+
 		internal static string Getfilepath(string filepath, string addtopath, string outdir)
 		{
 			if (!string.IsNullOrEmpty(outdir))
@@ -775,9 +775,9 @@ namespace PngtoFshBatchtxt
 
         delegate void SetProgressBarValueDelegate(int value, string statusTextFormat);
         private void SetProgressBarValue(int value, string statusTextFormat)
-        {
-            toolStripProgressBar1.PerformStep();
+        {            
             toolStripProgressStatus.Text = string.Format(statusTextFormat, (value + 1), batchListView.Items.Count); 
+            toolStripProgressBar1.PerformStep();
         }
 
 		private Thread batchProcessThread = null;
