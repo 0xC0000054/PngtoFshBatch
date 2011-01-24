@@ -127,7 +127,7 @@
             this.compDatcb.AutoSize = true;
             this.compDatcb.Checked = true;
             this.compDatcb.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.compDatcb.Location = new System.Drawing.Point(12, 184);
+            this.compDatcb.Location = new System.Drawing.Point(12, 167);
             this.compDatcb.Name = "compDatcb";
             this.compDatcb.Size = new System.Drawing.Size(90, 17);
             this.compDatcb.TabIndex = 3;
@@ -416,7 +416,7 @@
             // 
             this.fshwritecompcb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.fshwritecompcb.AutoSize = true;
-            this.fshwritecompcb.Location = new System.Drawing.Point(12, 167);
+            this.fshwritecompcb.Location = new System.Drawing.Point(12, 184);
             this.fshwritecompcb.Name = "fshwritecompcb";
             this.fshwritecompcb.Size = new System.Drawing.Size(128, 17);
             this.fshwritecompcb.TabIndex = 107;
