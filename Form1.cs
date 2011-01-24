@@ -30,109 +30,7 @@ namespace PngtoFshBatchtxt
 		internal BitmapItem bmpitem = null;
 		internal bool mipsbtn_clicked = false;
 
-		private void GenerateMips()
-		{
-			for (int n = 0; n < batchListView.Items.Count; n++)
-			{
-                this.SetProgressBarValue(n, Resources.ProcessingMipsStatusTextFormat);
-				Bitmap[] bmps = new Bitmap[4];
-				Bitmap[] alphas = new Bitmap[4];
-
-				BitmapItem item = new BitmapItem();
-			   
-				BatchFshContainer batchFsh = batchFshList[n];
-
-				item = (BitmapItem)batchFsh.MainImage.Bitmaps[0];
-
-				if (item.Bitmap.Width >= 128 && item.Bitmap.Height >= 128)
-				{
-					// 0 = 8, 1 = 16, 2 = 32, 3 = 64
-					using (Bitmap bmp = new Bitmap(item.Bitmap))
-					{
-						bmps[0] = GetBitmapThumbnail(bmp, 8, 8);
-						bmps[1] = GetBitmapThumbnail(bmp, 16, 16);
-						bmps[2] = GetBitmapThumbnail(bmp, 32, 32);
-						bmps[3] = GetBitmapThumbnail(bmp, 64, 64);
-					}
-					//alpha
-
-					using (Bitmap alpha = new Bitmap(item.Alpha))
-					{
-						alphas[0] = GetBitmapThumbnail(alpha, 8, 8);
-						alphas[1] = GetBitmapThumbnail(alpha, 16, 16);
-						alphas[2] = GetBitmapThumbnail(alpha, 32, 32);
-						alphas[3] = GetBitmapThumbnail(alpha, 64, 64);
-					}
-
-					for (int i = 0; i < 4; i++)
-					{
-						if (bmps[i] != null && alphas[i] != null)
-						{
-							BitmapItem mipitm = new BitmapItem();
-							mipitm.Bitmap = bmps[i];
-							mipitm.Alpha = alphas[i];
-							mipitm.SetDirName(Encoding.ASCII.GetString(item.DirName));
-
-							if (item.BmpType == FSHBmpType.DXT3 || item.BmpType == FSHBmpType.ThirtyTwoBit)
-							{
-								mipitm.BmpType = FSHBmpType.DXT3;
-							}
-							else
-							{
-								mipitm.BmpType = FSHBmpType.DXT1;
-							}
-							if (mipitm.Bitmap.Width == 64 && mipitm.Bitmap.Height == 64)
-							{
-
-								batchFsh.Mip64Fsh = new FSHImage();
-								batchFsh.Mip64Fsh.Bitmaps.Add(mipitm);
-								batchFsh.Mip64Fsh.UpdateDirty();
-								using (MemoryStream mstream = new MemoryStream())
-								{
-									SaveFsh(mstream, batchFsh.Mip64Fsh);
-									batchFsh.Mip64Fsh = new FSHImage(mstream);
-								}
-							}
-							else if (mipitm.Bitmap.Width == 32 && mipitm.Bitmap.Height == 32)
-							{
-								batchFsh.Mip32Fsh = new FSHImage();
-								batchFsh.Mip32Fsh.Bitmaps.Add(mipitm);
-								batchFsh.Mip32Fsh.UpdateDirty();
-								using (MemoryStream mstream = new MemoryStream())
-								{
-									SaveFsh(mstream, batchFsh.Mip32Fsh);
-									batchFsh.Mip32Fsh = new FSHImage(mstream);
-								}
-							}
-							else if (mipitm.Bitmap.Width == 16 && mipitm.Bitmap.Height == 16)
-							{
-								batchFsh.Mip16Fsh = new FSHImage();
-								batchFsh.Mip16Fsh.Bitmaps.Add(mipitm);
-								batchFsh.Mip16Fsh.UpdateDirty();
-								using (MemoryStream mstream = new MemoryStream())
-								{
-									SaveFsh(mstream, batchFsh.Mip16Fsh);
-									batchFsh.Mip16Fsh = new FSHImage(mstream);
-								}
-							}
-							else if (mipitm.Bitmap.Width == 8 && mipitm.Bitmap.Height == 8)
-							{
-								batchFsh.Mip8Fsh = new FSHImage();
-								batchFsh.Mip8Fsh.Bitmaps.Add(mipitm);
-								batchFsh.Mip8Fsh.UpdateDirty();
-								using (MemoryStream mstream = new MemoryStream())
-								{
-									SaveFsh(mstream, batchFsh.Mip8Fsh);
-									batchFsh.Mip8Fsh = new FSHImage(mstream);
-								}
-							}
-						}
-					} 
-				}
-
-			}
-		}
-		internal void mipbtn_Click(object sender, EventArgs e)
+		internal void ProcessMips()
 		{             
 			for (int n = 0; n < batchListView.Items.Count; n++)
 			{
@@ -145,11 +43,107 @@ namespace PngtoFshBatchtxt
 					batchFsh.Mip8Fsh = null;
 				}
 			}
-			if (!batch_processed)
-			{
-				ProcessBatch();
-			}
-			GenerateMips();
+            
+            for (int n = 0; n < batchListView.Items.Count; n++)
+            {
+                this.Invoke(new SetProgressBarValueDelegate(SetProgressBarValue), new object[] { n, Resources.ProcessingMipsStatusTextFormat });
+                Bitmap[] bmps = new Bitmap[4];
+                Bitmap[] alphas = new Bitmap[4];
+
+                BitmapItem item = new BitmapItem();
+
+                BatchFshContainer batchFsh = batchFshList[n];
+
+                item = (BitmapItem)batchFsh.MainImage.Bitmaps[0];
+
+                if (item.Bitmap.Width >= 128 && item.Bitmap.Height >= 128)
+                {
+                    // 0 = 8, 1 = 16, 2 = 32, 3 = 64
+                    using (Bitmap bmp = new Bitmap(item.Bitmap))
+                    {
+                        bmps[0] = GetBitmapThumbnail(bmp, 8, 8);
+                        bmps[1] = GetBitmapThumbnail(bmp, 16, 16);
+                        bmps[2] = GetBitmapThumbnail(bmp, 32, 32);
+                        bmps[3] = GetBitmapThumbnail(bmp, 64, 64);
+                    }
+                    //alpha
+
+                    using (Bitmap alpha = new Bitmap(item.Alpha))
+                    {
+                        alphas[0] = GetBitmapThumbnail(alpha, 8, 8);
+                        alphas[1] = GetBitmapThumbnail(alpha, 16, 16);
+                        alphas[2] = GetBitmapThumbnail(alpha, 32, 32);
+                        alphas[3] = GetBitmapThumbnail(alpha, 64, 64);
+                    }
+
+                    for (int i = 0; i < 4; i++)
+                    {
+                        if (bmps[i] != null && alphas[i] != null)
+                        {
+                            BitmapItem mipitm = new BitmapItem();
+                            mipitm.Bitmap = bmps[i];
+                            mipitm.Alpha = alphas[i];
+                            mipitm.SetDirName(Encoding.ASCII.GetString(item.DirName));
+
+                            if (item.BmpType == FSHBmpType.DXT3 || item.BmpType == FSHBmpType.ThirtyTwoBit)
+                            {
+                                mipitm.BmpType = FSHBmpType.DXT3;
+                            }
+                            else
+                            {
+                                mipitm.BmpType = FSHBmpType.DXT1;
+                            }
+                            if (mipitm.Bitmap.Width == 64 && mipitm.Bitmap.Height == 64)
+                            {
+
+                                batchFsh.Mip64Fsh = new FSHImage();
+                                batchFsh.Mip64Fsh.Bitmaps.Add(mipitm);
+                                batchFsh.Mip64Fsh.UpdateDirty();
+                                using (MemoryStream mstream = new MemoryStream())
+                                {
+                                    SaveFsh(mstream, batchFsh.Mip64Fsh);
+                                    batchFsh.Mip64Fsh = new FSHImage(mstream);
+                                }
+                            }
+                            else if (mipitm.Bitmap.Width == 32 && mipitm.Bitmap.Height == 32)
+                            {
+                                batchFsh.Mip32Fsh = new FSHImage();
+                                batchFsh.Mip32Fsh.Bitmaps.Add(mipitm);
+                                batchFsh.Mip32Fsh.UpdateDirty();
+                                using (MemoryStream mstream = new MemoryStream())
+                                {
+                                    SaveFsh(mstream, batchFsh.Mip32Fsh);
+                                    batchFsh.Mip32Fsh = new FSHImage(mstream);
+                                }
+                            }
+                            else if (mipitm.Bitmap.Width == 16 && mipitm.Bitmap.Height == 16)
+                            {
+                                batchFsh.Mip16Fsh = new FSHImage();
+                                batchFsh.Mip16Fsh.Bitmaps.Add(mipitm);
+                                batchFsh.Mip16Fsh.UpdateDirty();
+                                using (MemoryStream mstream = new MemoryStream())
+                                {
+                                    SaveFsh(mstream, batchFsh.Mip16Fsh);
+                                    batchFsh.Mip16Fsh = new FSHImage(mstream);
+                                }
+                            }
+                            else if (mipitm.Bitmap.Width == 8 && mipitm.Bitmap.Height == 8)
+                            {
+                                batchFsh.Mip8Fsh = new FSHImage();
+                                batchFsh.Mip8Fsh.Bitmaps.Add(mipitm);
+                                batchFsh.Mip8Fsh.UpdateDirty();
+                                using (MemoryStream mstream = new MemoryStream())
+                                {
+                                    SaveFsh(mstream, batchFsh.Mip8Fsh);
+                                    batchFsh.Mip8Fsh = new FSHImage(mstream);
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+
 			mipsbtn_clicked = true;
 		}
 		/// <summary>
@@ -328,20 +322,30 @@ namespace PngtoFshBatchtxt
 				}
 			}
 		}
+
+        delegate ListViewItem GetBatchListViewItemDelegate(int index);
+
+        private ListViewItem GetBatchListViewItem(int index)
+        {
+            return batchListView.Items[index];
+        }
+
 		internal DatFile dat = null;
 		internal bool compress_datmips = false;
-		
+        private Thread datRebuildThread = null;
+		private bool datRebuilt = false;
+
 		internal void RebuildDat(DatFile inputdat)
 		{
-			
 			if (mipsbtn_clicked)
 			{
 				for (int c = 0; c < batchListView.Items.Count; c++)
 				{
-                    this.SetProgressBarValue(c, Resources.BuildingDatStatusTextFormat);
+                    this.Invoke(new SetProgressBarValueDelegate(SetProgressBarValue), new object[] { c, Resources.BuildingDatStatusTextFormat });
 
 					BatchFshContainer batchFsh = batchFshList[c];
-					uint group = uint.Parse(batchListView.Items[c].SubItems[2].Text, NumberStyles.HexNumber);
+                    ListViewItem item = (ListViewItem)this.Invoke(new GetBatchListViewItemDelegate(GetBatchListViewItem), new object[] {c});
+					uint group = uint.Parse(item.SubItems[2].Text, NumberStyles.HexNumber);
 					uint[] instanceid = new uint[5];
 					FshWrapper[] fshwrap = new FshWrapper[5];
 					FSHImage[] fshimg = new FSHImage[5];
@@ -378,11 +382,12 @@ namespace PngtoFshBatchtxt
                         end16 = 'B';
                         end8 = 'A';
                     }
-					instanceid[0] = uint.Parse(batchListView.Items[c].SubItems[3].Text.Substring(0, 7) + end8, NumberStyles.HexNumber);
-					instanceid[1] = uint.Parse(batchListView.Items[c].SubItems[3].Text.Substring(0, 7) + end16, NumberStyles.HexNumber);
-					instanceid[2] = uint.Parse(batchListView.Items[c].SubItems[3].Text.Substring(0, 7) + end32, NumberStyles.HexNumber);
-					instanceid[3] = uint.Parse(batchListView.Items[c].SubItems[3].Text.Substring(0, 7) + end64, NumberStyles.HexNumber);
-					instanceid[4] = uint.Parse(batchListView.Items[c].SubItems[3].Text, NumberStyles.HexNumber);
+
+					instanceid[0] = uint.Parse(item.SubItems[3].Text.Substring(0, 7) + end8, NumberStyles.HexNumber);
+					instanceid[1] = uint.Parse(item.SubItems[3].Text.Substring(0, 7) + end16, NumberStyles.HexNumber);
+					instanceid[2] = uint.Parse(item.SubItems[3].Text.Substring(0, 7) + end32, NumberStyles.HexNumber);
+					instanceid[3] = uint.Parse(item.SubItems[3].Text.Substring(0, 7) + end64, NumberStyles.HexNumber);
+					instanceid[4] = uint.Parse(item.SubItems[3].Text, NumberStyles.HexNumber);
 
 					if (inputdat == null)
 					{
@@ -405,7 +410,9 @@ namespace PngtoFshBatchtxt
 			{
 				for (int c = 0; c < batchListView.Items.Count; c++)
 				{
-					uint Group = uint.Parse(batchListView.Items[c].SubItems[2].Text, NumberStyles.HexNumber);
+                    ListViewItem item = (ListViewItem)this.Invoke(new GetBatchListViewItemDelegate(GetBatchListViewItem), new object[] { c });
+                    
+					uint Group = uint.Parse(item.SubItems[2].Text, NumberStyles.HexNumber);
 					uint instanceid = new uint();
 					FshWrapper fshwrap = new FshWrapper();
 					if (instarray[c].EndsWith("4") || instarray[c].EndsWith("3") || instarray[c].EndsWith("2") || instarray[c].EndsWith("1") || instarray[c].EndsWith("0"))
@@ -432,7 +439,7 @@ namespace PngtoFshBatchtxt
 						end16 = 'B';
 						end8 = 'A';
 					}
-					instanceid = uint.Parse(batchListView.Items[c].SubItems[3].Text, NumberStyles.HexNumber);
+					instanceid = uint.Parse(item.SubItems[3].Text, NumberStyles.HexNumber);
 
 					if (inputdat == null)
 					{
@@ -447,8 +454,8 @@ namespace PngtoFshBatchtxt
 					}
 				}
 			}
+            datRebuilt = true;
 		}
-
 		private void saveDatbtn_Click(object sender, EventArgs e)
 		{
 			if (dat == null)
@@ -481,20 +488,27 @@ namespace PngtoFshBatchtxt
 
                     if (autoprocMipscb.Checked)
                     {
-                        if (!mipsbtn_clicked)
+                        this.mipProcessThread = new Thread(new ThreadStart(ProcessMips)) { Priority = ThreadPriority.AboveNormal, IsBackground = true };
+                        this.mipProcessThread.Start();
+                        while (mipProcessThread.IsAlive)
                         {
-                            mipbtn_Click(sender, e);
-                            RebuildDat(dat);
+                            Application.DoEvents();
                         }
-                        else
-                        {
-                            RebuildDat(dat);
-                        }
+                        this.mipProcessThread.Join();
                     }
-                    else
+			   
+
+                    if (!datRebuilt)
                     {
-                        RebuildDat(dat);
+                        this.datRebuildThread  = new Thread(() => RebuildDat(dat)) { Priority = ThreadPriority.AboveNormal, IsBackground = true };
+                        this.datRebuildThread.Start();
+                        while (datRebuildThread.IsAlive)
+                        {
+                            Application.DoEvents();
+                        }
+                        this.datRebuildThread.Join();
                     }
+                   
                     this.Cursor = Cursors.Default;
                     if (dat.Indexes.Count > 0)
                     {
@@ -781,6 +795,7 @@ namespace PngtoFshBatchtxt
         }
 
 		private Thread batchProcessThread = null;
+        private Thread mipProcessThread = null;
 		internal void processbatchbtn_Click(object sender, EventArgs e)
 		{
 			try
@@ -803,7 +818,13 @@ namespace PngtoFshBatchtxt
 
 				if (autoprocMipscb.Checked)
 				{
-					mipbtn_Click(sender, e);
+                    this.mipProcessThread = new Thread(new ThreadStart(ProcessMips)) { Priority = ThreadPriority.AboveNormal, IsBackground = true };
+                    this.mipProcessThread.Start();
+                    while (mipProcessThread.IsAlive)
+                    {
+                        Application.DoEvents();
+                    }
+                    this.mipProcessThread.Join();
 				}
 			   
 				for (int c = 0; c < batchListView.Items.Count; c++)
@@ -1780,6 +1801,7 @@ namespace PngtoFshBatchtxt
 			}
 			mipsbtn_clicked = false;
 			batch_processed = false;
+            datRebuilt = false;
 			tgiGrouptxt.Text = null;
 			tgiInstancetxt.Text = null;
 			FshtypeBox.SelectedIndex = 2;
