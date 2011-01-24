@@ -168,7 +168,7 @@ namespace PngtoFshBatchtxt
                                             {
                                                 if (form1.mipsbtn_clicked == false)
                                                 {
-                                                    form1.mipbtn_Click(null, null);
+                                                    form1.ProcessMips();
                                                     form1.RebuildDat(form1.dat);
                                                 }
                                                 else
