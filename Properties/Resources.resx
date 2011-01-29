@@ -141,6 +141,9 @@
   <data name="ProgramName" xml:space="preserve">
     <value>Png to Fsh Batch</value>
   </data>
+  <data name="SavingDatStatusText" xml:space="preserve">
+    <value>Saving Dat</value>
+  </data>
   <data name="SavingFshProgressTextFormat" xml:space="preserve">
     <value>Saving Fsh ({0} of {1})</value>
     <comment>processbatchbtn_Click</comment>

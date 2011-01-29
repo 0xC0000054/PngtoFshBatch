@@ -124,6 +124,15 @@ namespace PngtoFshBatchtxt.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Saving Dat.
+        /// </summary>
+        internal static string SavingDatStatusText {
+            get {
+                return ResourceManager.GetString("SavingDatStatusText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Saving Fsh ({0} of {1}).
         /// </summary>
         internal static string SavingFshProgressTextFormat {
