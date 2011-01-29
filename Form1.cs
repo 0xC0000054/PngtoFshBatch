@@ -344,8 +344,8 @@ namespace PngtoFshBatchtxt
 				for (int c = 0; c < batchListView.Items.Count; c++)
 				{
 					this.Invoke(new SetProgressBarValueDelegate(SetProgressBarValue), new object[] { c, Resources.BuildingDatStatusTextFormat });
-                   
-					BatchFshContainer batchFsh = batchFshList[c];
+
+                    BatchFshContainer batchFsh = batchFshList[c];
 					ListViewItem item = (ListViewItem)this.Invoke(new GetBatchListViewItemDelegate(GetBatchListViewItem), new object[] {c});
 					uint group = uint.Parse(item.SubItems[2].Text, NumberStyles.HexNumber);
 					uint[] instanceid = new uint[5];
@@ -458,108 +458,111 @@ namespace PngtoFshBatchtxt
 					}
 				}
 			}
+
+            this.BeginInvoke(new MethodInvoker(delegate()
+            {                
+                this.toolStripProgressStatus.Text = Resources.SavingDatStatusText;
+            }));
+
 			datRebuilt = true;
 		}
 		private void saveDatbtn_Click(object sender, EventArgs e)
 		{
-			if (dat == null)
-			{
-				dat = new DatFile();
-			} 
-			
-			try
-			{
+            if (batchListView.Items.Count > 0)
+            {
+                if (dat == null)
+                {
+                    dat = new DatFile();
+                }
 
-				if (saveDatDialog1.ShowDialog(this) == DialogResult.OK)
-				{
-					if (!batch_processed)
-					{
-						this.SetProgressBarMaximum();
-						this.Cursor = Cursors.WaitCursor;
-						Application.DoEvents();
-						this.batchProcessThread = new Thread(new ThreadStart(ProcessBatch)) { Priority = ThreadPriority.AboveNormal, IsBackground = true };
-						this.batchProcessThread.Start();
-						while (batchProcessThread.IsAlive)
-						{
-							Application.DoEvents();
-						}
-						this.batchProcessThread.Join();
-					}
-					if (compDatcb.Checked && !compress_datmips)
-					{
-						compress_datmips = true;
-					}
+                try
+                {
 
-					if (autoprocMipscb.Checked)
-					{
-                        Application.DoEvents();
-						this.mipProcessThread = new Thread(new ThreadStart(ProcessMips)) { Priority = ThreadPriority.AboveNormal, IsBackground = true };
-						this.mipProcessThread.Start();
-						while (mipProcessThread.IsAlive)
-						{
-							Application.DoEvents();
-						}
-						this.mipProcessThread.Join();
-					}
-			   
+                    if (saveDatDialog1.ShowDialog(this) == DialogResult.OK)
+                    {
+                        if (!batch_processed)
+                        {
+                            this.SetProgressBarMaximum();
+                            this.Cursor = Cursors.WaitCursor;
+                            Application.DoEvents();
+                            this.batchProcessThread = new Thread(new ThreadStart(ProcessBatch)) { Priority = ThreadPriority.AboveNormal, IsBackground = true };
+                            this.batchProcessThread.Start();
+                            while (batchProcessThread.IsAlive)
+                            {
+                                Application.DoEvents();
+                            }
+                            this.batchProcessThread.Join();
+                        }
+                        if (compDatcb.Checked && !compress_datmips)
+                        {
+                            compress_datmips = true;
+                        }
 
-					if (!datRebuilt)
-					{
-                        Application.DoEvents();
-						this.datRebuildThread  = new Thread(() => RebuildDat(dat)) { Priority = ThreadPriority.AboveNormal, IsBackground = true };
-						this.datRebuildThread.Start();
-						while (datRebuildThread.IsAlive)
-						{
-							Application.DoEvents();
-						}
-						this.datRebuildThread.Join();
-                        
-					}
-                    
-				   
-					this.Cursor = Cursors.Default;
-                   	if (dat.Indexes.Count > 0)
-					{
-						
-				   
-						try
-						{
+                        if (autoprocMipscb.Checked)
+                        {
+                            Application.DoEvents();
+                            this.mipProcessThread = new Thread(new ThreadStart(ProcessMips)) { Priority = ThreadPriority.AboveNormal, IsBackground = true };
+                            this.mipProcessThread.Start();
+                            while (mipProcessThread.IsAlive)
+                            {
+                                Application.DoEvents();
+                            }
+                            this.mipProcessThread.Join();
+                        }
 
-							/*if (string.IsNullOrEmpty(dat.FileName) || dat.FileName != saveDatDialog1.FileName)
-							{
-								dat.FileName = saveDatDialog1.FileName;
-								Datnametxt.Text = Path.GetFileName(dat.FileName);
-							}*/
 
-							dat.Save(saveDatDialog1.FileName);
-							dat.Close();
-							
-						}
-						catch (Exception)
-						{
-							throw;
-						}
-						finally
-						{
-                            ClearandReset();
-							dat = null;
-						}
+                        if (!datRebuilt)
+                        {
+                            Application.DoEvents();
+                            this.datRebuildThread = new Thread(() => RebuildDat(dat)) { Priority = ThreadPriority.AboveNormal, IsBackground = true };
+                            this.datRebuildThread.Start();
+                            while (datRebuildThread.IsAlive)
+                            {
+                                Application.DoEvents();
+                            }
+                            this.datRebuildThread.Join();
 
-					}
-				}
-				
-				
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show(this, ex.Message + "\n" + ex.StackTrace,this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
+                        }
+
+
+                        this.Cursor = Cursors.Default;
+                        if (dat.Indexes.Count > 0)
+                        {
+
+
+                            try
+                            {
+
+                                dat.Save(saveDatDialog1.FileName);
+                                dat.Close();
+
+                            }
+                            catch (Exception)
+                            {
+                                throw;
+                            }
+                            finally
+                            {
+                                ClearandReset();
+                                dat = null;
+                            }
+
+                        }
+                    }
+
+
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(this, ex.Message + "\n" + ex.StackTrace, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                } 
+            }
 		}
 
 		private void newDatbtn_Click(object sender, EventArgs e)
 		{
 			this.dat = new DatFile();
-			Datnametxt.Text = "Dat in Memory";
+			Datnametxt.Text = Resources.DatInMemory;
 		}
 		/// <summary>
 		/// Extracts the alpha channel bitmap from a transparent png
