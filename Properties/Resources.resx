@@ -127,6 +127,9 @@
     <value>Building Dat ({0} of {1})</value>
     <comment>RebuildDat</comment>
   </data>
+  <data name="DatInMemory" xml:space="preserve">
+    <value>Dat in Memory</value>
+  </data>
   <data name="FshWriteSSERequiredError" xml:space="preserve">
     <value>A processor that supports SSE is required to for FshWrite save DXT1 and DXT3 fsh images</value>
   </data>

@@ -88,6 +88,15 @@ namespace PngtoFshBatchtxt.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dat in Memory.
+        /// </summary>
+        internal static string DatInMemory {
+            get {
+                return ResourceManager.GetString("DatInMemory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A processor that supports SSE is required to for FshWrite save DXT1 and DXT3 fsh images.
         /// </summary>
         internal static string FshWriteSSERequiredError {
