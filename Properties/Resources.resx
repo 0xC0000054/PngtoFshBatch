@@ -117,21 +117,53 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="addBtn_ToolTip" xml:space="preserve">
+    <value>Add files to the existing list</value>
+  </data>
   <data name="AlphaGenString" xml:space="preserve">
     <value>Generated Alpha</value>
   </data>
   <data name="AlphaTransString" xml:space="preserve">
     <value>From Transparency</value>
   </data>
+  <data name="autoProcMipsCb_ToolTip" xml:space="preserve">
+    <value>Generate mipmaps for the zoom levels</value>
+  </data>
+  <data name="batchListView_ToolTipFormat" xml:space="preserve">
+    <value>The list of images to convert. {0} Dragging files or folders onto the list will create a new list</value>
+    <comment>The {0} is a placeholder for a newline.</comment>
+  </data>
   <data name="BuildingDatStatusTextFormat" xml:space="preserve">
     <value>Building Dat ({0} of {1})</value>
     <comment>RebuildDat</comment>
   </data>
+  <data name="compDatcb_ToolTip" xml:space="preserve">
+    <value>Compress the items in the saved dat</value>
+  </data>
   <data name="DatInMemory" xml:space="preserve">
     <value>Dat in Memory</value>
   </data>
+  <data name="fshTypeBox_ToolTip" xml:space="preserve">
+    <value>Change the fsh type of the selected item</value>
+  </data>
+  <data name="fshWriteCompCb_ToolTip" xml:space="preserve">
+    <value>Use Fshwrite compression when saving DXT1 and DXT3 fsh images</value>
+  </data>
   <data name="FshWriteSSERequiredError" xml:space="preserve">
     <value>A processor that supports SSE is required to for FshWrite save DXT1 and DXT3 fsh images</value>
+  </data>
+  <data name="ImageFiles_Filter" xml:space="preserve">
+    <value>Bitmap files (*.png;*.bmp)|*.png;*.bmp|All files (*.*)|*.*</value>
+    <comment>Image File Type Filter</comment>
+  </data>
+  <data name="InstanceIDRadioButtons_ToolTip" xml:space="preserve">
+    <value>Change the end diget of the instance id</value>
+  </data>
+  <data name="outFolderBtn_ToolTip" xml:space="preserve">
+    <value>Change the output folder for the processed files</value>
+  </data>
+  <data name="processBatchBtn_ToolTip" xml:space="preserve">
+    <value>Process the items in the list</value>
   </data>
   <data name="ProcessingMipsStatusTextFormat" xml:space="preserve">
     <value>Processing Mipmaps ({0} of {1})</value>
@@ -144,6 +176,12 @@
   <data name="ProgramName" xml:space="preserve">
     <value>Png to Fsh Batch</value>
   </data>
+  <data name="remBtn_ToolTip" xml:space="preserve">
+    <value>Removes the selected item from the list</value>
+  </data>
+  <data name="saveDatBtn_ToolTip" xml:space="preserve">
+    <value>Process the list and save into a new dat</value>
+  </data>
   <data name="SavingDatStatusText" xml:space="preserve">
     <value>Saving Dat</value>
   </data>
@@ -153,5 +191,11 @@
   </data>
   <data name="StatusTextReset" xml:space="preserve">
     <value>Ready</value>
+  </data>
+  <data name="tgiGroupTxt_ToolTip" xml:space="preserve">
+    <value>Change the group id of the image</value>
+  </data>
+  <data name="tgiInstanceTxt_ToolTip" xml:space="preserve">
+    <value>Change the instance id of the image</value>
   </data>
 </root>
