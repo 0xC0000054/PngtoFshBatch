@@ -1,4 +1,5 @@
-﻿namespace PngtoFshBatchtxt
+﻿using PngtoFshBatchtxt.Properties;
+namespace PngtoFshBatchtxt
 {
     partial class Form1
     {
@@ -44,28 +45,28 @@
             this.Datnametxt = new System.Windows.Forms.Label();
             this.datlbl = new System.Windows.Forms.Label();
             this.newDatbtn = new System.Windows.Forms.Button();
-            this.saveDatbtn = new System.Windows.Forms.Button();
-            this.processbatchbtn = new System.Windows.Forms.Button();
+            this.saveDatBtn = new System.Windows.Forms.Button();
+            this.processBatchBtn = new System.Windows.Forms.Button();
             this.saveDatDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.autoprocMipscb = new System.Windows.Forms.CheckBox();
+            this.autoProcMipsCb = new System.Windows.Forms.CheckBox();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.outfolderbtn = new System.Windows.Forms.Button();
+            this.outFolderBtn = new System.Windows.Forms.Button();
             this.OutputBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.PngopenDialog = new System.Windows.Forms.OpenFileDialog();
             this.InstendBox1 = new System.Windows.Forms.GroupBox();
             this.InstA_Erdo = new System.Windows.Forms.RadioButton();
             this.Inst5_9rdo = new System.Windows.Forms.RadioButton();
             this.Inst0_4rdo = new System.Windows.Forms.RadioButton();
-            this.rembtn = new System.Windows.Forms.Button();
-            this.addbtn = new System.Windows.Forms.Button();
-            this.FshtypeBox = new System.Windows.Forms.ComboBox();
+            this.remBtn = new System.Windows.Forms.Button();
+            this.addBtn = new System.Windows.Forms.Button();
+            this.fshTypeBox = new System.Windows.Forms.ComboBox();
             this.tgiInstlbl = new System.Windows.Forms.Label();
             this.tgiGrouplbl = new System.Windows.Forms.Label();
-            this.tgiInstancetxt = new System.Windows.Forms.TextBox();
-            this.tgiGrouptxt = new System.Windows.Forms.TextBox();
+            this.tgiInstanceTxt = new System.Windows.Forms.TextBox();
+            this.tgiGroupTxt = new System.Windows.Forms.TextBox();
             this.clearlistbtn = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.fshwritecompcb = new System.Windows.Forms.CheckBox();
+            this.fshWriteCompCb = new System.Windows.Forms.CheckBox();
             this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripProgressStatus = new System.Windows.Forms.ToolStripStatusLabel();
@@ -93,8 +94,7 @@
             this.batchListView.Name = "batchListView";
             this.batchListView.Size = new System.Drawing.Size(467, 132);
             this.batchListView.TabIndex = 0;
-            this.toolTip1.SetToolTip(this.batchListView, "The list of images to convert.\r\nDragging files or folders onto the list will crea" +
-                    "te a new list");
+            this.toolTip1.SetToolTip(this.batchListView, string.Format(Resources.batchListView_ToolTipFormat, System.Environment.NewLine));
             this.batchListView.UseCompatibleStateImageBehavior = false;
             this.batchListView.View = System.Windows.Forms.View.Details;
             this.batchListView.SelectedIndexChanged += new System.EventHandler(this.batchListView1_SelectedIndexChanged);
@@ -132,7 +132,7 @@
             this.compDatcb.Size = new System.Drawing.Size(90, 17);
             this.compDatcb.TabIndex = 3;
             this.compDatcb.Text = "Compress dat";
-            this.toolTip1.SetToolTip(this.compDatcb, "Change the end diget of the instance id");
+            this.toolTip1.SetToolTip(this.compDatcb, Resources.compDatcb_ToolTip);
             this.compDatcb.UseVisualStyleBackColor = true;
             this.compDatcb.CheckedChanged += new System.EventHandler(this.compDatcb_CheckedChanged);
             // 
@@ -142,7 +142,7 @@
             this.datFuncBox.Controls.Add(this.Datnametxt);
             this.datFuncBox.Controls.Add(this.datlbl);
             this.datFuncBox.Controls.Add(this.newDatbtn);
-            this.datFuncBox.Controls.Add(this.saveDatbtn);
+            this.datFuncBox.Controls.Add(this.saveDatBtn);
             this.datFuncBox.Location = new System.Drawing.Point(315, 150);
             this.datFuncBox.Name = "datFuncBox";
             this.datFuncBox.Size = new System.Drawing.Size(167, 64);
@@ -180,29 +180,29 @@
             this.newDatbtn.UseVisualStyleBackColor = true;
             this.newDatbtn.Click += new System.EventHandler(this.newDatbtn_Click);
             // 
-            // saveDatbtn
+            // saveDatBtn
             // 
-            this.saveDatbtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.saveDatbtn.Location = new System.Drawing.Point(87, 34);
-            this.saveDatbtn.Name = "saveDatbtn";
-            this.saveDatbtn.Size = new System.Drawing.Size(75, 23);
-            this.saveDatbtn.TabIndex = 15;
-            this.saveDatbtn.Text = "Save dat";
-            this.toolTip1.SetToolTip(this.saveDatbtn, "Process the list and save into a new dat");
-            this.saveDatbtn.UseVisualStyleBackColor = true;
-            this.saveDatbtn.Click += new System.EventHandler(this.saveDatbtn_Click);
+            this.saveDatBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.saveDatBtn.Location = new System.Drawing.Point(87, 34);
+            this.saveDatBtn.Name = "saveDatBtn";
+            this.saveDatBtn.Size = new System.Drawing.Size(75, 23);
+            this.saveDatBtn.TabIndex = 15;
+            this.saveDatBtn.Text = "Save dat";
+            this.toolTip1.SetToolTip(this.saveDatBtn, Resources.saveDatBtn_ToolTip);
+            this.saveDatBtn.UseVisualStyleBackColor = true;
+            this.saveDatBtn.Click += new System.EventHandler(this.saveDatbtn_Click);
             // 
-            // processbatchbtn
+            // processBatchBtn
             // 
-            this.processbatchbtn.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.processbatchbtn.Location = new System.Drawing.Point(399, 281);
-            this.processbatchbtn.Name = "processbatchbtn";
-            this.processbatchbtn.Size = new System.Drawing.Size(75, 23);
-            this.processbatchbtn.TabIndex = 14;
-            this.processbatchbtn.Text = "Process";
-            this.toolTip1.SetToolTip(this.processbatchbtn, "Process the items in the list");
-            this.processbatchbtn.UseVisualStyleBackColor = true;
-            this.processbatchbtn.Click += new System.EventHandler(this.processbatchbtn_Click);
+            this.processBatchBtn.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.processBatchBtn.Location = new System.Drawing.Point(399, 281);
+            this.processBatchBtn.Name = "processBatchBtn";
+            this.processBatchBtn.Size = new System.Drawing.Size(75, 23);
+            this.processBatchBtn.TabIndex = 14;
+            this.processBatchBtn.Text = "Process";
+            this.toolTip1.SetToolTip(this.processBatchBtn, Resources.processBatchBtn_ToolTip);
+            this.processBatchBtn.UseVisualStyleBackColor = true;
+            this.processBatchBtn.Click += new System.EventHandler(this.processbatchbtn_Click);
             // 
             // saveDatDialog1
             // 
@@ -210,39 +210,39 @@
             this.saveDatDialog1.Filter = "Dat files (*.dat)|*.dat|All files (*.*)|*.*";
             this.saveDatDialog1.RestoreDirectory = true;
             // 
-            // autoprocMipscb
+            // autoProcMipsCb
             // 
-            this.autoprocMipscb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.autoprocMipscb.AutoSize = true;
-            this.autoprocMipscb.Location = new System.Drawing.Point(12, 150);
-            this.autoprocMipscb.Name = "autoprocMipscb";
-            this.autoprocMipscb.Size = new System.Drawing.Size(153, 17);
-            this.autoprocMipscb.TabIndex = 2;
-            this.autoprocMipscb.Text = "Automatically process Mips";
-            this.toolTip1.SetToolTip(this.autoprocMipscb, "Generate mipmaps for the zoom levels");
-            this.autoprocMipscb.UseVisualStyleBackColor = true;
-            this.autoprocMipscb.CheckedChanged += new System.EventHandler(this.autoprocMipscb_CheckedChanged);
+            this.autoProcMipsCb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.autoProcMipsCb.AutoSize = true;
+            this.autoProcMipsCb.Location = new System.Drawing.Point(12, 150);
+            this.autoProcMipsCb.Name = "autoProcMipsCb";
+            this.autoProcMipsCb.Size = new System.Drawing.Size(153, 17);
+            this.autoProcMipsCb.TabIndex = 2;
+            this.autoProcMipsCb.Text = "Automatically process Mips";
+            this.toolTip1.SetToolTip(this.autoProcMipsCb, Resources.autoProcMipsCb_ToolTip);
+            this.autoProcMipsCb.UseVisualStyleBackColor = true;
+            this.autoProcMipsCb.CheckedChanged += new System.EventHandler(this.autoprocMipscb_CheckedChanged);
             // 
             // openFileDialog1
             // 
             this.openFileDialog1.DefaultExt = "txt";
             this.openFileDialog1.Filter = "Batch files (*.txt)|*.txt";
             // 
-            // outfolderbtn
+            // outFolderBtn
             // 
-            this.outfolderbtn.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.outfolderbtn.Location = new System.Drawing.Point(300, 281);
-            this.outfolderbtn.Name = "outfolderbtn";
-            this.outfolderbtn.Size = new System.Drawing.Size(93, 23);
-            this.outfolderbtn.TabIndex = 11;
-            this.outfolderbtn.Text = "Output Folder";
-            this.toolTip1.SetToolTip(this.outfolderbtn, "Change the output folder for the processed files");
-            this.outfolderbtn.UseVisualStyleBackColor = true;
-            this.outfolderbtn.Click += new System.EventHandler(this.outfolderbtn_Click);
+            this.outFolderBtn.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.outFolderBtn.Location = new System.Drawing.Point(300, 281);
+            this.outFolderBtn.Name = "outFolderBtn";
+            this.outFolderBtn.Size = new System.Drawing.Size(93, 23);
+            this.outFolderBtn.TabIndex = 11;
+            this.outFolderBtn.Text = "Output Folder";
+            this.toolTip1.SetToolTip(this.outFolderBtn, Resources.outFolderBtn_ToolTip);
+            this.outFolderBtn.UseVisualStyleBackColor = true;
+            this.outFolderBtn.Click += new System.EventHandler(this.outfolderbtn_Click);
             // 
             // PngopenDialog
             // 
-            this.PngopenDialog.Filter = "Bitmap files (*.png;*.bmp)|*.png;*.bmp";
+            this.PngopenDialog.Filter = Resources.ImageFiles_Filter;
             this.PngopenDialog.Multiselect = true;
             // 
             // InstendBox1
@@ -268,7 +268,7 @@
             this.InstA_Erdo.TabIndex = 9;
             this.InstA_Erdo.TabStop = true;
             this.InstA_Erdo.Text = "A-E";
-            this.toolTip1.SetToolTip(this.InstA_Erdo, "Change the end diget of the instance id");
+            this.toolTip1.SetToolTip(this.InstA_Erdo, Resources.InstanceIDRadioButtons_ToolTip);
             this.InstA_Erdo.UseVisualStyleBackColor = true;
             this.InstA_Erdo.CheckedChanged += new System.EventHandler(this.Format_radios_changed);
             // 
@@ -282,7 +282,7 @@
             this.Inst5_9rdo.TabIndex = 8;
             this.Inst5_9rdo.TabStop = true;
             this.Inst5_9rdo.Text = "5-9";
-            this.toolTip1.SetToolTip(this.Inst5_9rdo, "Change the end diget of the instance id");
+            this.toolTip1.SetToolTip(this.Inst5_9rdo, Resources.InstanceIDRadioButtons_ToolTip);
             this.Inst5_9rdo.UseVisualStyleBackColor = true;
             this.Inst5_9rdo.CheckedChanged += new System.EventHandler(this.Format_radios_changed);
             // 
@@ -297,56 +297,56 @@
             this.Inst0_4rdo.TabIndex = 7;
             this.Inst0_4rdo.TabStop = true;
             this.Inst0_4rdo.Text = "0-4";
-            this.toolTip1.SetToolTip(this.Inst0_4rdo, "Change the end diget of the instance id");
+            this.toolTip1.SetToolTip(this.Inst0_4rdo, Resources.InstanceIDRadioButtons_ToolTip);
             this.Inst0_4rdo.UseVisualStyleBackColor = true;
             this.Inst0_4rdo.CheckedChanged += new System.EventHandler(this.Format_radios_changed);
             // 
-            // rembtn
+            // remBtn
             // 
-            this.rembtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.rembtn.Location = new System.Drawing.Point(399, 223);
-            this.rembtn.Name = "rembtn";
-            this.rembtn.Size = new System.Drawing.Size(75, 23);
-            this.rembtn.TabIndex = 16;
-            this.rembtn.Text = "Remove";
-            this.toolTip1.SetToolTip(this.rembtn, "Removes the selected item from the list");
-            this.rembtn.UseVisualStyleBackColor = true;
-            this.rembtn.Click += new System.EventHandler(this.rembtn_Click);
+            this.remBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.remBtn.Location = new System.Drawing.Point(399, 223);
+            this.remBtn.Name = "remBtn";
+            this.remBtn.Size = new System.Drawing.Size(75, 23);
+            this.remBtn.TabIndex = 16;
+            this.remBtn.Text = "Remove";
+            this.toolTip1.SetToolTip(this.remBtn, Resources.remBtn_ToolTip);
+            this.remBtn.UseVisualStyleBackColor = true;
+            this.remBtn.Click += new System.EventHandler(this.remBtn_Click);
             // 
-            // addbtn
+            // addBtn
             // 
-            this.addbtn.AllowDrop = true;
-            this.addbtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.addbtn.Location = new System.Drawing.Point(318, 223);
-            this.addbtn.Name = "addbtn";
-            this.addbtn.Size = new System.Drawing.Size(75, 23);
-            this.addbtn.TabIndex = 13;
-            this.addbtn.Text = "Add";
-            this.toolTip1.SetToolTip(this.addbtn, "Add files to the existing list");
-            this.addbtn.UseVisualStyleBackColor = true;
-            this.addbtn.Click += new System.EventHandler(this.addbtn_Click);
-            this.addbtn.DragDrop += new System.Windows.Forms.DragEventHandler(this.addbtn_DragDrop);
-            this.addbtn.DragEnter += new System.Windows.Forms.DragEventHandler(this.addbtn_DragEnter);
+            this.addBtn.AllowDrop = true;
+            this.addBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.addBtn.Location = new System.Drawing.Point(318, 223);
+            this.addBtn.Name = "addBtn";
+            this.addBtn.Size = new System.Drawing.Size(75, 23);
+            this.addBtn.TabIndex = 13;
+            this.addBtn.Text = "Add";
+            this.toolTip1.SetToolTip(this.addBtn, Resources.addBtn_ToolTip);
+            this.addBtn.UseVisualStyleBackColor = true;
+            this.addBtn.Click += new System.EventHandler(this.addBtn_Click);
+            this.addBtn.DragDrop += new System.Windows.Forms.DragEventHandler(this.addBtn_DragDrop);
+            this.addBtn.DragEnter += new System.Windows.Forms.DragEventHandler(this.addBtn_DragEnter);
             // 
-            // FshtypeBox
+            // fshTypeBox
             // 
-            this.FshtypeBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.FshtypeBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.FshtypeBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.FshtypeBox.FormattingEnabled = true;
-            this.FshtypeBox.Items.AddRange(new object[] {
+            this.fshTypeBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.fshTypeBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.fshTypeBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.fshTypeBox.FormattingEnabled = true;
+            this.fshTypeBox.Items.AddRange(new object[] {
             "24 Bit RGB (0:8:8:8)",
             "32 Bit ARGB (8:8:8:8)",
             "DXT1 Compressed, no Alpha",
             "DXT3 Compressed, with Alpha "});
-            this.FshtypeBox.Location = new System.Drawing.Point(12, 283);
-            this.FshtypeBox.Name = "FshtypeBox";
-            this.FshtypeBox.Size = new System.Drawing.Size(172, 21);
-            this.FshtypeBox.TabIndex = 6;
-            this.toolTip1.SetToolTip(this.FshtypeBox, "Change the fsh type of the selected item");
-            this.FshtypeBox.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.FshtypeBox_DrawItem);
-            this.FshtypeBox.SelectedIndexChanged += new System.EventHandler(this.FshtypeBox_SelectedIndexChanged);
-            this.FshtypeBox.SelectionChangeCommitted += new System.EventHandler(this.FshtypeBox_SelectionChangeCommitted);
+            this.fshTypeBox.Location = new System.Drawing.Point(12, 283);
+            this.fshTypeBox.Name = "fshTypeBox";
+            this.fshTypeBox.Size = new System.Drawing.Size(172, 21);
+            this.fshTypeBox.TabIndex = 6;
+            this.toolTip1.SetToolTip(this.fshTypeBox, Resources.fshTypeBox_ToolTip);
+            this.fshTypeBox.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.fshTypeBox_DrawItem);
+            this.fshTypeBox.SelectedIndexChanged += new System.EventHandler(this.fshTypeBox_SelectedIndexChanged);
+            this.fshTypeBox.SelectionChangeCommitted += new System.EventHandler(this.fshTypeBox_SelectionChangeCommitted);
             // 
             // tgiInstlbl
             // 
@@ -369,31 +369,31 @@
             this.tgiGrouplbl.TabIndex = 104;
             this.tgiGrouplbl.Text = "Group";
             // 
-            // tgiInstancetxt
+            // tgiInstanceTxt
             // 
-            this.tgiInstancetxt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.tgiInstancetxt.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.tgiInstancetxt.Location = new System.Drawing.Point(67, 252);
-            this.tgiInstancetxt.MaxLength = 8;
-            this.tgiInstancetxt.Name = "tgiInstancetxt";
-            this.tgiInstancetxt.Size = new System.Drawing.Size(82, 20);
-            this.tgiInstancetxt.TabIndex = 5;
-            this.toolTip1.SetToolTip(this.tgiInstancetxt, "Change the instance id of the selected item");
-            this.tgiInstancetxt.TextChanged += new System.EventHandler(this.tgiInstancetxt_TextChanged);
-            this.tgiInstancetxt.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TgiGrouptxt_KeyDown);
+            this.tgiInstanceTxt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.tgiInstanceTxt.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+            this.tgiInstanceTxt.Location = new System.Drawing.Point(67, 252);
+            this.tgiInstanceTxt.MaxLength = 8;
+            this.tgiInstanceTxt.Name = "tgiInstanceTxt";
+            this.tgiInstanceTxt.Size = new System.Drawing.Size(82, 20);
+            this.tgiInstanceTxt.TabIndex = 5;
+            this.toolTip1.SetToolTip(this.tgiInstanceTxt, Resources.tgiInstanceTxt_ToolTip);
+            this.tgiInstanceTxt.TextChanged += new System.EventHandler(this.tgiInstanceTxt_TextChanged);
+            this.tgiInstanceTxt.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tgiGroupTxt_KeyDown);
             // 
-            // tgiGrouptxt
+            // tgiGroupTxt
             // 
-            this.tgiGrouptxt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.tgiGrouptxt.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.tgiGrouptxt.Location = new System.Drawing.Point(67, 226);
-            this.tgiGrouptxt.MaxLength = 8;
-            this.tgiGrouptxt.Name = "tgiGrouptxt";
-            this.tgiGrouptxt.Size = new System.Drawing.Size(82, 20);
-            this.tgiGrouptxt.TabIndex = 4;
-            this.toolTip1.SetToolTip(this.tgiGrouptxt, "Change the group id of the selected item");
-            this.tgiGrouptxt.TextChanged += new System.EventHandler(this.tgiGrouptxt_TextChanged);
-            this.tgiGrouptxt.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TgiGrouptxt_KeyDown);
+            this.tgiGroupTxt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.tgiGroupTxt.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+            this.tgiGroupTxt.Location = new System.Drawing.Point(67, 226);
+            this.tgiGroupTxt.MaxLength = 8;
+            this.tgiGroupTxt.Name = "tgiGroupTxt";
+            this.tgiGroupTxt.Size = new System.Drawing.Size(82, 20);
+            this.tgiGroupTxt.TabIndex = 4;
+            this.toolTip1.SetToolTip(this.tgiGroupTxt, Resources.tgiGroupTxt_ToolTip);
+            this.tgiGroupTxt.TextChanged += new System.EventHandler(this.tgiGroupTxt_TextChanged);
+            this.tgiGroupTxt.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tgiGroupTxt_KeyDown);
             // 
             // clearlistbtn
             // 
@@ -412,18 +412,18 @@
             this.toolTip1.InitialDelay = 1000;
             this.toolTip1.ReshowDelay = 500;
             // 
-            // fshwritecompcb
+            // fshWriteCompCb
             // 
-            this.fshwritecompcb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.fshwritecompcb.AutoSize = true;
-            this.fshwritecompcb.Location = new System.Drawing.Point(12, 184);
-            this.fshwritecompcb.Name = "fshwritecompcb";
-            this.fshwritecompcb.Size = new System.Drawing.Size(128, 17);
-            this.fshwritecompcb.TabIndex = 107;
-            this.fshwritecompcb.Text = "Fshwrite Compression";
-            this.toolTip1.SetToolTip(this.fshwritecompcb, "Use Fshwrite compression when saving DXT1 and DXT3 fsh images");
-            this.fshwritecompcb.UseVisualStyleBackColor = true;
-            this.fshwritecompcb.CheckedChanged += new System.EventHandler(this.fshwritecompcb_CheckedChanged);
+            this.fshWriteCompCb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.fshWriteCompCb.AutoSize = true;
+            this.fshWriteCompCb.Location = new System.Drawing.Point(12, 184);
+            this.fshWriteCompCb.Name = "fshWriteCompCb";
+            this.fshWriteCompCb.Size = new System.Drawing.Size(128, 17);
+            this.fshWriteCompCb.TabIndex = 107;
+            this.fshWriteCompCb.Text = "Fshwrite Compression";
+            this.toolTip1.SetToolTip(this.fshWriteCompCb, Resources.fshWriteCompCb_ToolTip);
+            this.fshWriteCompCb.UseVisualStyleBackColor = true;
+            this.fshWriteCompCb.CheckedChanged += new System.EventHandler(this.fshwritecompcb_CheckedChanged);
             // 
             // toolStripProgressBar1
             // 
@@ -457,22 +457,22 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(493, 339);
             this.Controls.Add(this.statusStrip1);
-            this.Controls.Add(this.fshwritecompcb);
+            this.Controls.Add(this.fshWriteCompCb);
             this.Controls.Add(this.clearlistbtn);
             this.Controls.Add(this.tgiInstlbl);
             this.Controls.Add(this.tgiGrouplbl);
-            this.Controls.Add(this.tgiInstancetxt);
-            this.Controls.Add(this.tgiGrouptxt);
-            this.Controls.Add(this.FshtypeBox);
-            this.Controls.Add(this.addbtn);
-            this.Controls.Add(this.rembtn);
+            this.Controls.Add(this.tgiInstanceTxt);
+            this.Controls.Add(this.tgiGroupTxt);
+            this.Controls.Add(this.fshTypeBox);
+            this.Controls.Add(this.addBtn);
+            this.Controls.Add(this.remBtn);
             this.Controls.Add(this.InstendBox1);
-            this.Controls.Add(this.outfolderbtn);
-            this.Controls.Add(this.processbatchbtn);
+            this.Controls.Add(this.outFolderBtn);
+            this.Controls.Add(this.processBatchBtn);
             this.Controls.Add(this.compDatcb);
             this.Controls.Add(this.datFuncBox);
             this.Controls.Add(this.batchListView);
-            this.Controls.Add(this.autoprocMipscb);
+            this.Controls.Add(this.autoProcMipsCb);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MinimumSize = new System.Drawing.Size(499, 342);
             this.Name = "Form1";
@@ -498,31 +498,31 @@
         private System.Windows.Forms.Label Datnametxt;
         private System.Windows.Forms.Label datlbl;
         private System.Windows.Forms.Button newDatbtn;
-        private System.Windows.Forms.Button saveDatbtn;
-        internal System.Windows.Forms.Button processbatchbtn;
+        private System.Windows.Forms.Button saveDatBtn;
+        internal System.Windows.Forms.Button processBatchBtn;
         private System.Windows.Forms.SaveFileDialog saveDatDialog1;
-        internal System.Windows.Forms.CheckBox autoprocMipscb;
+        internal System.Windows.Forms.CheckBox autoProcMipsCb;
         private System.Windows.Forms.ColumnHeader groupHeader;
         private System.Windows.Forms.ColumnHeader instanceHeader;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
-        private System.Windows.Forms.Button outfolderbtn;
+        private System.Windows.Forms.Button outFolderBtn;
         private System.Windows.Forms.FolderBrowserDialog OutputBrowserDialog1;
         private System.Windows.Forms.OpenFileDialog PngopenDialog;
         private System.Windows.Forms.GroupBox InstendBox1;
         private System.Windows.Forms.RadioButton InstA_Erdo;
         private System.Windows.Forms.RadioButton Inst5_9rdo;
         private System.Windows.Forms.RadioButton Inst0_4rdo;
-        private System.Windows.Forms.Button rembtn;
-        private System.Windows.Forms.Button addbtn;
-        private System.Windows.Forms.ComboBox FshtypeBox;
+        private System.Windows.Forms.Button remBtn;
+        private System.Windows.Forms.Button addBtn;
+        private System.Windows.Forms.ComboBox fshTypeBox;
         private System.Windows.Forms.Label tgiInstlbl;
         private System.Windows.Forms.Label tgiGrouplbl;
-        private System.Windows.Forms.TextBox tgiInstancetxt;
-        internal System.Windows.Forms.TextBox tgiGrouptxt;
+        private System.Windows.Forms.TextBox tgiInstanceTxt;
+        internal System.Windows.Forms.TextBox tgiGroupTxt;
         private System.Windows.Forms.Button clearlistbtn;
         internal System.Windows.Forms.ListView batchListView;
         private System.Windows.Forms.ToolTip toolTip1;
-        private System.Windows.Forms.CheckBox fshwritecompcb;
+        private System.Windows.Forms.CheckBox fshWriteCompCb;
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar1;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripProgressStatus;

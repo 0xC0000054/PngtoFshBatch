@@ -180,56 +180,71 @@ namespace PngtoFshBatchtxt
 		private char end8;
 		private void WriteTgi(string filename, int zoom,int cnt)
 		{
-			using(FileStream fs = new FileStream(filename + ".TGI", FileMode.OpenOrCreate, FileAccess.Write))
-			{
-				using (StreamWriter sw = new StreamWriter(fs)) 
-				{
-					sw.WriteLine("7ab50e44\t\n");
-					sw.WriteLine(string.Format("{0:X8}", batchListView.Items[cnt].SubItems[2].Text + "\n"));
-					if (instarray[cnt].EndsWith("4") || instarray[cnt].EndsWith("3") || instarray[cnt].EndsWith("2") || instarray[cnt].EndsWith("1") || instarray[cnt].EndsWith("0"))
-					{
-						endreg = '4';
-						end64 = '3';
-						end32 = '2';
-						end16 = '1';
-						end8 = '0';
-					}
-					else if (instarray[cnt].EndsWith("9") || instarray[cnt].EndsWith("8") || instarray[cnt].EndsWith("7") || instarray[cnt].EndsWith("6") || instarray[cnt].EndsWith("5"))
-					{
-						endreg = '9';
-						end64 = '8';
-						end32 = '7';
-						end16 = '6';
-						end8 = '5';
-					}
-					else if (instarray[cnt].EndsWith("E") || instarray[cnt].EndsWith("D") || instarray[cnt].EndsWith("C") || instarray[cnt].EndsWith("B") || instarray[cnt].EndsWith("A"))
-					{
-						endreg = 'E';
-						end64 = 'D';
-						end32 = 'C';
-						end16 = 'B';
-						end8 = 'A';
-					}
-					switch (zoom)
-					{
-						case 0:
-							sw.WriteLine(string.Format("{0:X8}", batchListView.Items[cnt].SubItems[3].Text.Substring(0, 7) + end8));
-							break;
-						case 1:
-							sw.WriteLine(string.Format("{0:X8}", batchListView.Items[cnt].SubItems[3].Text.Substring(0, 7) + end16));
-							break;
-						case 2:
-							sw.WriteLine(string.Format("{0:X8}", batchListView.Items[cnt].SubItems[3].Text.Substring(0, 7) + end32));
-							break;
-						case 3:
-							sw.WriteLine(string.Format("{0:X8}", batchListView.Items[cnt].SubItems[3].Text.Substring(0, 7) + end64));
-							break;
-						case 4:
-							sw.WriteLine(string.Format("{0:X8}", batchListView.Items[cnt].SubItems[3].Text));
-							break;
-					}
-				} 
-			}
+            FileStream fs = null;
+
+            try
+            {
+                fs = new FileStream(filename + ".TGI", FileMode.OpenOrCreate, FileAccess.Write);
+
+                using (StreamWriter sw = new StreamWriter(fs))
+                {
+                    sw.WriteLine("7ab50e44\t\n");
+                    sw.WriteLine(string.Format("{0:X8}", batchListView.Items[cnt].SubItems[2].Text + "\n"));
+                    if (instarray[cnt].EndsWith("4") || instarray[cnt].EndsWith("3") || instarray[cnt].EndsWith("2") || instarray[cnt].EndsWith("1") || instarray[cnt].EndsWith("0"))
+                    {
+                        endreg = '4';
+                        end64 = '3';
+                        end32 = '2';
+                        end16 = '1';
+                        end8 = '0';
+                    }
+                    else if (instarray[cnt].EndsWith("9") || instarray[cnt].EndsWith("8") || instarray[cnt].EndsWith("7") || instarray[cnt].EndsWith("6") || instarray[cnt].EndsWith("5"))
+                    {
+                        endreg = '9';
+                        end64 = '8';
+                        end32 = '7';
+                        end16 = '6';
+                        end8 = '5';
+                    }
+                    else if (instarray[cnt].EndsWith("E") || instarray[cnt].EndsWith("D") || instarray[cnt].EndsWith("C") || instarray[cnt].EndsWith("B") || instarray[cnt].EndsWith("A"))
+                    {
+                        endreg = 'E';
+                        end64 = 'D';
+                        end32 = 'C';
+                        end16 = 'B';
+                        end8 = 'A';
+                    }
+                    switch (zoom)
+                    {
+                        case 0:
+                            sw.WriteLine(string.Format("{0:X8}", batchListView.Items[cnt].SubItems[3].Text.Substring(0, 7) + end8));
+                            break;
+                        case 1:
+                            sw.WriteLine(string.Format("{0:X8}", batchListView.Items[cnt].SubItems[3].Text.Substring(0, 7) + end16));
+                            break;
+                        case 2:
+                            sw.WriteLine(string.Format("{0:X8}", batchListView.Items[cnt].SubItems[3].Text.Substring(0, 7) + end32));
+                            break;
+                        case 3:
+                            sw.WriteLine(string.Format("{0:X8}", batchListView.Items[cnt].SubItems[3].Text.Substring(0, 7) + end64));
+                            break;
+                        case 4:
+                            sw.WriteLine(string.Format("{0:X8}", batchListView.Items[cnt].SubItems[3].Text));
+                            break;
+                    }
+                }
+
+                fs = null;
+            }
+            finally
+            {
+                if (fs != null)
+                {
+                    fs.Close();
+                    fs = null;
+                }
+            }
+			
 		   
 		}
 
@@ -299,25 +314,25 @@ namespace PngtoFshBatchtxt
 				{
 					InstA_Erdo.Checked = true;
 				}
-				tgiGrouptxt.Text = batchListView.SelectedItems[0].SubItems[2].Text;
-				tgiInstancetxt.Text = batchListView.SelectedItems[0].SubItems[3].Text;
+				tgiGroupTxt.Text = batchListView.SelectedItems[0].SubItems[2].Text;
+				tgiInstanceTxt.Text = batchListView.SelectedItems[0].SubItems[3].Text;
 				int index = batchListView.SelectedItems[0].Index;
 				switch (typearray[index].ToUpperInvariant())
 				{ 
 					case "TWENTYFOURBIT":
-						FshtypeBox.SelectedIndex = 0;
+						fshTypeBox.SelectedIndex = 0;
 						typeindex = 0;
 						break;
 					case "THIRTYTWOBIT":
-						FshtypeBox.SelectedIndex = 1;
+						fshTypeBox.SelectedIndex = 1;
 						typeindex = 1;
 						break;
 					case "DXT1":
-						FshtypeBox.SelectedIndex = 2;
+						fshTypeBox.SelectedIndex = 2;
 						typeindex = 2;
 						break;
 					case "DXT3":
-						FshtypeBox.SelectedIndex = 3;
+						fshTypeBox.SelectedIndex = 3;
 						typeindex = 3;
 						break;
 				}
@@ -400,7 +415,7 @@ namespace PngtoFshBatchtxt
 					{
 						if (fshimg[i] != null)
 						{
-							fshwrap[i] = new FshWrapper(fshimg[i]) { UseFshWrite = fshwritecompcb.Checked };
+							fshwrap[i] = new FshWrapper(fshimg[i]) { UseFshWrite = fshWriteCompCb.Checked };
 
 							inputdat.Add(fshwrap[i], group, instanceid[i], compress_datmips);
 							// Debug.WriteLine("Bmp: " + c.ToString() + " zoom: " + i.ToString());
@@ -408,7 +423,7 @@ namespace PngtoFshBatchtxt
 					}
 				}
 			}
-			else if (!autoprocMipscb.Checked && batchFshList != null)
+			else if (!autoProcMipsCb.Checked && batchFshList != null)
 			{
 				for (int c = 0; c < batchListView.Items.Count; c++)
 				{
@@ -452,7 +467,7 @@ namespace PngtoFshBatchtxt
 
 					if (batchFshList[c].MainImage != null)
 					{
-						fshwrap = new FshWrapper(batchFshList[c].MainImage) { UseFshWrite = fshwritecompcb.Checked };
+						fshwrap = new FshWrapper(batchFshList[c].MainImage) { UseFshWrite = fshWriteCompCb.Checked };
 
 						inputdat.Add(fshwrap, Group, instanceid, compress_datmips);
 					}
@@ -498,7 +513,7 @@ namespace PngtoFshBatchtxt
                             compress_datmips = true;
                         }
 
-                        if (autoprocMipscb.Checked)
+                        if (autoProcMipsCb.Checked)
                         {
                             Application.DoEvents();
                             this.mipProcessThread = new Thread(new ThreadStart(ProcessMips)) { Priority = ThreadPriority.AboveNormal, IsBackground = true };
@@ -703,7 +718,7 @@ namespace PngtoFshBatchtxt
 							{
 								SaveFsh(mstream, batchFshList[c].MainImage);
 
-								if (IsDXTFsh(batchFshList[c].MainImage) && fshwritecompcb.Checked)
+								if (IsDXTFsh(batchFshList[c].MainImage) && fshWriteCompCb.Checked)
 								{
 									batchFshList[c].MainImage = new FSHImage(mstream);
 								}
@@ -745,7 +760,7 @@ namespace PngtoFshBatchtxt
 		{
 			try
 			{
-				if (fshwritecompcb.Checked && IsDXTFsh(image))
+				if (fshWriteCompCb.Checked && IsDXTFsh(image))
 				{
 					Fshwrite fw = new Fshwrite();
 					foreach (BitmapItem bi in image.Bitmaps)
@@ -790,7 +805,7 @@ namespace PngtoFshBatchtxt
 
 		private void SetProgressBarMaximum()
 		{
-			if (this.autoprocMipscb.Checked)
+			if (this.autoProcMipsCb.Checked)
 			{
 				toolStripProgressBar1.Maximum = (this.batchListView.Items.Count * 3);
 			}
@@ -829,7 +844,7 @@ namespace PngtoFshBatchtxt
 					}
 					this.Invoke(new WriteTgiDelegate(WriteTgi), new object[] {filepath, 4, c});
 				}
-				if (autoprocMipscb.Checked)
+				if (autoProcMipsCb.Checked)
 				{
 					if (batchFsh.Mip64Fsh != null)
 					{
@@ -893,7 +908,7 @@ namespace PngtoFshBatchtxt
 					this.batchProcessThread.Join();
 				}
 
-				if (autoprocMipscb.Checked)
+				if (autoProcMipsCb.Checked)
 				{
 					this.mipProcessThread = new Thread(new ThreadStart(ProcessMips)) { Priority = ThreadPriority.AboveNormal, IsBackground = true };
 					this.mipProcessThread.Start();
@@ -935,8 +950,8 @@ namespace PngtoFshBatchtxt
 			{
 				settings = new Settings(Path.Combine(Application.StartupPath, @"PngtoFshBatch.xml"));
 				compDatcb.Checked = bool.Parse(settings.GetSetting("compDatcb_checked", bool.TrueString));
-				autoprocMipscb.Checked = bool.Parse(settings.GetSetting("AutoprocessMips", bool.FalseString));
-				fshwritecompcb.Checked = bool.Parse(settings.GetSetting("fshwritecompcb_checked", bool.FalseString));
+				autoProcMipsCb.Checked = bool.Parse(settings.GetSetting("AutoprocessMips", bool.FalseString));
+				fshWriteCompCb.Checked = bool.Parse(settings.GetSetting("fshwritecompcb_checked", bool.FalseString));
 			}
 			catch (Exception ex)
 			{
@@ -954,14 +969,14 @@ namespace PngtoFshBatchtxt
 			if (!IsProcessorFeaturePresent(SSE))
 			{
 				MessageBox.Show(Resources.FshWriteSSERequiredError, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-				fshwritecompcb.Enabled = fshwritecompcb.Checked = false;
+				fshWriteCompCb.Enabled = fshWriteCompCb.Checked = false;
 			}
 		}
 		private void Form1_Load(object sender, EventArgs e)
 		{
 			LoadSettings();
 			CheckForSSE();
-			FshtypeBox.SelectedIndex = 2;
+			fshTypeBox.SelectedIndex = 2;
 			grppath = Path.Combine(Application.StartupPath, @"Groupid.txt");
 			rangepath = Path.Combine(Application.StartupPath, @"instRange.txt");
 			CheckRangeFilesExist(rangepath, false);
@@ -1014,7 +1029,7 @@ namespace PngtoFshBatchtxt
 		{
 			if (settings != null)
 			{
-				settings.PutSetting("AutoprocessMips", autoprocMipscb.Checked.ToString());
+				settings.PutSetting("AutoprocessMips", autoProcMipsCb.Checked.ToString());
 			}
 		}
 		internal string outfolder = string.Empty;
@@ -1292,7 +1307,7 @@ namespace PngtoFshBatchtxt
 			}
 			
 			batchListView.SelectedItems[0].SubItems[3].Text = instarray[index];
-			tgiInstancetxt.Text = instarray[index];
+			tgiInstanceTxt.Text = instarray[index];
 		}
 		private void Format_radios_changed(object sender, EventArgs e)
 		{
@@ -1311,11 +1326,11 @@ namespace PngtoFshBatchtxt
 		{
 			try
 			{
-				if (tgiGrouptxt.Text.Length > 0 && tgiGrouptxt.Text.Length == 8)
+				if (tgiGroupTxt.Text.Length > 0 && tgiGroupTxt.Text.Length == 8)
 				{
 					for (int j = 0; j < patharray.Count; j++)
 					{
-						grouparray.Insert(j, tgiGrouptxt.Text);
+						grouparray.Insert(j, tgiGroupTxt.Text);
 					}
 				}
 				else
@@ -1415,7 +1430,7 @@ namespace PngtoFshBatchtxt
 			
 		}
 	   
-		private void rembtn_Click(object sender, EventArgs e)
+		private void remBtn_Click(object sender, EventArgs e)
 		{
 			if (batchListView.SelectedItems.Count > 0 && batchListView.Items.Count > 1)
 			{
@@ -1456,11 +1471,11 @@ namespace PngtoFshBatchtxt
 		{
 			try
 			{
-				if (tgiGrouptxt.Text.Length > 0 && tgiGrouptxt.Text.Length == 8)
+				if (tgiGroupTxt.Text.Length > 0 && tgiGroupTxt.Text.Length == 8)
 				{
 					for (int j = 0; j < patharray.Count; j++)
 					{
-						grouparray.Insert(j, tgiGrouptxt.Text);
+						grouparray.Insert(j, tgiGroupTxt.Text);
 					}
 				}
 				else
@@ -1546,7 +1561,7 @@ namespace PngtoFshBatchtxt
 				throw;
 			} 
 		}
-		private void addbtn_Click(object sender, EventArgs e)
+		private void addBtn_Click(object sender, EventArgs e)
 		{
 			if (PngopenDialog.ShowDialog() == DialogResult.OK)
 			{
@@ -1612,7 +1627,7 @@ namespace PngtoFshBatchtxt
 			}
 			
 		}
-		private void TgiGrouptxt_KeyDown(object sender, KeyEventArgs e)
+		private void tgiGroupTxt_KeyDown(object sender, KeyEventArgs e)
 		{
 			if ((e.KeyCode >= Keys.D0 && e.KeyCode <= Keys.D9) || (e.KeyCode >= Keys.NumPad0 && e.KeyCode <= Keys.NumPad9) && ModifierKeys != Keys.Shift)
 			{
@@ -1631,39 +1646,39 @@ namespace PngtoFshBatchtxt
 			}
 		}
 
-		private void tgiGrouptxt_TextChanged(object sender, EventArgs e)
+		private void tgiGroupTxt_TextChanged(object sender, EventArgs e)
 		{                
 			if (batchListView.SelectedItems.Count > 0)
 			{
 				int index = batchListView.SelectedItems[0].Index;
-				if (tgiGrouptxt.Text.Length > 0 && tgiGrouptxt.Text.Length == 8)
+				if (tgiGroupTxt.Text.Length > 0 && tgiGroupTxt.Text.Length == 8)
 				{
-					if (!tgiGrouptxt.Text.Equals(grouparray[index], StringComparison.OrdinalIgnoreCase))
+					if (!tgiGroupTxt.Text.Equals(grouparray[index], StringComparison.OrdinalIgnoreCase))
 					{
-						grouparray[index] = tgiGrouptxt.Text;
+						grouparray[index] = tgiGroupTxt.Text;
 						batchListView.SelectedItems[0].SubItems[2].Text = grouparray[index];
 					}
 				}
 			}
 		}
 
-		private void tgiInstancetxt_TextChanged(object sender, EventArgs e)
+		private void tgiInstanceTxt_TextChanged(object sender, EventArgs e)
 		{
 			if (batchListView.SelectedItems.Count > 0)
 			{
 				int index = batchListView.SelectedItems[0].Index;
-				if (tgiInstancetxt.Text.Length > 0 && tgiInstancetxt.Text.Length == 8)
+				if (tgiInstanceTxt.Text.Length > 0 && tgiInstanceTxt.Text.Length == 8)
 				{
-					if (!tgiInstancetxt.Text.Equals(instarray[index], StringComparison.OrdinalIgnoreCase))
+					if (!tgiInstanceTxt.Text.Equals(instarray[index], StringComparison.OrdinalIgnoreCase))
 					{
-						instarray.Insert(index, tgiInstancetxt.Text);
+						instarray.Insert(index, tgiInstanceTxt.Text);
 						FormatRefresh(index);
 					}
 				}
 			}
 		}
 
-		private void FshtypeBox_SelectionChangeCommitted(object sender, EventArgs e)
+		private void fshTypeBox_SelectionChangeCommitted(object sender, EventArgs e)
 		{
 			if (batchListView.SelectedItems.Count > 0)
 			{
@@ -1671,7 +1686,7 @@ namespace PngtoFshBatchtxt
 				string seltype = null;
 				using (Bitmap b = new Bitmap(patharray[index]))
 				{
-					switch (FshtypeBox.SelectedIndex)
+					switch (fshTypeBox.SelectedIndex)
 					{
 						case 0:
 							seltype = FSHBmpType.TwentyFourBit.ToString();
@@ -1794,7 +1809,7 @@ namespace PngtoFshBatchtxt
 			BuildPngList();
 		}
 
-		private void addbtn_DragEnter(object sender, DragEventArgs e)
+		private void addBtn_DragEnter(object sender, DragEventArgs e)
 		{
 			if (e.Data.GetDataPresent(DataFormats.FileDrop, false) == true)
 			{
@@ -1828,9 +1843,9 @@ namespace PngtoFshBatchtxt
 			mipsbtn_clicked = false;
 			batch_processed = false;
 			datRebuilt = false;
-			tgiGrouptxt.Text = null;
-			tgiInstancetxt.Text = null;
-			FshtypeBox.SelectedIndex = 2;
+			tgiGroupTxt.Text = null;
+			tgiInstanceTxt.Text = null;
+			fshTypeBox.SelectedIndex = 2;
 
 			this.toolStripProgressBar1.Value = 0;
 			this.toolStripProgressStatus.Text = Resources.StatusTextReset;
@@ -1856,7 +1871,7 @@ namespace PngtoFshBatchtxt
 				list.Capacity = capacity;
 		}
 
-		private void addbtn_DragDrop(object sender, DragEventArgs e)
+		private void addBtn_DragDrop(object sender, DragEventArgs e)
 		{
 			string[] files = GetFilesfromDirectory((string[])e.Data.GetData(DataFormats.FileDrop));
 			int fcnt = Countpngs(files);
@@ -1948,7 +1963,7 @@ namespace PngtoFshBatchtxt
 				}
 			}
 		}
-		private void FshtypeBox_DrawItem(object sender, DrawItemEventArgs e)
+		private void fshTypeBox_DrawItem(object sender, DrawItemEventArgs e)
 		{
 			ComboBox cb = sender as ComboBox;
 			if (batchListView.SelectedItems.Count > 0)
@@ -1991,16 +2006,16 @@ namespace PngtoFshBatchtxt
 			}
 		}
 
-		private void FshtypeBox_SelectedIndexChanged(object sender, EventArgs e)
+		private void fshTypeBox_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (batchListView.SelectedItems.Count > 0)
 			{ 
 				if (!Checkhdimgsize(batchListView.SelectedItems[0].Index))
 				{
 					// if it is not 256 disable hd fsh
-					if (FshtypeBox.SelectedIndex == 0 || FshtypeBox.SelectedIndex == 1)
+					if (fshTypeBox.SelectedIndex == 0 || fshTypeBox.SelectedIndex == 1)
 					{
-						FshtypeBox.SelectedIndex = typeindex;
+						fshTypeBox.SelectedIndex = typeindex;
 					}
 				}
 			}
@@ -2040,7 +2055,7 @@ namespace PngtoFshBatchtxt
 		{
 			if (settings != null)
 			{
-				settings.PutSetting("fshwritecompcb_checked", fshwritecompcb.Checked.ToString());
+				settings.PutSetting("fshwritecompcb_checked", fshWriteCompCb.Checked.ToString());
 			}
 		}
 	}
