@@ -25,7 +25,7 @@ namespace PngtoFshBatchtxt
                 using (Form1 form1 = new Form1())
                 {
 
-                    form1.autoprocMipscb.Checked = false;
+                    form1.autoProcMipsCb.Checked = false;
                     form1.compress_datmips = true;
                     string loc = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
                     form1.grppath = Path.Combine(loc, @"Groupid.txt");
@@ -143,7 +143,7 @@ namespace PngtoFshBatchtxt
                             else if (args[a].StartsWith("/mips", StringComparison.OrdinalIgnoreCase) && (fcnt > 0))
                             {
                                 cmdlineonly = true;
-                                form1.autoprocMipscb.Checked = true;
+                                form1.autoProcMipsCb.Checked = true;
                             }
                             else if (args[a].StartsWith("/dat:", StringComparison.OrdinalIgnoreCase) && (fcnt > 0))
                             {
@@ -164,7 +164,7 @@ namespace PngtoFshBatchtxt
                                                 form1.dat = new DatFile();
                                             }
 
-                                            if (form1.autoprocMipscb.Checked)
+                                            if (form1.autoProcMipsCb.Checked)
                                             {
                                                 if (form1.mipsbtn_clicked == false)
                                                 {
@@ -229,7 +229,7 @@ namespace PngtoFshBatchtxt
                                         }
                                         else
                                         {
-                                            form1.tgiGrouptxt.Text = groupid;
+                                            form1.tgiGroupTxt.Text = groupid;
                                         }
                                     }
                                     else
