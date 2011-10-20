@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Windows.Forms;
-using System.IO;
-using FSHLib;
 using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Windows.Forms;
 using FshDatIO;
 using PngtoFshBatchtxt.Properties;
 
@@ -207,12 +206,12 @@ namespace PngtoFshBatchtxt
                                     {
                                         if (group[1].ToUpperInvariant().StartsWith("0X"))
                                         {
-                                            groupid = group[1].ToUpper().Substring(2, 8);
+                                            groupid = group[1].ToUpperInvariant().Substring(2, 8);
                                         }
                                     }
                                     else if (group[1].Length == 8)
                                     {
-                                        groupid = group[1].ToUpper();
+                                        groupid = group[1].ToUpperInvariant();
                                     }
                                 }
                                 if (groupid != null)
