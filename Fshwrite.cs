@@ -11,7 +11,7 @@ namespace PngtoFshBatchtxt
 {
     internal class Fshwrite
     {
-        public Fshwrite()
+        public Fshwrite(int count)
         {
             bmplist = new List<Bitmap>();
             alphalist = new List<Bitmap>();
@@ -45,42 +45,34 @@ namespace PngtoFshBatchtxt
             kColourMetricUniform = (1 << 6),
 
         }
-        /// <summary>
-        /// Swaps the bytes from BGR to RGB pixel order
-        /// </summary>
-        /// <param name="bytes">The input BGR pixel data</param>
-        /// <returns>The data in RGB order</returns>
-        private static byte[] SwapRGB(byte[] bytes)
-        {
-            Byte tmp;
-            for (int x = 0; x < bytes.GetLength(0); x += 4)
-            {
-                tmp = bytes[(x + 2)];
-                bytes[x + 2] = bytes[x];
-                bytes[x] = tmp;
-            }
-            return bytes;
-        }
 
-        private static byte[] CompressImage(Bitmap image, int flags)
+        private static unsafe byte[] CompressImage(Bitmap image, int flags)
         {
             byte[] pixelData = new byte[image.Width * image.Height * 4];
 
             BitmapData data = image.LockBits(new Rectangle(0, 0, image.Width, image.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-            byte[] temp = null;
             try
             {
+                byte* scan0 = (byte*)data.Scan0.ToPointer(); 
+                for (int y = 0; y < data.Height; y++)
+                {
+                    byte* p = scan0 + (y * data.Stride);
+                    for (int x = 0; x < data.Width; x++)
+                    {
+                        int index = ((y * data.Width) * 4) + x;
 
-                int len = data.Stride * data.Height;
-                temp = new byte[len];
-                Marshal.Copy(data.Scan0, temp, 0, len);
+                        pixelData[index] = p[2];
+                        pixelData[index + 1] = p[1];
+                        pixelData[index + 2] = p[0];
+                        pixelData[index + 3] = p[3]; 
+                    }
+                }
+
             }
             finally
             {
                 image.UnlockBits(data);
             }
-            
-            pixelData = SwapRGB(temp);
             
             // Compute size of compressed block area, and allocate 
             int blockCount = ((image.Width + 3) / 4) * ((image.Height + 3) / 4);
@@ -99,14 +91,17 @@ namespace PngtoFshBatchtxt
         {
             return (IntPtr.Size == 8);
         }
+
         private static class Squish_32
         {
             [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1060:MovePInvokesToNativeMethodsClass"), DllImport("Squish_Win32.dll")]
+            [System.Security.SuppressUnmanagedCodeSecurity]
             internal static extern unsafe void SquishCompressImage(byte* rgba, int width, int height, byte* blocks, int flags);
         }
         private static class Squish_64
         {
             [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1060:MovePInvokesToNativeMethodsClass"), DllImport("squish_x64.dll")]
+            [System.Security.SuppressUnmanagedCodeSecurity]
             internal static extern unsafe void SquishCompressImage(byte* rgba, int width, int height, byte* blocks, int flags);
         }
         private static unsafe void CompressImageWrapper(byte[] rgba, int width, int height, byte[] blocks, int flags)
