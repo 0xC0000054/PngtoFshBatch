@@ -129,8 +129,9 @@
   <data name="autoProcMipsCb_ToolTip" xml:space="preserve">
     <value>Generate mipmaps for the zoom levels</value>
   </data>
-  <data name="batchListView_ToolTipFormat" xml:space="preserve">
-    <value>The list of images to convert. {0} Dragging files or folders onto the list will create a new list</value>
+  <data name="batchListView_ToolTip" xml:space="preserve">
+    <value>The list of images to convert. 
+Dragging files or folders onto the list will create a new list</value>
     <comment>The {0} is a placeholder for a newline.</comment>
   </data>
   <data name="BuildingDatStatusTextFormat" xml:space="preserve">
@@ -197,5 +198,22 @@
   </data>
   <data name="tgiInstanceTxt_ToolTip" xml:space="preserve">
     <value>Change the instance id of the image</value>
+  </data>
+  <data name="ArgumentDirectoryNotFound" xml:space="preserve">
+    <value>{0} does not exist.</value>
+  </data>
+  <data name="ArgumentPathEmpty" xml:space="preserve">
+    <value>{0} path must not be empty.</value>
+  </data>
+  <data name="FileNotFoundFormat" xml:space="preserve">
+    <value>{0} not found at {1}</value>
+  </data>
+  <data name="InvalidGroupID" xml:space="preserve">
+    <value>The group id in Groupid.txt contains invalid characters. 
+It must only contain numbers 0-9 and letters A-F.</value>
+  </data>
+  <data name="InvalidGroupIDArgument" xml:space="preserve">
+    <value>The group id after /group: contains invalid characters.
+ It must only contain numbers 0-9 and letters A-F.</value>
   </data>
 </root>

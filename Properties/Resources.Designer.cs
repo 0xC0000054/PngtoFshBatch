@@ -88,6 +88,24 @@ namespace PngtoFshBatchtxt.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} does not exist..
+        /// </summary>
+        internal static string ArgumentDirectoryNotFound {
+            get {
+                return ResourceManager.GetString("ArgumentDirectoryNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} path must not be empty..
+        /// </summary>
+        internal static string ArgumentPathEmpty {
+            get {
+                return ResourceManager.GetString("ArgumentPathEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Generate mipmaps for the zoom levels.
         /// </summary>
         internal static string autoProcMipsCb_ToolTip {
@@ -97,11 +115,12 @@ namespace PngtoFshBatchtxt.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The list of images to convert. {0} Dragging files or folders onto the list will create a new list.
+        ///   Looks up a localized string similar to The list of images to convert. 
+        ///Dragging files or folders onto the list will create a new list.
         /// </summary>
-        internal static string batchListView_ToolTipFormat {
+        internal static string batchListView_ToolTip {
             get {
-                return ResourceManager.GetString("batchListView_ToolTipFormat", resourceCulture);
+                return ResourceManager.GetString("batchListView_ToolTip", resourceCulture);
             }
         }
         
@@ -129,6 +148,15 @@ namespace PngtoFshBatchtxt.Properties {
         internal static string DatInMemory {
             get {
                 return ResourceManager.GetString("DatInMemory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} not found at {1}.
+        /// </summary>
+        internal static string FileNotFoundFormat {
+            get {
+                return ResourceManager.GetString("FileNotFoundFormat", resourceCulture);
             }
         }
         
@@ -174,6 +202,26 @@ namespace PngtoFshBatchtxt.Properties {
         internal static string InstanceIDRadioButtons_ToolTip {
             get {
                 return ResourceManager.GetString("InstanceIDRadioButtons_ToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The group id in Groupid.txt contains invalid characters. 
+        ///It must only contain numbers 0-9 and letters A-F..
+        /// </summary>
+        internal static string InvalidGroupID {
+            get {
+                return ResourceManager.GetString("InvalidGroupID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The group id after /group: contains invalid characters.
+        /// It must only contain numbers 0-9 and letters A-F..
+        /// </summary>
+        internal static string InvalidGroupIDArgument {
+            get {
+                return ResourceManager.GetString("InvalidGroupIDArgument", resourceCulture);
             }
         }
         
