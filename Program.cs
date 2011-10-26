@@ -45,7 +45,7 @@ namespace PngtoFshBatchtxt
                     }
                     for (int a = 0; a < args.Length; a++)
                     {
-                        FileInfo fi = new FileInfo("null");
+                        FileInfo fi = null;
                         FileAttributes attr = new FileAttributes();
                         if (!args[a].StartsWith("/proc", StringComparison.OrdinalIgnoreCase) && !args[a].StartsWith("/mips", StringComparison.OrdinalIgnoreCase) && !args[a].StartsWith("/d", StringComparison.OrdinalIgnoreCase) && !args[a].StartsWith("/o", StringComparison.OrdinalIgnoreCase) && !args[a].StartsWith("/?", StringComparison.OrdinalIgnoreCase) && !args[a].StartsWith("/group:", StringComparison.OrdinalIgnoreCase))
                         {
@@ -86,7 +86,7 @@ namespace PngtoFshBatchtxt
                             }
 
                         }
-                        else if (fi.Extension.Equals(".png", StringComparison.OrdinalIgnoreCase) || fi.Extension.Equals(".bmp", StringComparison.OrdinalIgnoreCase))
+                        else if ((fi != null) && (fi.Extension.Equals(".png", StringComparison.OrdinalIgnoreCase) || fi.Extension.Equals(".bmp", StringComparison.OrdinalIgnoreCase)))
                         {
                             if (fi.Exists)
                             {
