@@ -120,7 +120,7 @@ namespace PngtoFshBatchtxt
                                 teststr = args[a].Substring(strlen, args[a].Length - strlen);
                                 if (string.IsNullOrEmpty(teststr))
                                 {
-                                    MessageBox.Show(args[a] + "path must not be empty", form1.Text);
+                                    MessageBox.Show(string.Format(Resources.ArgumentPathEmpty, teststr), form1.Text);
                                 }
                                 // test if the directory exists
                                 string[] path = new string[2];
@@ -129,7 +129,7 @@ namespace PngtoFshBatchtxt
                                 string dir = Path.GetDirectoryName(path[1]);
                                 if (!Directory.Exists(dir))
                                 {
-                                    MessageBox.Show(dir + "does not exist", form1.Text);
+                                    MessageBox.Show(string.Format(Resources.ArgumentDirectoryNotFound, dir), form1.Text);
                                 }
 
                             }
@@ -191,7 +191,7 @@ namespace PngtoFshBatchtxt
                                 }
                                 catch (Exception ex)
                                 {
-                                    MessageBox.Show(ex.Message, Resources.ProgramName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    MessageBox.Show(ex.Message, form1.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 }
 
                             }
@@ -204,7 +204,7 @@ namespace PngtoFshBatchtxt
                                 {
                                     if (group[1].Length == 10)
                                     {
-                                        if (group[1].ToUpperInvariant().StartsWith("0X"))
+                                        if (group[1].StartsWith("0x", StringComparison.OrdinalIgnoreCase))
                                         {
                                             groupid = group[1].ToUpperInvariant().Substring(2, 8);
                                         }
@@ -244,7 +244,7 @@ namespace PngtoFshBatchtxt
                                             }
                                         }
 
-                                        MessageBox.Show("The group id after /group: contains invalid characters.\n It must only contain numbers 0-9 and letters A-F.", form1.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                        MessageBox.Show(Resources.InvalidGroupIDArgument, form1.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
                                     }
                                 }
                             }
@@ -289,9 +289,10 @@ namespace PngtoFshBatchtxt
                 Application.Run(new Form1());
             }
         }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "System.Windows.Forms.MessageBox.Show(System.String,System.String)")]
         static void showhelp()
         {
-            MessageBox.Show("Command line arguments:\n\n PngtoFshBatch images [/outdir:<directory>] [/mips] [/group: <groupid>] [/dat:<filename>] [/proc] [/?] \n\n images a list or folder of images to process seperated by spaces \n /? show this help\n /proc process images and save\n /mips generate mipmaps for the zoom levels\n /dat:<filename> process images and save them as a dat\n /outdir:<directory> output the fsh files from /proc into directory.\n /group: <groupid> Assign the <groupid> to the files \n\n Paths containing spaces must be encased in quotes", Resources.ProgramName);
+            MessageBox.Show("Command line arguments:\n\n PngtoFshBatch images [/outdir:<directory>] [/mips] [/group: <groupid>] [/dat:<filename>] [/proc] [/?] \n\n images a list or folder of images to process seperated by spaces \n /? show this help\n /proc process images and save\n /mips generate mipmaps for the zoom levels\n /dat:<filename> process images and save them as a dat\n /outdir:<directory> output the fsh files from /proc into directory.\n /group: <groupid> Assign the <groupid> to the files \n\n Paths containing spaces must be encased in quotes", Form1.ProgramName);
         }
     }
 }
