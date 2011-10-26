@@ -94,7 +94,7 @@ namespace PngtoFshBatchtxt
             this.batchListView.Name = "batchListView";
             this.batchListView.Size = new System.Drawing.Size(467, 132);
             this.batchListView.TabIndex = 0;
-            this.toolTip1.SetToolTip(this.batchListView, string.Format(Resources.batchListView_ToolTipFormat, System.Environment.NewLine));
+            this.toolTip1.SetToolTip(this.batchListView, Resources.batchListView_ToolTip);
             this.batchListView.UseCompatibleStateImageBehavior = false;
             this.batchListView.View = System.Windows.Forms.View.Details;
             this.batchListView.SelectedIndexChanged += new System.EventHandler(this.batchListView1_SelectedIndexChanged);

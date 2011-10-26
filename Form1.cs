@@ -189,7 +189,7 @@ namespace PngtoFshBatchtxt
                 end8 = '5';
             }
             else if (instarray[index].EndsWith("E", StringComparison.Ordinal) || instarray[index].EndsWith("D", StringComparison.Ordinal)
-                || instarray[index].EndsWith("C") || instarray[index].EndsWith("B", StringComparison.Ordinal) || instarray[index].EndsWith("A", StringComparison.Ordinal))
+                || instarray[index].EndsWith("C", StringComparison.Ordinal) || instarray[index].EndsWith("B", StringComparison.Ordinal) || instarray[index].EndsWith("A", StringComparison.Ordinal))
             {
                 endreg = 'E';
                 end64 = 'D';
@@ -216,26 +216,26 @@ namespace PngtoFshBatchtxt
                 using (StreamWriter sw = new StreamWriter(fs))
                 {
                     sw.WriteLine("7ab50e44\t\n");
-                    sw.WriteLine(string.Format("{0:X8}", batchListView.Items[index].SubItems[2].Text + "\n"));
+                    sw.WriteLine(string.Format(CultureInfo.InvariantCulture, "{0:X8}", batchListView.Items[index].SubItems[2].Text + "\n"));
 
                     SetInstanceEndChars(index);
 
                     switch (zoom)
                     {
                         case 0:
-                            sw.WriteLine(string.Format("{0:X8}", batchListView.Items[index].SubItems[3].Text.Substring(0, 7) + end8));
+                            sw.WriteLine(string.Format(CultureInfo.InvariantCulture, "{0:X8}", batchListView.Items[index].SubItems[3].Text.Substring(0, 7) + end8));
                             break;
                         case 1:
-                            sw.WriteLine(string.Format("{0:X8}", batchListView.Items[index].SubItems[3].Text.Substring(0, 7) + end16));
+                            sw.WriteLine(string.Format(CultureInfo.InvariantCulture, "{0:X8}", batchListView.Items[index].SubItems[3].Text.Substring(0, 7) + end16));
                             break;
                         case 2:
-                            sw.WriteLine(string.Format("{0:X8}", batchListView.Items[index].SubItems[3].Text.Substring(0, 7) + end32));
+                            sw.WriteLine(string.Format(CultureInfo.InvariantCulture, "{0:X8}", batchListView.Items[index].SubItems[3].Text.Substring(0, 7) + end32));
                             break;
                         case 3:
-                            sw.WriteLine(string.Format("{0:X8}", batchListView.Items[index].SubItems[3].Text.Substring(0, 7) + end64));
+                            sw.WriteLine(string.Format(CultureInfo.InvariantCulture, "{0:X8}", batchListView.Items[index].SubItems[3].Text.Substring(0, 7) + end64));
                             break;
                         case 4:
-                            sw.WriteLine(string.Format("{0:X8}", batchListView.Items[index].SubItems[3].Text));
+                            sw.WriteLine(string.Format(CultureInfo.InvariantCulture, "{0:X8}", batchListView.Items[index].SubItems[3].Text));
                             break;
                     }
                 }
@@ -368,7 +368,7 @@ namespace PngtoFshBatchtxt
 
                     BatchFshContainer batchFsh = batchFshList[c];
 					ListViewItem item = (ListViewItem)this.Invoke(new GetBatchListViewItemDelegate(GetBatchListViewItem), new object[] {c});
-					uint group = uint.Parse(item.SubItems[2].Text, NumberStyles.HexNumber);
+					uint group = uint.Parse(item.SubItems[2].Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
 					uint[] instanceid = new uint[5];
 					FshWrapper[] fshwrap = new FshWrapper[5];
 					FSHImage[] fshimg = new FSHImage[5];
@@ -384,11 +384,11 @@ namespace PngtoFshBatchtxt
 
                     SetInstanceEndChars(c);
 
-					instanceid[0] = uint.Parse(item.SubItems[3].Text.Substring(0, 7) + end8, NumberStyles.HexNumber);
-					instanceid[1] = uint.Parse(item.SubItems[3].Text.Substring(0, 7) + end16, NumberStyles.HexNumber);
-					instanceid[2] = uint.Parse(item.SubItems[3].Text.Substring(0, 7) + end32, NumberStyles.HexNumber);
-					instanceid[3] = uint.Parse(item.SubItems[3].Text.Substring(0, 7) + end64, NumberStyles.HexNumber);
-					instanceid[4] = uint.Parse(item.SubItems[3].Text, NumberStyles.HexNumber);
+                    instanceid[0] = uint.Parse(item.SubItems[3].Text.Substring(0, 7) + end8, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+                    instanceid[1] = uint.Parse(item.SubItems[3].Text.Substring(0, 7) + end16, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+                    instanceid[2] = uint.Parse(item.SubItems[3].Text.Substring(0, 7) + end32, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+                    instanceid[3] = uint.Parse(item.SubItems[3].Text.Substring(0, 7) + end64, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+					instanceid[4] = uint.Parse(item.SubItems[3].Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
 
 					if (inputdat == null)
 					{
@@ -415,11 +415,11 @@ namespace PngtoFshBatchtxt
 
 					ListViewItem item = (ListViewItem)this.Invoke(new GetBatchListViewItemDelegate(GetBatchListViewItem), new object[] { c });
 					
-					uint Group = uint.Parse(item.SubItems[2].Text, NumberStyles.HexNumber);
+					uint Group = uint.Parse(item.SubItems[2].Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
 					uint instanceid = new uint();
 					FshWrapper fshwrap = new FshWrapper();
                     SetInstanceEndChars(c);
-					instanceid = uint.Parse(item.SubItems[3].Text, NumberStyles.HexNumber);
+                    instanceid = uint.Parse(item.SubItems[3].Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
 
 					if (inputdat == null)
 					{
@@ -700,7 +700,7 @@ namespace PngtoFshBatchtxt
 			}
 			catch (ArgumentOutOfRangeException ag)
 			{
-				MessageBox.Show(this, ag.Message + "\n" + "Param = " + ag.ParamName + " Actual value: " + ag.ActualValue.ToString(), this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show(this, ag.Message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 			catch (Exception)
 			{
@@ -788,7 +788,7 @@ namespace PngtoFshBatchtxt
 		private void SetProgressBarValue(int value, string statusTextFormat)
 		{            
 			toolStripProgressBar1.PerformStep();			
-            toolStripProgressStatus.Text = string.Format(statusTextFormat, (value + 1), batchListView.Items.Count);
+            toolStripProgressStatus.Text = string.Format(CultureInfo.CurrentCulture, statusTextFormat, (value + 1), batchListView.Items.Count);
 		}
         delegate int GetBatchListViewItemsCountDelegate();
         private int GetBatchListViewItemsCount()
@@ -971,10 +971,10 @@ namespace PngtoFshBatchtxt
 				int index;
 				if (!string.IsNullOrEmpty(lowerinst) && !string.IsNullOrEmpty(upperinst))
 				{
-					long lower = long.Parse(lowerinst, NumberStyles.HexNumber);
-					long upper = long.Parse(upperinst, NumberStyles.HexNumber);
+                    long lower = long.Parse(lowerinst, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+                    long upper = long.Parse(upperinst, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
 					double rn = (upper * 1.0 - lower * 1.0) * ra.NextDouble() + lower * 1.0;
-					return Convert.ToInt64(rn).ToString("X8");
+					return Convert.ToInt64(rn).ToString("X8", CultureInfo.InvariantCulture);
 				}
 				else
 				{
@@ -1033,7 +1033,7 @@ namespace PngtoFshBatchtxt
 									else
 									{
 										g = "1ABE787D";
-										MessageBox.Show(this, "The group id in Groupid.txt contains invalid characters.\n It must only contain numbers 0-9 and letters A-F.", this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+										MessageBox.Show(this, Resources.InvalidGroupID, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
 									}
 									for (int i = 0; i < patharray.Count; i++)
 									{
@@ -1050,7 +1050,8 @@ namespace PngtoFshBatchtxt
 						{
 							grouparray.Insert(i, errgrp);
 						}
-						throw new FileNotFoundException("Groupid.txt not found at ", path);
+                        string message = string.Format(CultureInfo.CurrentCulture, Resources.FileNotFoundFormat, Path.GetFileName(path), path);
+						throw new FileNotFoundException(message);
 
 					}
 				}
@@ -1079,7 +1080,7 @@ namespace PngtoFshBatchtxt
   
 							if (inst0.Length == 10)
 							{
-								if (inst0.ToUpperInvariant().StartsWith("0X"))
+								if (inst0.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
 								{
 									lowerinst = inst0.Substring(2, 8);
 								}
@@ -1090,7 +1091,7 @@ namespace PngtoFshBatchtxt
 							}
 							if (inst1.Length == 10)
 							{
-								if (inst1.ToUpperInvariant().StartsWith("0X"))
+                                if (inst1.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
 								{
 									upperinst = inst1.Substring(2, 8);
 								}
@@ -1107,7 +1108,6 @@ namespace PngtoFshBatchtxt
 					{
 						lowerinst = string.Empty;
 						upperinst = string.Empty;
-						throw new FileNotFoundException("instRange.txt not found at ", path);
 					}
 				}
 			}
@@ -1128,7 +1128,7 @@ namespace PngtoFshBatchtxt
 			   
 				if (str.Length == 10)
 				{
-					if (str.ToLower().StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+					if (str.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
 					{
 						tmp = str.Substring(2, 8);
 					}
@@ -1153,6 +1153,8 @@ namespace PngtoFshBatchtxt
 			}
 			return false;
 		}
+        internal const string ProgramName = "Png to Fsh Batch";
+
 		internal static int Countpngs(string[] filenames)
 		{                
 			int fcnt = 0;
@@ -1212,7 +1214,7 @@ namespace PngtoFshBatchtxt
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show(ex.Message, Resources.ProgramName);
+				MessageBox.Show(ex.Message, ProgramName);
 				return 0;
 			}
 
@@ -1948,7 +1950,7 @@ namespace PngtoFshBatchtxt
             if (!File.Exists(path))
             {
                 string fileName = Path.GetFileName(path);
-                string message = string.Format("{0} not found at {1}", fileName, path);
+                string message = string.Format(CultureInfo.CurrentCulture, Resources.FileNotFoundFormat, fileName, path);
 
 				MessageBox.Show(this, message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
