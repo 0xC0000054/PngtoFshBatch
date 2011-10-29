@@ -78,9 +78,9 @@ namespace PngtoFshBatchtxt
             // batchListView
             // 
             this.batchListView.AllowDrop = true;
-            this.batchListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.batchListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.batchListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.bitmapHeader,
             this.alphaHeader,
@@ -94,7 +94,7 @@ namespace PngtoFshBatchtxt
             this.batchListView.Name = "batchListView";
             this.batchListView.Size = new System.Drawing.Size(467, 132);
             this.batchListView.TabIndex = 0;
-            this.toolTip1.SetToolTip(this.batchListView, Resources.batchListView_ToolTip);
+            this.toolTip1.SetToolTip(this.batchListView, global::PngtoFshBatchtxt.Properties.Resources.batchListView_ToolTip);
             this.batchListView.UseCompatibleStateImageBehavior = false;
             this.batchListView.View = System.Windows.Forms.View.Details;
             this.batchListView.SelectedIndexChanged += new System.EventHandler(this.batchListView1_SelectedIndexChanged);
@@ -132,7 +132,7 @@ namespace PngtoFshBatchtxt
             this.compDatcb.Size = new System.Drawing.Size(90, 17);
             this.compDatcb.TabIndex = 3;
             this.compDatcb.Text = "Compress dat";
-            this.toolTip1.SetToolTip(this.compDatcb, Resources.compDatcb_ToolTip);
+            this.toolTip1.SetToolTip(this.compDatcb, global::PngtoFshBatchtxt.Properties.Resources.compDatcb_ToolTip);
             this.compDatcb.UseVisualStyleBackColor = true;
             this.compDatcb.CheckedChanged += new System.EventHandler(this.compDatcb_CheckedChanged);
             // 
@@ -188,7 +188,7 @@ namespace PngtoFshBatchtxt
             this.saveDatBtn.Size = new System.Drawing.Size(75, 23);
             this.saveDatBtn.TabIndex = 15;
             this.saveDatBtn.Text = "Save dat";
-            this.toolTip1.SetToolTip(this.saveDatBtn, Resources.saveDatBtn_ToolTip);
+            this.toolTip1.SetToolTip(this.saveDatBtn, global::PngtoFshBatchtxt.Properties.Resources.saveDatBtn_ToolTip);
             this.saveDatBtn.UseVisualStyleBackColor = true;
             this.saveDatBtn.Click += new System.EventHandler(this.saveDatbtn_Click);
             // 
@@ -200,7 +200,7 @@ namespace PngtoFshBatchtxt
             this.processBatchBtn.Size = new System.Drawing.Size(75, 23);
             this.processBatchBtn.TabIndex = 14;
             this.processBatchBtn.Text = "Process";
-            this.toolTip1.SetToolTip(this.processBatchBtn, Resources.processBatchBtn_ToolTip);
+            this.toolTip1.SetToolTip(this.processBatchBtn, global::PngtoFshBatchtxt.Properties.Resources.processBatchBtn_ToolTip);
             this.processBatchBtn.UseVisualStyleBackColor = true;
             this.processBatchBtn.Click += new System.EventHandler(this.processbatchbtn_Click);
             // 
@@ -219,7 +219,7 @@ namespace PngtoFshBatchtxt
             this.autoProcMipsCb.Size = new System.Drawing.Size(153, 17);
             this.autoProcMipsCb.TabIndex = 2;
             this.autoProcMipsCb.Text = "Automatically process Mips";
-            this.toolTip1.SetToolTip(this.autoProcMipsCb, Resources.autoProcMipsCb_ToolTip);
+            this.toolTip1.SetToolTip(this.autoProcMipsCb, global::PngtoFshBatchtxt.Properties.Resources.autoProcMipsCb_ToolTip);
             this.autoProcMipsCb.UseVisualStyleBackColor = true;
             this.autoProcMipsCb.CheckedChanged += new System.EventHandler(this.autoprocMipscb_CheckedChanged);
             // 
@@ -236,13 +236,13 @@ namespace PngtoFshBatchtxt
             this.outFolderBtn.Size = new System.Drawing.Size(93, 23);
             this.outFolderBtn.TabIndex = 11;
             this.outFolderBtn.Text = "Output Folder";
-            this.toolTip1.SetToolTip(this.outFolderBtn, Resources.outFolderBtn_ToolTip);
+            this.toolTip1.SetToolTip(this.outFolderBtn, global::PngtoFshBatchtxt.Properties.Resources.outFolderBtn_ToolTip);
             this.outFolderBtn.UseVisualStyleBackColor = true;
             this.outFolderBtn.Click += new System.EventHandler(this.outfolderbtn_Click);
             // 
             // PngopenDialog
             // 
-            this.PngopenDialog.Filter = Resources.ImageFiles_Filter;
+            this.PngopenDialog.Filter = global::PngtoFshBatchtxt.Properties.Resources.ImageFiles_Filter;
             this.PngopenDialog.Multiselect = true;
             // 
             // InstendBox1
@@ -268,7 +268,7 @@ namespace PngtoFshBatchtxt
             this.InstA_Erdo.TabIndex = 9;
             this.InstA_Erdo.TabStop = true;
             this.InstA_Erdo.Text = "A-E";
-            this.toolTip1.SetToolTip(this.InstA_Erdo, Resources.InstanceIDRadioButtons_ToolTip);
+            this.toolTip1.SetToolTip(this.InstA_Erdo, global::PngtoFshBatchtxt.Properties.Resources.InstanceIDRadioButtons_ToolTip);
             this.InstA_Erdo.UseVisualStyleBackColor = true;
             this.InstA_Erdo.CheckedChanged += new System.EventHandler(this.Format_radios_changed);
             // 
@@ -282,7 +282,7 @@ namespace PngtoFshBatchtxt
             this.Inst5_9rdo.TabIndex = 8;
             this.Inst5_9rdo.TabStop = true;
             this.Inst5_9rdo.Text = "5-9";
-            this.toolTip1.SetToolTip(this.Inst5_9rdo, Resources.InstanceIDRadioButtons_ToolTip);
+            this.toolTip1.SetToolTip(this.Inst5_9rdo, global::PngtoFshBatchtxt.Properties.Resources.InstanceIDRadioButtons_ToolTip);
             this.Inst5_9rdo.UseVisualStyleBackColor = true;
             this.Inst5_9rdo.CheckedChanged += new System.EventHandler(this.Format_radios_changed);
             // 
@@ -297,7 +297,7 @@ namespace PngtoFshBatchtxt
             this.Inst0_4rdo.TabIndex = 7;
             this.Inst0_4rdo.TabStop = true;
             this.Inst0_4rdo.Text = "0-4";
-            this.toolTip1.SetToolTip(this.Inst0_4rdo, Resources.InstanceIDRadioButtons_ToolTip);
+            this.toolTip1.SetToolTip(this.Inst0_4rdo, global::PngtoFshBatchtxt.Properties.Resources.InstanceIDRadioButtons_ToolTip);
             this.Inst0_4rdo.UseVisualStyleBackColor = true;
             this.Inst0_4rdo.CheckedChanged += new System.EventHandler(this.Format_radios_changed);
             // 
@@ -309,7 +309,7 @@ namespace PngtoFshBatchtxt
             this.remBtn.Size = new System.Drawing.Size(75, 23);
             this.remBtn.TabIndex = 16;
             this.remBtn.Text = "Remove";
-            this.toolTip1.SetToolTip(this.remBtn, Resources.remBtn_ToolTip);
+            this.toolTip1.SetToolTip(this.remBtn, global::PngtoFshBatchtxt.Properties.Resources.remBtn_ToolTip);
             this.remBtn.UseVisualStyleBackColor = true;
             this.remBtn.Click += new System.EventHandler(this.remBtn_Click);
             // 
@@ -322,7 +322,7 @@ namespace PngtoFshBatchtxt
             this.addBtn.Size = new System.Drawing.Size(75, 23);
             this.addBtn.TabIndex = 13;
             this.addBtn.Text = "Add";
-            this.toolTip1.SetToolTip(this.addBtn, Resources.addBtn_ToolTip);
+            this.toolTip1.SetToolTip(this.addBtn, global::PngtoFshBatchtxt.Properties.Resources.addBtn_ToolTip);
             this.addBtn.UseVisualStyleBackColor = true;
             this.addBtn.Click += new System.EventHandler(this.addBtn_Click);
             this.addBtn.DragDrop += new System.Windows.Forms.DragEventHandler(this.addBtn_DragDrop);
@@ -343,7 +343,7 @@ namespace PngtoFshBatchtxt
             this.fshTypeBox.Name = "fshTypeBox";
             this.fshTypeBox.Size = new System.Drawing.Size(172, 21);
             this.fshTypeBox.TabIndex = 6;
-            this.toolTip1.SetToolTip(this.fshTypeBox, Resources.fshTypeBox_ToolTip);
+            this.toolTip1.SetToolTip(this.fshTypeBox, global::PngtoFshBatchtxt.Properties.Resources.fshTypeBox_ToolTip);
             this.fshTypeBox.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.fshTypeBox_DrawItem);
             this.fshTypeBox.SelectedIndexChanged += new System.EventHandler(this.fshTypeBox_SelectedIndexChanged);
             this.fshTypeBox.SelectionChangeCommitted += new System.EventHandler(this.fshTypeBox_SelectionChangeCommitted);
@@ -378,7 +378,7 @@ namespace PngtoFshBatchtxt
             this.tgiInstanceTxt.Name = "tgiInstanceTxt";
             this.tgiInstanceTxt.Size = new System.Drawing.Size(82, 20);
             this.tgiInstanceTxt.TabIndex = 5;
-            this.toolTip1.SetToolTip(this.tgiInstanceTxt, Resources.tgiInstanceTxt_ToolTip);
+            this.toolTip1.SetToolTip(this.tgiInstanceTxt, global::PngtoFshBatchtxt.Properties.Resources.tgiInstanceTxt_ToolTip);
             this.tgiInstanceTxt.TextChanged += new System.EventHandler(this.tgiInstanceTxt_TextChanged);
             this.tgiInstanceTxt.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tgiGroupTxt_KeyDown);
             // 
@@ -391,7 +391,7 @@ namespace PngtoFshBatchtxt
             this.tgiGroupTxt.Name = "tgiGroupTxt";
             this.tgiGroupTxt.Size = new System.Drawing.Size(82, 20);
             this.tgiGroupTxt.TabIndex = 4;
-            this.toolTip1.SetToolTip(this.tgiGroupTxt, Resources.tgiGroupTxt_ToolTip);
+            this.toolTip1.SetToolTip(this.tgiGroupTxt, global::PngtoFshBatchtxt.Properties.Resources.tgiGroupTxt_ToolTip);
             this.tgiGroupTxt.TextChanged += new System.EventHandler(this.tgiGroupTxt_TextChanged);
             this.tgiGroupTxt.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tgiGroupTxt_KeyDown);
             // 
@@ -421,7 +421,7 @@ namespace PngtoFshBatchtxt
             this.fshWriteCompCb.Size = new System.Drawing.Size(128, 17);
             this.fshWriteCompCb.TabIndex = 107;
             this.fshWriteCompCb.Text = "Fshwrite Compression";
-            this.toolTip1.SetToolTip(this.fshWriteCompCb, Resources.fshWriteCompCb_ToolTip);
+            this.toolTip1.SetToolTip(this.fshWriteCompCb, global::PngtoFshBatchtxt.Properties.Resources.fshWriteCompCb_ToolTip);
             this.fshWriteCompCb.UseVisualStyleBackColor = true;
             this.fshWriteCompCb.CheckedChanged += new System.EventHandler(this.fshwritecompcb_CheckedChanged);
             // 

@@ -13,6 +13,7 @@ using System.Windows.Forms;
 using FshDatIO;
 using FSHLib;
 using PngtoFshBatchtxt.Properties;
+using Microsoft.WindowsAPICodePack.Taskbar;
 
 namespace PngtoFshBatchtxt
 {
@@ -21,6 +22,11 @@ namespace PngtoFshBatchtxt
 		public Form1()
 		{
 			InitializeComponent();
+
+            if (TaskbarManager.IsPlatformSupported)
+            {
+                this.manager = TaskbarManager.Instance;
+            }
 		}
 		internal List<BatchFshContainer> batchFshList = null;
 		internal BitmapItem bmpitem = null;
@@ -91,7 +97,6 @@ namespace PngtoFshBatchtxt
 							}
 							if (mipitm.Bitmap.Width == 64 && mipitm.Bitmap.Height == 64)
 							{
-
 								batchFsh.Mip64Fsh = new FSHImage();
 								batchFsh.Mip64Fsh.Bitmaps.Add(mipitm);
 								batchFsh.Mip64Fsh.UpdateDirty();
@@ -254,26 +259,28 @@ namespace PngtoFshBatchtxt
 		   
 		}
 
-		/*private int CountBatchlines(string file)
-		{                
-			int linecnt = 0;
-			using (StreamReader sr = new StreamReader(file))
-			{
-				string line;
-				while ((line = sr.ReadLine()) != null)
-				{
-					if (line != "")
-					{
-						if (line.Equals("%Fsh_batch%") || line.StartsWith("#"))
-						{
-							continue;
-						}
-						linecnt++;
-					}
-				}
-			}
-			return linecnt;
-		}*/
+#if false
+        private int CountBatchlines(string file)
+        {
+            int linecnt = 0;
+            using (StreamReader sr = new StreamReader(file))
+            {
+                string line;
+                while ((line = sr.ReadLine()) != null)
+                {
+                    if (line != "")
+                    {
+                        if (line.Equals("%Fsh_batch%") || line.StartsWith("#"))
+                        {
+                            continue;
+                        }
+                        linecnt++;
+                    }
+                }
+            }
+            return linecnt;
+        } 
+#endif
 
 		internal List<string> patharray = null;
 		internal List<string> instarray = null;
@@ -290,7 +297,7 @@ namespace PngtoFshBatchtxt
 			{
 				using (Bitmap bmp = new Bitmap(path))
 				{
-					if (Path.GetExtension(path).ToUpperInvariant().Equals(".PNG") && bmp.PixelFormat == PixelFormat.Format32bppArgb)
+					if (Path.GetExtension(path).Equals(".png", StringComparison.OrdinalIgnoreCase) && bmp.PixelFormat == PixelFormat.Format32bppArgb)
 					{
 						item.SubItems.Add(Resources.AlphaTransString);
 					}
@@ -782,13 +789,25 @@ namespace PngtoFshBatchtxt
 			{
 				toolStripProgressBar1.Maximum = (this.batchListView.Items.Count * 2);
 			}
+
+            if (manager != null)
+            {
+                manager.SetProgressState(TaskbarProgressBarState.Normal);
+            }
 		}
+
+        private Microsoft.WindowsAPICodePack.Taskbar.TaskbarManager manager;
 
 		delegate void SetProgressBarValueDelegate(int value, string statusTextFormat);
 		private void SetProgressBarValue(int value, string statusTextFormat)
 		{            
 			toolStripProgressBar1.PerformStep();			
             toolStripProgressStatus.Text = string.Format(CultureInfo.CurrentCulture, statusTextFormat, (value + 1), batchListView.Items.Count);
+
+            if (manager != null)
+            {
+                manager.SetProgressValue(toolStripProgressBar1.Value, toolStripProgressBar1.Maximum, this.Handle);
+            }
 		}
         delegate int GetBatchListViewItemsCountDelegate();
         private int GetBatchListViewItemsCount()
@@ -1795,7 +1814,12 @@ namespace PngtoFshBatchtxt
 			fshTypeBox.SelectedIndex = 2;
 
 			this.toolStripProgressBar1.Value = 0;
-			this.toolStripProgressStatus.Text = Resources.StatusTextReset;
+
+            this.toolStripProgressStatus.Text = Resources.StatusTextReset;   
+            if (manager != null)
+            {
+                this.manager.SetProgressState(TaskbarProgressBarState.NoProgress, this.Handle);
+            }
 		}
 
 		private void addBtn_DragDrop(object sender, DragEventArgs e)
