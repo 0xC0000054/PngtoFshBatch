@@ -165,7 +165,7 @@ namespace PngtoFshBatchtxt
 
                                             if (form1.autoProcMipsCb.Checked)
                                             {
-                                                if (form1.mipsbtn_clicked == false)
+                                                if (!form1.mipsbtn_clicked)
                                                 {
                                                     form1.ProcessMips();
                                                     form1.RebuildDat(form1.dat);
@@ -177,7 +177,7 @@ namespace PngtoFshBatchtxt
                                             }
                                             else
                                             {
-                                                if (form1.batch_processed == false)
+                                                if (!form1.batch_processed)
                                                 {
                                                     form1.ProcessBatch();
                                                 }
