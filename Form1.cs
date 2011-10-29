@@ -29,7 +29,6 @@ namespace PngtoFshBatchtxt
             }
 		}
 		internal List<BatchFshContainer> batchFshList = null;
-		internal BitmapItem bmpitem = null;
 		internal bool mipsbtn_clicked = false;
 
 		internal void ProcessMips()
