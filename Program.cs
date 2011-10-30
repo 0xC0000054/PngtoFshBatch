@@ -33,8 +33,6 @@ namespace PngtoFshBatchtxt
 
                     int fcnt = Form1.Countpngs(args);
                     bool pnglistbuilt = false;
-                    int imgarg = -1 + fcnt;
-                    int imgcnt = -1;
                     if (fcnt > 0)
                     {
                         form1.patharray = new List<string>(fcnt);
@@ -75,8 +73,7 @@ namespace PngtoFshBatchtxt
                                     }
                                     else
                                     {
-                                        imgcnt++;
-                                        form1.patharray.Insert(imgcnt, info.FullName);
+                                        form1.patharray.Add(info.FullName);
                                     }
                                 }
                             }
@@ -96,8 +93,7 @@ namespace PngtoFshBatchtxt
                                 }
                                 else
                                 {
-                                    imgcnt++;
-                                    form1.patharray.Insert(imgcnt, fi.FullName);
+                                    form1.patharray.Add(fi.FullName);
                                 }
                             }
                         }
@@ -263,7 +259,7 @@ namespace PngtoFshBatchtxt
                             }
 
                         }
-                        else if (args[a].Equals("/?"))
+                        else if (args[a].Equals("/?", StringComparison.Ordinal))
                         {
                             cmdlineonly = true;
                             Program.showhelp();
