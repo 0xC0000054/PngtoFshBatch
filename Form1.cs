@@ -14,6 +14,7 @@ using FshDatIO;
 using FSHLib;
 using PngtoFshBatchtxt.Properties;
 using Microsoft.WindowsAPICodePack.Taskbar;
+using System.Reflection;
 
 namespace PngtoFshBatchtxt
 {
@@ -22,10 +23,13 @@ namespace PngtoFshBatchtxt
 		public Form1()
 		{
 			InitializeComponent();
-
-            if (TaskbarManager.IsPlatformSupported)
+            if (Type.GetType("Mono.Runtime") == null) // skip the Windows 7 code if we are on mono 
             {
-                this.manager = TaskbarManager.Instance;
+                if (TaskbarManager.IsPlatformSupported)
+                {
+                    this.manager = TaskbarManager.Instance;
+                    this.manager.ApplicationId = "PngtoFshBatch";
+                } 
             }
 		}
 		internal List<BatchFshContainer> batchFshList = null;
@@ -795,7 +799,8 @@ namespace PngtoFshBatchtxt
             }
 		}
 
-        private Microsoft.WindowsAPICodePack.Taskbar.TaskbarManager manager;
+        private TaskbarManager manager;
+        private static JumpList jumpList;
 
 		delegate void SetProgressBarValueDelegate(int value, string statusTextFormat);
 		private void SetProgressBarValue(int value, string statusTextFormat)
@@ -1173,6 +1178,22 @@ namespace PngtoFshBatchtxt
 		}
         internal const string ProgramName = "Png to Fsh Batch";
 
+        private void AddRecentFolder(string path)
+        {
+            if (jumpList != null)
+            {
+                using (JumpListLink link = new JumpListLink(Assembly.GetExecutingAssembly().Location, Path.GetFileName(path)))
+                {
+                    link.Arguments = path;
+                    link.IconReference = new Microsoft.WindowsAPICodePack.Shell.IconReference("shell32.dll", 3);
+
+                    JumpListHelper.AddToRecent(link, manager.ApplicationId);
+                }
+
+                jumpList.Refresh();
+            } 
+        }
+
 		internal static int Countpngs(string[] filenames)
 		{                
 			int fcnt = 0;
@@ -1208,8 +1229,8 @@ namespace PngtoFshBatchtxt
 							{
 								fcnt++;
 							}
-						}
-
+						}                        
+                      
 					}
 					else
 					{
@@ -1320,25 +1341,7 @@ namespace PngtoFshBatchtxt
 					{
 						if (!Path.GetFileName(patharray[n]).StartsWith("0x", StringComparison.OrdinalIgnoreCase))
 						{
-							if (temp.Width >= 128 && temp.Height >= 128)
-							{
-								if (Inst0_4rdo.Checked)
-								{
-									instarray[n] = instarray[n].Substring(0, 7) + "4";
-								}
-								else if (Inst5_9rdo.Checked)
-								{
-									instarray[n] = instarray[n].Substring(0, 7) + "9";
-								}
-								else if (InstA_Erdo.Checked)
-								{
-									instarray[n] = instarray[n].Substring(0, 7) + "E";
-								}
-							}
-							else
-							{
-								continue;
-							}
+                            SetEndFormat(temp, n);
 						}
 
 
@@ -1682,7 +1685,7 @@ namespace PngtoFshBatchtxt
 			}
 		}
 		
-		private static string[] GetFilesfromDirectory(string[] filenames)
+		private string[] GetFilesfromDirectory(string[] filenames)
 		{
 			ArrayList flist = new ArrayList();
 
@@ -1715,6 +1718,8 @@ namespace PngtoFshBatchtxt
 							}
 						}
 					}
+
+                    AddRecentFolder(di.FullName);
 				}
 				else
 				{
@@ -1986,5 +1991,14 @@ namespace PngtoFshBatchtxt
 				settings.PutSetting("fshwritecompcb_checked", fshWriteCompCb.Checked.ToString());
 			}
 		}
+
+        private void Form1_Shown(object sender, EventArgs e)
+        {
+            if (manager != null)
+            {
+                jumpList = JumpList.CreateJumpList();
+            }
+
+        }
 	}
 }

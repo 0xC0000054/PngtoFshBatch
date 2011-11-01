@@ -478,6 +478,7 @@ namespace PngtoFshBatchtxt
             this.Name = "Form1";
             this.Text = "Png to Fsh Batch";
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.Shown += new System.EventHandler(this.Form1_Shown);
             this.datFuncBox.ResumeLayout(false);
             this.datFuncBox.PerformLayout();
             this.InstendBox1.ResumeLayout(false);
