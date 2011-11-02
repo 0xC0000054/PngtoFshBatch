@@ -106,8 +106,11 @@ namespace PngtoFshBatchtxt
 								using (MemoryStream mstream = new MemoryStream())
 								{
 									SaveFsh(mstream, batchFsh.Mip64Fsh);
-									batchFsh.Mip64Fsh = new FSHImage(mstream);
-								}
+                                    if (fshWriteCompCb.Checked)
+                                    {
+                                        batchFsh.Mip64Fsh.SetRawData(mstream.ToArray());
+                                    }
+                                }
 							}
 							else if (mipitm.Bitmap.Width == 32 && mipitm.Bitmap.Height == 32)
 							{
@@ -117,8 +120,11 @@ namespace PngtoFshBatchtxt
 								using (MemoryStream mstream = new MemoryStream())
 								{
 									SaveFsh(mstream, batchFsh.Mip32Fsh);
-									batchFsh.Mip32Fsh = new FSHImage(mstream);
-								}
+                                    if (fshWriteCompCb.Checked)
+                                    {
+                                        batchFsh.Mip32Fsh.SetRawData(mstream.ToArray());
+                                    }
+                                }
 							}
 							else if (mipitm.Bitmap.Width == 16 && mipitm.Bitmap.Height == 16)
 							{
@@ -128,8 +134,11 @@ namespace PngtoFshBatchtxt
 								using (MemoryStream mstream = new MemoryStream())
 								{
 									SaveFsh(mstream, batchFsh.Mip16Fsh);
-									batchFsh.Mip16Fsh = new FSHImage(mstream);
-								}
+                                    if (fshWriteCompCb.Checked)
+                                    {
+                                        batchFsh.Mip16Fsh.SetRawData(mstream.ToArray());
+                                    }
+                                }
 							}
 							else if (mipitm.Bitmap.Width == 8 && mipitm.Bitmap.Height == 8)
 							{
@@ -139,8 +148,11 @@ namespace PngtoFshBatchtxt
 								using (MemoryStream mstream = new MemoryStream())
 								{
 									SaveFsh(mstream, batchFsh.Mip8Fsh);
-									batchFsh.Mip8Fsh = new FSHImage(mstream);
-								}
+                                    if (fshWriteCompCb.Checked)
+                                    {
+                                        batchFsh.Mip8Fsh.SetRawData(mstream.ToArray());
+                                    }
+                                }
 							}
 						}
 					}
@@ -699,7 +711,7 @@ namespace PngtoFshBatchtxt
 
 								if (IsDXTFsh(batchFshList[c].MainImage) && fshWriteCompCb.Checked)
 								{
-									batchFshList[c].MainImage = new FSHImage(mstream);
+									batchFshList[c].MainImage.SetRawData(mstream.ToArray());
 								}
 							}
 						}
