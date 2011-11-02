@@ -53,18 +53,21 @@ namespace PngtoFshBatchtxt
             BitmapData data = image.LockBits(new Rectangle(0, 0, image.Width, image.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
             try
             {
-                byte* scan0 = (byte*)data.Scan0.ToPointer(); 
-                for (int y = 0; y < data.Height; y++)
+                byte* scan0 = (byte*)data.Scan0.ToPointer();
+                int stride = data.Stride;
+                for (int y = 0; y < image.Height; y++)
                 {
-                    byte* p = scan0 + (y * data.Stride);
-                    for (int x = 0; x < data.Width; x++)
+                    byte* p = scan0 + (y * stride);
+                    for (int x = 0; x < image.Width; x++)
                     {
-                        int index = ((y * data.Width) * 4) + x;
+                        int index = (y * image.Width * 4) + (x * 4);
 
                         pixelData[index] = p[2];
                         pixelData[index + 1] = p[1];
                         pixelData[index + 2] = p[0];
-                        pixelData[index + 3] = p[3]; 
+                        pixelData[index + 3] = p[3];
+
+                        p += 4;
                     }
                 }
 
