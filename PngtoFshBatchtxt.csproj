@@ -98,6 +98,7 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="FSHImageExtensions.cs" />
     <Compile Include="Fshwrite.cs" />
     <Compile Include="JumpListHelper.cs" />
     <Compile Include="ListExtensions.cs" />
