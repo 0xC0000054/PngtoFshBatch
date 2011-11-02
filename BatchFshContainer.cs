@@ -26,7 +26,7 @@ namespace PngtoFshBatchtxt
         /// <param name="mainImage">The image to add, this may be smaller than 128x128</param>
         public BatchFshContainer(FSHImage mainImage)
         {
-            this.mainImage = mainImage;
+            this.MainImage = mainImage;
         }
 
 
