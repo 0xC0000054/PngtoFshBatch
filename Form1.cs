@@ -421,7 +421,7 @@ namespace PngtoFshBatchtxt
 					{
 						if (fshimg[i] != null)
 						{
-							fshwrap[i] = new FshWrapper(fshimg[i]) { UseFshWrite = fshWriteCompCb.Checked };
+							fshwrap[i] = new FshWrapper(FSHImageWrapper.FromFSHImage(fshimg[i])) { UseFshWrite = fshWriteCompCb.Checked };
 
 							inputdat.Add(fshwrap[i], group, instanceid[i], compress_datmips);
 							// Debug.WriteLine("Bmp: " + index.ToString() + " zoom: " + i.ToString());
@@ -450,7 +450,7 @@ namespace PngtoFshBatchtxt
 
 					if (batchFshList[c].MainImage != null)
 					{
-						fshwrap = new FshWrapper(batchFshList[c].MainImage) { UseFshWrite = fshWriteCompCb.Checked };
+						fshwrap = new FshWrapper(FSHImageWrapper.FromFSHImage(batchFshList[c].MainImage)) { UseFshWrite = fshWriteCompCb.Checked };
 
 						inputdat.Add(fshwrap, Group, instanceid, compress_datmips);
 					}
@@ -1196,7 +1196,7 @@ namespace PngtoFshBatchtxt
             {
                 using (JumpListLink link = new JumpListLink(Assembly.GetExecutingAssembly().Location, Path.GetFileName(path)))
                 {
-                    link.Arguments = path;
+                    link.Arguments = "\"" + path + "\"";
                     link.IconReference = new Microsoft.WindowsAPICodePack.Shell.IconReference("shell32.dll", 3);
 
                     JumpListHelper.AddToRecent(link, manager.ApplicationId);
