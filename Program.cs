@@ -154,7 +154,19 @@ namespace PngtoFshBatchtxt
                                         string path = Path.GetDirectoryName(dat[1]);
                                         if (Directory.Exists(path))
                                         {
-                                            if (form1.dat == null)
+                                            if (File.Exists(dat[1]))
+                                            {
+                                                try
+                                                {
+                                                    form1.dat = new DatFile(dat[1]);
+                                                }
+                                                catch (DatHeaderException)
+                                                {
+                                                    form1.dat.Dispose();
+                                                    form1.dat = new DatFile();
+                                                }
+                                            }
+                                            else if (dat == null)
                                             {
                                                 form1.dat = new DatFile();
                                             }
