@@ -345,21 +345,22 @@ namespace PngtoFshBatchtxt
 				tgiGroupTxt.Text = batchListView.SelectedItems[0].SubItems[2].Text;
 				tgiInstanceTxt.Text = batchListView.SelectedItems[0].SubItems[3].Text;
 				int index = batchListView.SelectedItems[0].Index;
-				switch (typearray[index].ToUpperInvariant())
+                FSHBmpType type = (FSHBmpType)Enum.Parse(typeof(FSHBmpType), typearray[index]);
+				switch (type)
 				{ 
-					case "TWENTYFOURBIT":
+					case FSHBmpType.TwentyFourBit:
 						fshTypeBox.SelectedIndex = 0;
 						typeindex = 0;
 						break;
-					case "THIRTYTWOBIT":
+					case FSHBmpType.ThirtyTwoBit:
 						fshTypeBox.SelectedIndex = 1;
 						typeindex = 1;
 						break;
-					case "DXT1":
+					case FSHBmpType.DXT1:
 						fshTypeBox.SelectedIndex = 2;
 						typeindex = 2;
 						break;
-					case "DXT3":
+					case FSHBmpType.DXT3:
 						fshTypeBox.SelectedIndex = 3;
 						typeindex = 3;
 						break;
@@ -680,22 +681,7 @@ namespace PngtoFshBatchtxt
 								}
 							}
 						}
-						if (typearray[c].ToUpperInvariant() == FSHBmpType.ThirtyTwoBit.ToString().ToUpperInvariant())
-						{
-							item.BmpType = FSHBmpType.ThirtyTwoBit;
-						}
-						else if (typearray[c].ToUpperInvariant() == FSHBmpType.TwentyFourBit.ToString().ToUpperInvariant())
-						{
-							item.BmpType = FSHBmpType.TwentyFourBit;
-						}
-						else if (typearray[c].ToUpperInvariant() == FSHBmpType.DXT1.ToString().ToUpperInvariant())
-						{
-							item.BmpType = FSHBmpType.DXT1;
-						}
-						else if (typearray[c].ToUpperInvariant() == FSHBmpType.DXT3.ToString().ToUpperInvariant())
-						{
-							item.BmpType = FSHBmpType.DXT3;
-						}
+                        item.BmpType = (FSHBmpType)Enum.Parse(typeof(FSHBmpType), typearray[c]);
 
 						if (c <= batchFshList.Capacity)
 						{
@@ -783,15 +769,14 @@ namespace PngtoFshBatchtxt
 		/// <returns>True if successful otherwise false</returns>
 		private static bool IsDXTFsh(FSHImage image)
 		{
-			bool result = true;
 			foreach (BitmapItem bi in image.Bitmaps)
 			{
 				if (bi.BmpType != FSHBmpType.DXT3 && bi.BmpType != FSHBmpType.DXT1)
 				{
-					result = false;
+					return false;
 				}
 			}
-			return result;
+			return true;
 		}
 
 		private void SetProgressBarMaximum()
@@ -1049,6 +1034,7 @@ namespace PngtoFshBatchtxt
 		{
 			try
 			{
+                int pathArrayCount = patharray.Count;
 				if (grouptxt)
 				{
 					if (File.Exists(path))
@@ -1070,7 +1056,7 @@ namespace PngtoFshBatchtxt
 										g = "1ABE787D";
 										MessageBox.Show(this, Resources.InvalidGroupID, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
 									}
-									for (int i = 0; i < patharray.Count; i++)
+									for (int i = 0; i < pathArrayCount; i++)
 									{
 										grouparray.Insert(i, g);
 									}
@@ -1081,7 +1067,7 @@ namespace PngtoFshBatchtxt
 					else
 					{
 						string errgrp = "1ABE787D";
-						for (int i = 0; i < patharray.Count; i++)
+						for (int i = 0; i < pathArrayCount; i++)
 						{
 							grouparray.Insert(i, errgrp);
 						}
@@ -1325,9 +1311,10 @@ namespace PngtoFshBatchtxt
 		{
 			try
 			{
+                int pathArrayCount = patharray.Count;
 				if (tgiGroupTxt.Text.Length > 0 && tgiGroupTxt.Text.Length == 8)
 				{
-					for (int j = 0; j < patharray.Count; j++)
+					for (int j = 0; j < pathArrayCount; j++)
 					{
 						grouparray.Insert(j, tgiGroupTxt.Text);
 					}
@@ -1338,7 +1325,7 @@ namespace PngtoFshBatchtxt
 				}
 
 
-				for (int n = 0; n < patharray.Count; n++)
+				for (int n = 0; n < pathArrayCount; n++)
 				{
 					if (Path.GetFileName(patharray[n]).StartsWith("0x", StringComparison.OrdinalIgnoreCase))
 					{
@@ -1361,36 +1348,35 @@ namespace PngtoFshBatchtxt
 						string fn = Path.GetFileName(patharray[n]);
 						if (File.Exists(alname))
 						{
-							typearray.Insert(n, "DXT3");
+							typearray.Insert(n, FSHBmpType.DXT3.ToString());
 						}
 						else if (temp.PixelFormat == PixelFormat.Format32bppArgb)
 						{
 							if (temp.Width >= 256 && temp.Height >= 256 && fn.StartsWith("hd", StringComparison.OrdinalIgnoreCase))
 							{
-								typearray.Insert(n, "ThirtyTwoBit");
+								typearray.Insert(n, FSHBmpType.ThirtyTwoBit.ToString());
 							}
 							else
 							{
-								typearray.Insert(n, "DXT3");
+								typearray.Insert(n, FSHBmpType.DXT3.ToString());
 							}
 						}
 						else
 						{
 							if (temp.Width >= 256 && temp.Height >= 256 && fn.StartsWith("hd", StringComparison.OrdinalIgnoreCase))
 							{
-								typearray.Insert(n, "TwentyFourBit");
+								typearray.Insert(n, FSHBmpType.TwentyFourBit.ToString());
 							}
 							else
 							{
-								typearray.Insert(n, "DXT1");
+								typearray.Insert(n, FSHBmpType.DXT1.ToString());
 							}
 						}
 					}
 
 				}
 
-
-				for (int i = 0; i < patharray.Count; i++)
+				for (int i = 0; i < pathArrayCount; i++)
 				{
 					if (File.Exists(patharray[i]))
 					{
@@ -1401,8 +1387,6 @@ namespace PngtoFshBatchtxt
 						batchListView.Items.Add(item1);
 					}
 				}
-				/*Debug.Assert(patharray.Count == batchListView.Items.Count,"The number of items in the batch and patharray lists do not match"
-					,string.Concat("patharray count: " + patharray.Count.ToString()," does not match ", "BatchlistView count: " +batchListView.Items.Count.ToString()));*/
 			}
 			catch (FileNotFoundException fx)
 			{
@@ -1452,9 +1436,11 @@ namespace PngtoFshBatchtxt
 		{
 			try
 			{
+                int pathArrayCount = patharray.Count;
+
 				if (tgiGroupTxt.Text.Length > 0 && tgiGroupTxt.Text.Length == 8)
 				{
-					for (int j = 0; j < patharray.Count; j++)
+					for (int j = 0; j < pathArrayCount; j++)
 					{
 						grouparray.Insert(j, tgiGroupTxt.Text);
 					}
@@ -1464,7 +1450,7 @@ namespace PngtoFshBatchtxt
 					ReadRangetxt(grppath, true);
 				}
 
-				for (int n = dif; n < patharray.Count; n++)
+				for (int n = dif; n < pathArrayCount; n++)
 				{
 					if (Path.GetFileName(patharray[n]).StartsWith("0x", StringComparison.OrdinalIgnoreCase))
 					{
@@ -1489,39 +1475,39 @@ namespace PngtoFshBatchtxt
 						{
 							if (temp.Width >= 256 && temp.Height >= 256 && fn.StartsWith("hd", StringComparison.OrdinalIgnoreCase))
 							{
-								typearray.Insert(n, "ThirtyTwoBit");
+								typearray.Insert(n, FSHBmpType.ThirtyTwoBit.ToString());
 							}
 							else
 							{
-								typearray.Insert(n, "DXT3");
+								typearray.Insert(n, FSHBmpType.DXT3.ToString());
 							}
 						}
 						else if (Path.GetExtension(patharray[n]).Equals(".png",StringComparison.OrdinalIgnoreCase) && temp.PixelFormat == PixelFormat.Format32bppArgb)
 						{
-							if (temp.Width >= 256 && temp.Height >= 256 && fn.StartsWith("hd", StringComparison.OrdinalIgnoreCase))
-							{
-								typearray.Insert(n, "ThirtyTwoBit");
-							}
-							else
-							{
-								typearray.Insert(n, "DXT3");
-							}
+                            if (temp.Width >= 256 && temp.Height >= 256 && fn.StartsWith("hd", StringComparison.OrdinalIgnoreCase))
+                            {
+                                typearray.Insert(n, FSHBmpType.ThirtyTwoBit.ToString());
+                            }
+                            else
+                            {
+                                typearray.Insert(n, FSHBmpType.DXT3.ToString());
+                            }
 						}
 						else
 						{
 							if (temp.Width >= 256 && temp.Height >= 256 && fn.StartsWith("hd", StringComparison.OrdinalIgnoreCase))
 							{
-								typearray.Insert(n, "TwentyFourBit");
+								typearray.Insert(n, FSHBmpType.TwentyFourBit.ToString());
 							}
 							else
 							{
-								typearray.Insert(n, "DXT1");
+								typearray.Insert(n, FSHBmpType.DXT1.ToString());
 							}
 						}
 					}
 				}
 
-				for (int i = dif; i < patharray.Count; i++)
+				for (int i = dif; i < pathArrayCount; i++)
 				{
 					if (File.Exists(patharray[i]))
 					{
@@ -1664,25 +1650,22 @@ namespace PngtoFshBatchtxt
 			{
 				int index = batchListView.SelectedItems[0].Index;
 				string seltype = null;
-				using (Bitmap b = new Bitmap(patharray[index]))
+				switch (fshTypeBox.SelectedIndex)
 				{
-					switch (fshTypeBox.SelectedIndex)
-					{
-						case 0:
-							seltype = FSHBmpType.TwentyFourBit.ToString();
-							break;
-						case 1:
-							seltype = FSHBmpType.ThirtyTwoBit.ToString();
-							break;
-						case 2:
-							seltype = FSHBmpType.DXT1.ToString();
-							break;
-						case 3:
-							seltype = FSHBmpType.DXT3.ToString();
-							break;
-					}
+					case 0:
+						seltype = FSHBmpType.TwentyFourBit.ToString();
+						break;
+					case 1:
+						seltype = FSHBmpType.ThirtyTwoBit.ToString();
+						break;
+					case 2:
+						seltype = FSHBmpType.DXT1.ToString();
+						break;
+					case 3:
+						seltype = FSHBmpType.DXT3.ToString();
+						break;
 				}
-				if (!seltype.ToUpperInvariant().Equals(typearray[index], StringComparison.OrdinalIgnoreCase))
+				if (!seltype.Equals(typearray[index], StringComparison.Ordinal))
 				{
 					typearray[index] = seltype;
 				}
@@ -1699,14 +1682,14 @@ namespace PngtoFshBatchtxt
 		
 		private string[] GetFilesfromDirectory(string[] filenames)
 		{
-			ArrayList flist = new ArrayList();
+			List<string> flist = new List<string>();
 
 			for (int f = 0; f < filenames.Length; f++)
 			{
 				if ((File.GetAttributes(filenames[f]) & FileAttributes.Directory) == FileAttributes.Directory)
 				{
 					DirectoryInfo di = new DirectoryInfo(filenames[f]);
-					ArrayList fa = new ArrayList();
+					List<FileInfo> fa = new List<FileInfo>();
 
 					fa.AddRange(di.GetFiles("*.png", SearchOption.TopDirectoryOnly));
 					FileInfo[] bmparr = di.GetFiles("*.bmp", SearchOption.TopDirectoryOnly);
@@ -1714,11 +1697,12 @@ namespace PngtoFshBatchtxt
 					{
 						fa.AddRange(bmparr);
 					}
-
-					for (int i = 0; i < fa.Count; i++)
+                    int count = fa.Count;
+					for (int i = 0; i < count; i++)
 					{
-						FileInfo fi = (FileInfo)fa[i];
-						if (fi.Extension.Equals(".png", StringComparison.OrdinalIgnoreCase) || fi.Extension.Equals(".bmp", StringComparison.OrdinalIgnoreCase))
+						FileInfo fi = fa[i];
+                        string ext = fi.Extension;
+                        if (ext.Equals(".png", StringComparison.OrdinalIgnoreCase) || ext.Equals(".bmp", StringComparison.OrdinalIgnoreCase))
 						{
 							if (Path.GetFileName(fi.FullName).Contains("_a"))
 							{
@@ -1735,22 +1719,22 @@ namespace PngtoFshBatchtxt
 				}
 				else
 				{
-						FileInfo fi = new FileInfo(filenames[f]);
-						if (fi.Extension.Equals(".png", StringComparison.OrdinalIgnoreCase) || fi.Extension.Equals(".bmp", StringComparison.OrdinalIgnoreCase))
+					FileInfo fi = new FileInfo(filenames[f]);
+                    string ext = fi.Extension;
+                    if (ext.Equals(".png", StringComparison.OrdinalIgnoreCase) || ext.Equals(".bmp", StringComparison.OrdinalIgnoreCase))
+					{
+						if (Path.GetFileName(filenames[f]).Contains("_a"))
 						{
-
-							if (Path.GetFileName(filenames[f]).Contains("_a"))
-							{
-								continue;
-							}
-							else
-							{
-								flist.Add(fi.FullName);
-							}
+							continue;
 						}
+						else
+						{
+							flist.Add(fi.FullName);
+						}
+					}
 				}
 			}
-			return (string[])flist.ToArray(typeof(string));
+			return flist.ToArray();
 		}
 
 		private void batchListView1_DragDrop(object sender, DragEventArgs e)
