@@ -368,11 +368,13 @@ namespace PngtoFshBatchtxt
 			}
 		}
 
-		delegate ListViewItem GetBatchListViewItemDelegate(int index);
+		delegate ListViewItem[] GetBatchListViewItemsDelegate();
 
-		private ListViewItem GetBatchListViewItem(int index)
+		private ListViewItem[] GetBatchListViewItems()
 		{
-			return batchListView.Items[index];
+            ListViewItem[] items = new ListViewItem[batchListView.Items.Count];
+            batchListView.Items.CopyTo(items, 0);
+			return items;
 		}
 
 		internal DatFile dat = null;
@@ -383,80 +385,93 @@ namespace PngtoFshBatchtxt
 
 		internal void RebuildDat(DatFile inputdat)
 		{
-			if (mipsbtn_clicked)
-			{
-				for (int c = 0; c < batchListView.Items.Count; c++)
-				{
-					this.Invoke(new SetProgressBarValueDelegate(SetProgressBarValue), new object[] { c, Resources.BuildingDatStatusTextFormat });
+            ListViewItem[] items = (ListViewItem[])base.Invoke(new GetBatchListViewItemsDelegate(GetBatchListViewItems));
+            int itemCount = items.Length;
 
-                    BatchFshContainer batchFsh = batchFshList[c];
-					ListViewItem item = (ListViewItem)this.Invoke(new GetBatchListViewItemDelegate(GetBatchListViewItem), new object[] {c});
-					uint group = uint.Parse(item.SubItems[2].Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
-					uint[] instanceid = new uint[5];
-					FshWrapper[] fshwrap = new FshWrapper[5];
-					FSHImage[] fshimg = new FSHImage[5];
-					if (batchFsh.Mip64Fsh != null && batchFsh.Mip32Fsh != null && batchFsh.Mip16Fsh != null && batchFsh.Mip8Fsh != null)
-					{
-						fshimg[0] = batchFsh.Mip8Fsh;
-						fshimg[1] = batchFsh.Mip16Fsh;
-						fshimg[2] = batchFsh.Mip32Fsh;
-						fshimg[3] = batchFsh.Mip64Fsh; 
-					}
-					
-					fshimg[4] = batchFsh.MainImage;
 
-                    SetInstanceEndChars(c);
+
+            if (mipsbtn_clicked)
+            {
+                for (int i = 0; i < itemCount; i++)
+                {
+                    this.Invoke(new SetProgressBarValueDelegate(SetProgressBarValue), new object[] { i, Resources.BuildingDatStatusTextFormat });
+
+                    BatchFshContainer batchFsh = batchFshList[i];
+                    ListViewItem item = items[i];
+                    uint group = uint.Parse(item.SubItems[2].Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+                    uint[] instanceid = new uint[5];
+                    FshWrapper[] fshwrap = new FshWrapper[5];
+                    FSHImage[] fshimg = new FSHImage[5];
+                    if (batchFsh.Mip64Fsh != null && batchFsh.Mip32Fsh != null && batchFsh.Mip16Fsh != null && batchFsh.Mip8Fsh != null)
+                    {
+                        fshimg[0] = batchFsh.Mip8Fsh;
+                        fshimg[1] = batchFsh.Mip16Fsh;
+                        fshimg[2] = batchFsh.Mip32Fsh;
+                        fshimg[3] = batchFsh.Mip64Fsh;
+                    }
+
+                    fshimg[4] = batchFsh.MainImage;
+
+                    SetInstanceEndChars(i);
 
                     instanceid[0] = uint.Parse(item.SubItems[3].Text.Substring(0, 7) + end8, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
                     instanceid[1] = uint.Parse(item.SubItems[3].Text.Substring(0, 7) + end16, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
                     instanceid[2] = uint.Parse(item.SubItems[3].Text.Substring(0, 7) + end32, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
                     instanceid[3] = uint.Parse(item.SubItems[3].Text.Substring(0, 7) + end64, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
-					instanceid[4] = uint.Parse(item.SubItems[3].Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+                    instanceid[4] = uint.Parse(item.SubItems[3].Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
 
-					if (inputdat == null)
-					{
-						dat = new DatFile();
-					}
+                    for (int j = 4; j >= 0; j--)
+                    {
+                        if (fshimg[j] != null)
+                        {
+                            fshwrap[j] = new FshWrapper(FSHImageWrapper.FromFSHImage(fshimg[j])) { UseFshWrite = fshWriteCompCb.Checked };
+                            int index = CheckInstance(inputdat, group, instanceid[j]);
 
-					for (int i = 4; i >= 0; i--)
-					{
-						if (fshimg[i] != null)
-						{
-							fshwrap[i] = new FshWrapper(FSHImageWrapper.FromFSHImage(fshimg[i])) { UseFshWrite = fshWriteCompCb.Checked };
+                            if (index >= 0)
+                            {
+                                inputdat.Insert(fshwrap[j], index, group, instanceid[j], compress_datmips);
+                            }
+                            else
+                            {
+                                inputdat.Add(fshwrap[j], group, instanceid[j], compress_datmips);
+                            }
+                        }
+                    }
 
-							inputdat.Add(fshwrap[i], group, instanceid[i], compress_datmips);
-							// Debug.WriteLine("Bmp: " + index.ToString() + " zoom: " + i.ToString());
-						}
-					}
-				}
-			}
-			else if (!autoProcMipsCb.Checked && batchFshList != null)
-			{
-				for (int c = 0; c < batchListView.Items.Count; c++)
-				{
-                    this.Invoke(new SetProgressBarValueDelegate(SetProgressBarValue), new object[] { c, Resources.BuildingDatStatusTextFormat });
 
-					ListViewItem item = (ListViewItem)this.Invoke(new GetBatchListViewItemDelegate(GetBatchListViewItem), new object[] { c });
-					
-					uint Group = uint.Parse(item.SubItems[2].Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
-					uint instanceid = new uint();
-					FshWrapper fshwrap = new FshWrapper();
-                    SetInstanceEndChars(c);
+                }
+            }
+            else if (!autoProcMipsCb.Checked && batchFshList != null)
+            {
+                for (int i = 0; i < itemCount; i++)
+                {
+                    this.Invoke(new SetProgressBarValueDelegate(SetProgressBarValue), new object[] { i, Resources.BuildingDatStatusTextFormat });
+
+                    ListViewItem item = items[i];
+
+                    uint group = uint.Parse(item.SubItems[2].Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+                    uint instanceid = new uint();
+                    FshWrapper fshwrap = new FshWrapper();
+                    SetInstanceEndChars(i);
                     instanceid = uint.Parse(item.SubItems[3].Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
 
-					if (inputdat == null)
-					{
-						dat = new DatFile();
-					}
+                    if (batchFshList[i].MainImage != null)
+                    {
+                        fshwrap = new FshWrapper(FSHImageWrapper.FromFSHImage(batchFshList[i].MainImage)) { UseFshWrite = fshWriteCompCb.Checked };
 
-					if (batchFshList[c].MainImage != null)
-					{
-						fshwrap = new FshWrapper(FSHImageWrapper.FromFSHImage(batchFshList[c].MainImage)) { UseFshWrite = fshWriteCompCb.Checked };
+                        int index = CheckInstance(inputdat, group, instanceid);
 
-						inputdat.Add(fshwrap, Group, instanceid, compress_datmips);
-					}
-				}
-			}
+                        if (index >= 0)
+                        {
+                            inputdat.Insert(fshwrap, index, group, instanceid, compress_datmips);
+                        }
+                        else
+                        {
+                            inputdat.Add(fshwrap, group, instanceid, compress_datmips);
+                        }
+                    }
+                }
+            }
 
             this.BeginInvoke(new MethodInvoker(delegate()
             {                
@@ -465,20 +480,59 @@ namespace PngtoFshBatchtxt
 
 			datRebuilt = true;
 		}
+
+        /// <summary>
+        /// Checks the dat for files with the same TGI id
+        /// </summary>
+        /// <param name="checkdat">The Dat to check</param>
+        /// <param name="group">The group id to check</param>
+        /// <param name="instance">The instance id to check</param>
+        private static int CheckInstance(DatFile checkdat, uint group, uint instance)
+        {
+            int count = checkdat.Indexes.Count;
+            for (int n = 0; n < count; n++)
+            {
+                DatIndex chkindex = checkdat.Indexes[n];
+                if (chkindex.Type == 0x7ab50e44U && chkindex.Group == group && chkindex.IndexState != DatIndexState.New)
+                {
+                    if (chkindex.Instance == instance)
+                    {
+                        return checkdat.Remove(group, instance);
+                    }
+                }
+            }
+
+            return -1;
+        }
+
 		private void saveDatbtn_Click(object sender, EventArgs e)
 		{
             if (batchListView.Items.Count > 0)
             {
-                if (dat == null)
-                {
-                    dat = new DatFile();
-                }
+
 
                 try
                 {
 
                     if (saveDatDialog1.ShowDialog(this) == DialogResult.OK)
                     {
+                        if (File.Exists(saveDatDialog1.FileName))
+                        {
+                            try
+                            {
+                                dat = new DatFile(saveDatDialog1.FileName);
+                            }
+                            catch (DatHeaderException)
+                            {
+                                dat.Dispose();
+                                dat = new DatFile();
+                            }
+                        }
+                        else if (dat == null)
+                        {
+                            dat = new DatFile();
+                        }
+
                         if (!batch_processed)
                         {
                             this.SetProgressBarMaximum();
@@ -810,7 +864,6 @@ namespace PngtoFshBatchtxt
                 manager.SetProgressValue(toolStripProgressBar1.Value, toolStripProgressBar1.Maximum, this.Handle);
             }
 		}
-        delegate int GetBatchListViewItemsCountDelegate();
         private int GetBatchListViewItemsCount()
         {
             return batchListView.Items.Count;
@@ -818,7 +871,7 @@ namespace PngtoFshBatchtxt
 
 		private void ProcessBatchSaveFiles()
 		{
-            int itemCount = (int)this.Invoke(new GetBatchListViewItemsCountDelegate(GetBatchListViewItemsCount));
+            int itemCount = (int)this.Invoke(new Func<Int32>(GetBatchListViewItemsCount));
 			for (int c = 0; c < itemCount; c++)
 			{
 				string filepath;
