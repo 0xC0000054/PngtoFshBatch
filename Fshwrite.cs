@@ -269,8 +269,9 @@ namespace PngtoFshBatchtxt
                     ms.Write(BitConverter.GetBytes(bmplist.Count), 0, 4); // write the number of bitmaps in the list
                     ms.Write(Encoding.ASCII.GetBytes("G264"), 0, 4); // 
 
-                    int fshlen = 16 + (8 * bmplist.Count); // fsh length
-                    for (int c = 0; c < bmplist.Count; c++)
+                    int imageCount = bmplist.Count;
+                    int fshlen = 16 + (8 * imageCount); // fsh length
+                    for (int c = 0; c < imageCount; c++)
                     {
                         //write directory
                        // Debug.WriteLine("bmp = " + c.ToString() + " offset = " + fshlen.ToString());
@@ -281,7 +282,7 @@ namespace PngtoFshBatchtxt
                         int bmplen = GetBmpDataSize(bmplist[c], codelist[c]);
                         fshlen += bmplen; // skip the bitmap length
                     }
-                    for (int b = 0; b < bmplist.Count; b++)
+                    for (int b = 0; b < imageCount; b++)
                     {
                         Bitmap bmp = bmplist[b];
                         Bitmap alpha = alphalist[b];
