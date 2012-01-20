@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Windows.Forms;
 using FshDatIO;
@@ -116,7 +117,7 @@ namespace PngtoFshBatchtxt
                                 teststr = args[a].Substring(strlen, args[a].Length - strlen);
                                 if (string.IsNullOrEmpty(teststr))
                                 {
-                                    MessageBox.Show(string.Format(Resources.ArgumentPathEmpty, teststr), form1.Text);
+                                    MessageBox.Show(string.Format(CultureInfo.CurrentCulture, Resources.ArgumentPathEmpty, teststr), form1.Text);
                                 }
                                 // test if the directory exists
                                 string[] path = new string[2];
@@ -125,7 +126,7 @@ namespace PngtoFshBatchtxt
                                 string dir = Path.GetDirectoryName(path[1]);
                                 if (!Directory.Exists(dir))
                                 {
-                                    MessageBox.Show(string.Format(Resources.ArgumentDirectoryNotFound, dir), form1.Text);
+                                    MessageBox.Show(string.Format(CultureInfo.CurrentCulture, Resources.ArgumentDirectoryNotFound, dir), form1.Text);
                                 }
 
                             }
