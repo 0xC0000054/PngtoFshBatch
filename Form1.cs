@@ -1923,49 +1923,7 @@ namespace PngtoFshBatchtxt
 				}
 			}
 		}
-		private void fshTypeBox_DrawItem(object sender, DrawItemEventArgs e)
-		{
-			ComboBox cb = sender as ComboBox;
-			if (batchListView.SelectedItems.Count > 0)
-			{
-				if (!Checkhdimgsize(batchListView.SelectedItems[0].Index))
-				{
-					if (e.Index == 0 || e.Index == 1)
-					{
-						// make the hd fsh items look disabled 
-						string text = cb.Items[e.Index].ToString();
-						e.DrawBackground();
-						e.Graphics.DrawString(text, e.Font, SystemBrushes.GrayText, new RectangleF(e.Bounds.X, e.Bounds.Y, e.Bounds.Width, e.Bounds.Height));
-						e.DrawFocusRectangle();
-					}
-					else
-					{
-						//leave the other items alone
-						string text = cb.Items[e.Index].ToString();
-						e.DrawBackground();
-						e.Graphics.DrawString(text, e.Font, SystemBrushes.WindowText, new RectangleF(e.Bounds.X, e.Bounds.Y, e.Bounds.Width, e.Bounds.Height));
-						e.DrawFocusRectangle();
-					}
-				}
-				else
-				{
-					// draw it normally
-					string text = cb.Items[e.Index].ToString();
-					e.DrawBackground();
-					e.Graphics.DrawString(text, e.Font, SystemBrushes.WindowText, new RectangleF(e.Bounds.X, e.Bounds.Y, e.Bounds.Width, e.Bounds.Height));
-					e.DrawFocusRectangle();
-				}
-			}
-			else
-			{
-				// draw it normally
-				string text = cb.Items[e.Index].ToString();
-				e.DrawBackground();
-				e.Graphics.DrawString(text, e.Font, SystemBrushes.WindowText, new RectangleF(e.Bounds.X, e.Bounds.Y, e.Bounds.Width, e.Bounds.Height));
-				e.DrawFocusRectangle();
-			}
-		}
-
+		
 		private void fshTypeBox_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (batchListView.SelectedItems.Count > 0)

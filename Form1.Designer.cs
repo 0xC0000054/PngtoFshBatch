@@ -325,7 +325,6 @@ namespace PngtoFshBatchtxt
             // fshTypeBox
             // 
             this.fshTypeBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.fshTypeBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             this.fshTypeBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.fshTypeBox.FormattingEnabled = true;
             this.fshTypeBox.Items.AddRange(new object[] {
@@ -338,7 +337,6 @@ namespace PngtoFshBatchtxt
             this.fshTypeBox.Size = new System.Drawing.Size(172, 21);
             this.fshTypeBox.TabIndex = 6;
             this.toolTip1.SetToolTip(this.fshTypeBox, global::PngtoFshBatchtxt.Properties.Resources.fshTypeBox_ToolTip);
-            this.fshTypeBox.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.fshTypeBox_DrawItem);
             this.fshTypeBox.SelectedIndexChanged += new System.EventHandler(this.fshTypeBox_SelectedIndexChanged);
             this.fshTypeBox.SelectionChangeCommitted += new System.EventHandler(this.fshTypeBox_SelectionChangeCommitted);
             // 
