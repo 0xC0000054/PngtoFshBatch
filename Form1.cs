@@ -734,6 +734,7 @@ namespace PngtoFshBatchtxt
 							}
 						}
                         item.BmpType = (FSHBmpType)Enum.Parse(typeof(FSHBmpType), typearray[i]);
+                        item.DirName = "FiSH";
 
 						if (i <= batchFshList.Capacity)
 						{
@@ -971,11 +972,15 @@ namespace PngtoFshBatchtxt
 
 		private void CheckForSSE()
 		{
-			if (!IsProcessorFeaturePresent(SSE))
-			{
-				MessageBox.Show(Resources.FshWriteSSERequiredError, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-				fshWriteCompCb.Enabled = fshWriteCompCb.Checked = false;
-			}
+            Type t = Type.GetType("Mono.Runtime");
+            if (t == null)
+            {
+                if (!IsProcessorFeaturePresent(SSE))
+                {
+                    MessageBox.Show(Resources.FshWriteSSERequiredError, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    fshWriteCompCb.Enabled = fshWriteCompCb.Checked = false;
+                } 
+            }
 		}
 		private void Form1_Load(object sender, EventArgs e)
 		{
