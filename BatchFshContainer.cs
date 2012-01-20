@@ -1,17 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using FSHLib;
+using FshDatIO;
 
 namespace PngtoFshBatchtxt
 {
-    class BatchFshContainer
+    sealed class BatchFshContainer
     {
-        private FSHImage mainImage;
-        private FSHImage mip64Fsh;
-        private FSHImage mip32Fsh;
-        private FSHImage mip16Fsh;
-        private FSHImage mip8Fsh;
+        private FSHImageWrapper mainImage;
+        private FSHImageWrapper mip64Fsh;
+        private FSHImageWrapper mip32Fsh;
+        private FSHImageWrapper mip16Fsh;
+        private FSHImageWrapper mip8Fsh;
 
         /// <summary>
         /// Creates a new BatchFshContainer
@@ -24,13 +22,13 @@ namespace PngtoFshBatchtxt
         /// Creates a new BatchFshContainer with the specified main image.
         /// </summary>
         /// <param name="mainImage">The image to add, this may be smaller than 128x128</param>
-        public BatchFshContainer(FSHImage mainImage)
+        public BatchFshContainer(FSHImageWrapper mainImage)
         {
             this.MainImage = mainImage;
         }
 
 
-        public FSHImage MainImage
+        public FSHImageWrapper MainImage
         {
             get 
             {
@@ -45,7 +43,7 @@ namespace PngtoFshBatchtxt
             }
         }
 
-        public FSHImage Mip64Fsh
+        public FSHImageWrapper Mip64Fsh
         {
             get
             {
@@ -60,7 +58,7 @@ namespace PngtoFshBatchtxt
             }
         }
 
-        public FSHImage Mip32Fsh
+        public FSHImageWrapper Mip32Fsh
         {
             get
             {
@@ -75,7 +73,7 @@ namespace PngtoFshBatchtxt
             }
         }
 
-        public FSHImage Mip16Fsh
+        public FSHImageWrapper Mip16Fsh
         {
             get
             {
@@ -90,7 +88,7 @@ namespace PngtoFshBatchtxt
             }
         }
 
-        public FSHImage Mip8Fsh
+        public FSHImageWrapper Mip8Fsh
         {
             get
             {
