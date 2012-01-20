@@ -8,9 +8,8 @@ namespace PngtoFshBatchtxt
     /* The following code was adapted from
      * http://remyblok.tweakblogs.net/blog/6606/win7-recent-jumplist-without-associating-a-filetype.html
      */
-    class JumpListHelper
+    static class JumpListHelper
     {
-
         private static class NativeMethods
         {
             [ComImport,
@@ -51,7 +50,7 @@ namespace PngtoFshBatchtxt
                 //find the NativeShellLink property on the JumpListLink
                 Type jumpListLinkType = typeof(JumpListLink);
                 PropertyInfo nativeShellLinkProperty = jumpListLinkType.GetProperty("NativeShellLink",
-                        System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+                        BindingFlags.Instance | BindingFlags.NonPublic);
 
                 if (nativeShellLinkProperty == null)
                     throw new InvalidOperationException();
