@@ -795,22 +795,6 @@ namespace PngtoFshBatchtxt
 				throw;
 			}
 		}
-		/// <summary>
-		/// Test if the fsh only contains DXT1 or DXT3 items
-		/// </summary>
-		/// <param name="image">The FSHImage to test</param>
-		/// <returns>True if successful otherwise false</returns>
-		private static bool IsDXTFsh(FSHImage image)
-		{
-			foreach (BitmapItem bi in image.Bitmaps)
-			{
-				if (bi.BmpType != FSHBmpType.DXT3 && bi.BmpType != FSHBmpType.DXT1)
-				{
-					return false;
-				}
-			}
-			return true;
-		}
 
 		private void SetProgressBarMaximum()
 		{
