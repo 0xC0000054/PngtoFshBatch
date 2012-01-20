@@ -49,7 +49,6 @@ namespace PngtoFshBatchtxt
             this.processBatchBtn = new System.Windows.Forms.Button();
             this.saveDatDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.autoProcMipsCb = new System.Windows.Forms.CheckBox();
-            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.outFolderBtn = new System.Windows.Forms.Button();
             this.OutputBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.PngopenDialog = new System.Windows.Forms.OpenFileDialog();
@@ -222,11 +221,6 @@ namespace PngtoFshBatchtxt
             this.toolTip1.SetToolTip(this.autoProcMipsCb, global::PngtoFshBatchtxt.Properties.Resources.autoProcMipsCb_ToolTip);
             this.autoProcMipsCb.UseVisualStyleBackColor = true;
             this.autoProcMipsCb.CheckedChanged += new System.EventHandler(this.autoprocMipscb_CheckedChanged);
-            // 
-            // openFileDialog1
-            // 
-            this.openFileDialog1.DefaultExt = "txt";
-            this.openFileDialog1.Filter = "Batch files (*.txt)|*.txt";
             // 
             // outFolderBtn
             // 
@@ -505,7 +499,6 @@ namespace PngtoFshBatchtxt
         internal System.Windows.Forms.CheckBox autoProcMipsCb;
         private System.Windows.Forms.ColumnHeader groupHeader;
         private System.Windows.Forms.ColumnHeader instanceHeader;
-        private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.Button outFolderBtn;
         private System.Windows.Forms.FolderBrowserDialog OutputBrowserDialog1;
         private System.Windows.Forms.OpenFileDialog PngopenDialog;

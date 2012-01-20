@@ -55,11 +55,11 @@ namespace PngtoFshBatchtxt
 				Bitmap[] bmps = new Bitmap[4];
 				Bitmap[] alphas = new Bitmap[4];
 
-				BitmapItem item = new BitmapItem();
+				
 
 				BatchFshContainer batchFsh = batchFshList[n];
 
-				item = (BitmapItem)batchFsh.MainImage.Bitmaps[0];
+				BitmapEntry item = batchFsh.MainImage.Bitmaps[0];
 
 				if (item.Bitmap.Width >= 128 && item.Bitmap.Height >= 128)
 				{
@@ -81,14 +81,15 @@ namespace PngtoFshBatchtxt
 						alphas[3] = GetBitmapThumbnail(alpha, 64, 64);
 					}
 
+                    bool fshWriteCompression = fshWriteCompCb.Checked;
 					for (int i = 0; i < 4; i++)
 					{
 						if (bmps[i] != null && alphas[i] != null)
 						{
-							BitmapItem mipitm = new BitmapItem();
+							BitmapEntry mipitm = new BitmapEntry();
 							mipitm.Bitmap = bmps[i];
 							mipitm.Alpha = alphas[i];
-							mipitm.SetDirName(Encoding.ASCII.GetString(item.DirName));
+							mipitm.DirName = item.DirName;
 
 							if (item.BmpType == FSHBmpType.DXT3 || item.BmpType == FSHBmpType.ThirtyTwoBit)
 							{
@@ -100,13 +101,12 @@ namespace PngtoFshBatchtxt
 							}
 							if (mipitm.Bitmap.Width == 64 && mipitm.Bitmap.Height == 64)
 							{
-								batchFsh.Mip64Fsh = new FSHImage();
+								batchFsh.Mip64Fsh = new FSHImageWrapper();
 								batchFsh.Mip64Fsh.Bitmaps.Add(mipitm);
-								batchFsh.Mip64Fsh.UpdateDirty();
 								using (MemoryStream mstream = new MemoryStream())
 								{
-									SaveFsh(mstream, batchFsh.Mip64Fsh);
-                                    if (fshWriteCompCb.Checked)
+                                    batchFsh.Mip64Fsh.Save(mstream, fshWriteCompression);
+                                    if (!fshWriteCompression)
                                     {
                                         batchFsh.Mip64Fsh.SetRawData(mstream.ToArray());
                                     }
@@ -114,13 +114,12 @@ namespace PngtoFshBatchtxt
 							}
 							else if (mipitm.Bitmap.Width == 32 && mipitm.Bitmap.Height == 32)
 							{
-								batchFsh.Mip32Fsh = new FSHImage();
-								batchFsh.Mip32Fsh.Bitmaps.Add(mipitm);
-								batchFsh.Mip32Fsh.UpdateDirty();
-								using (MemoryStream mstream = new MemoryStream())
-								{
-									SaveFsh(mstream, batchFsh.Mip32Fsh);
-                                    if (fshWriteCompCb.Checked)
+                                batchFsh.Mip32Fsh = new FSHImageWrapper();
+                                batchFsh.Mip32Fsh.Bitmaps.Add(mipitm);
+                                using (MemoryStream mstream = new MemoryStream())
+                                {
+                                    batchFsh.Mip32Fsh.Save(mstream, fshWriteCompression);
+                                    if (!fshWriteCompression)
                                     {
                                         batchFsh.Mip32Fsh.SetRawData(mstream.ToArray());
                                     }
@@ -128,29 +127,27 @@ namespace PngtoFshBatchtxt
 							}
 							else if (mipitm.Bitmap.Width == 16 && mipitm.Bitmap.Height == 16)
 							{
-								batchFsh.Mip16Fsh = new FSHImage();
-								batchFsh.Mip16Fsh.Bitmaps.Add(mipitm);
-								batchFsh.Mip16Fsh.UpdateDirty();
-								using (MemoryStream mstream = new MemoryStream())
-								{
-									SaveFsh(mstream, batchFsh.Mip16Fsh);
-                                    if (fshWriteCompCb.Checked)
+                                batchFsh.Mip16Fsh = new FSHImageWrapper();
+                                batchFsh.Mip16Fsh.Bitmaps.Add(mipitm);
+                                using (MemoryStream mstream = new MemoryStream())
+                                {
+                                    batchFsh.Mip16Fsh.Save(mstream, fshWriteCompression);
+                                    if (!fshWriteCompression)
                                     {
-                                        batchFsh.Mip16Fsh.SetRawData(mstream.ToArray());
+                                        batchFsh.Mip16Fsh = new FSHImageWrapper(mstream);
                                     }
                                 }
 							}
 							else if (mipitm.Bitmap.Width == 8 && mipitm.Bitmap.Height == 8)
 							{
-								batchFsh.Mip8Fsh = new FSHImage();
-								batchFsh.Mip8Fsh.Bitmaps.Add(mipitm);
-								batchFsh.Mip8Fsh.UpdateDirty();
-								using (MemoryStream mstream = new MemoryStream())
-								{
-									SaveFsh(mstream, batchFsh.Mip8Fsh);
-                                    if (fshWriteCompCb.Checked)
+                                batchFsh.Mip8Fsh = new FSHImageWrapper();
+                                batchFsh.Mip8Fsh.Bitmaps.Add(mipitm.Clone());
+                                using (MemoryStream mstream = new MemoryStream())
+                                {
+                                    batchFsh.Mip8Fsh.Save(mstream, fshWriteCompression);
+                                    if (!fshWriteCompression)
                                     {
-                                        batchFsh.Mip8Fsh.SetRawData(mstream.ToArray());
+                                        batchFsh.Mip8Fsh = new FSHImageWrapper(mstream);
                                     }
                                 }
 							}
@@ -401,7 +398,7 @@ namespace PngtoFshBatchtxt
                     uint group = uint.Parse(item.SubItems[2].Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
                     uint[] instanceid = new uint[5];
                     FshWrapper[] fshwrap = new FshWrapper[5];
-                    FSHImage[] fshimg = new FSHImage[5];
+                    FSHImageWrapper[] fshimg = new FSHImageWrapper[5];
                     if (batchFsh.Mip64Fsh != null && batchFsh.Mip32Fsh != null && batchFsh.Mip16Fsh != null && batchFsh.Mip8Fsh != null)
                     {
                         fshimg[0] = batchFsh.Mip8Fsh;
@@ -424,7 +421,7 @@ namespace PngtoFshBatchtxt
                     {
                         if (fshimg[j] != null)
                         {
-                            fshwrap[j] = new FshWrapper(FSHImageWrapper.FromFSHImage(fshimg[j])) { UseFshWrite = fshWriteCompCb.Checked };
+                            fshwrap[j] = new FshWrapper(fshimg[j]) { UseFshWrite = fshWriteCompCb.Checked };
                             int index = CheckInstance(inputdat, group, instanceid[j]);
 
                             if (index >= 0)
@@ -457,7 +454,7 @@ namespace PngtoFshBatchtxt
 
                     if (batchFshList[i].MainImage != null)
                     {
-                        fshwrap = new FshWrapper(FSHImageWrapper.FromFSHImage(batchFshList[i].MainImage)) { UseFshWrite = fshWriteCompCb.Checked };
+                        fshwrap = new FshWrapper(batchFshList[i].MainImage) { UseFshWrite = fshWriteCompCb.Checked };
 
                         int index = CheckInstance(inputdat, group, instanceid);
 
@@ -603,7 +600,7 @@ namespace PngtoFshBatchtxt
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(this, ex.Message + "\n" + ex.StackTrace, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(this, ex.Message + Environment.NewLine + ex.StackTrace, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 } 
             }
 		}
@@ -673,15 +670,16 @@ namespace PngtoFshBatchtxt
 		{
 			try
 			{
-				for (int c = 0; c < batchListView.Items.Count; c++)
+                int count = batchListView.Items.Count;
+				for (int i = 0; i < count; i++)
 				{
-					this.Invoke(new SetProgressBarValueDelegate(SetProgressBarValue), new object[] { c, Resources.ProcessingStatusTextFormat });
-					using(Bitmap temp = new Bitmap(patharray[c]))
+					this.Invoke(new SetProgressBarValueDelegate(SetProgressBarValue), new object[] { i, Resources.ProcessingStatusTextFormat });
+					using(Bitmap temp = new Bitmap(patharray[i]))
 					{
-						BitmapItem item = new BitmapItem();
+						BitmapEntry item = new BitmapEntry();
 
 						item.Bitmap = temp.Clone(new Rectangle(0, 0, temp.Width, temp.Height), PixelFormat.Format24bppRgb);
-						string alname = Path.Combine(Path.GetDirectoryName(patharray[c]), Path.GetFileNameWithoutExtension(patharray[c]) + "_a" + Path.GetExtension(patharray[c]));
+						string alname = Path.Combine(Path.GetDirectoryName(patharray[i]), Path.GetFileNameWithoutExtension(patharray[i]) + "_a" + Path.GetExtension(patharray[i]));
 						if (File.Exists(alname))
 						{
 							using (Bitmap alpha = new Bitmap(alname))
@@ -690,7 +688,7 @@ namespace PngtoFshBatchtxt
 							}
 						   
 						}
-						else if (Path.GetExtension(patharray[c]).Equals(".png",StringComparison.OrdinalIgnoreCase) && temp.PixelFormat == PixelFormat.Format32bppArgb)
+						else if (Path.GetExtension(patharray[i]).Equals(".png",StringComparison.OrdinalIgnoreCase) && temp.PixelFormat == PixelFormat.Format32bppArgb)
 						{
 							item.Alpha = GetAlphaFromTransparency(temp);
 						}
@@ -735,23 +733,22 @@ namespace PngtoFshBatchtxt
 								}
 							}
 						}
-                        item.BmpType = (FSHBmpType)Enum.Parse(typeof(FSHBmpType), typearray[c]);
+                        item.BmpType = (FSHBmpType)Enum.Parse(typeof(FSHBmpType), typearray[i]);
 
-						if (c <= batchFshList.Capacity)
+						if (i <= batchFshList.Capacity)
 						{
-							FSHImage fsh = new FSHImage();
+							FSHImageWrapper fsh = new FSHImageWrapper();
 								
 							fsh.Bitmaps.Add(item);
-							fsh.UpdateDirty();
-							batchFshList.Insert(c, new BatchFshContainer(fsh));
+							batchFshList.Insert(i, new BatchFshContainer(fsh));
 
 							using (MemoryStream mstream = new MemoryStream())
 							{
-								SaveFsh(mstream, batchFshList[c].MainImage);
+								SaveFsh(mstream, batchFshList[i].MainImage);
 
-								if (IsDXTFsh(batchFshList[c].MainImage) && fshWriteCompCb.Checked)
+								if (!fshWriteCompCb.Checked)
 								{
-									batchFshList[c].MainImage.SetRawData(mstream.ToArray());
+									batchFshList[i].MainImage.SetRawData(mstream.ToArray());
 								}
 							}
 						}
@@ -787,29 +784,11 @@ namespace PngtoFshBatchtxt
 		/// </summary>
 		/// <param name="fs">The stream to save to</param>
 		/// <param name="temp">The temp to save</param>
-		private void SaveFsh(Stream fs, FSHImage image)
+		private void SaveFsh(Stream fs, FSHImageWrapper image)
 		{
 			try
 			{
-				if (fshWriteCompCb.Checked && IsDXTFsh(image))
-				{
-					Fshwrite fw = new Fshwrite(image.Bitmaps.Count);
-					foreach (BitmapItem bi in image.Bitmaps)
-					{
-						if (bi.Bitmap != null && bi.Alpha != null)
-						{
-							fw.bmp.Add(bi.Bitmap);
-							fw.alpha.Add(bi.Alpha);
-							fw.dir.Add(bi.DirName);
-							fw.code.Add((int)bi.BmpType);
-						}
-					}
-					fw.WriteFsh(fs);
-				}
-				else
-				{
-					image.Save(fs);
-				}
+                image.Save(fs, fshWriteCompCb.Checked);
 			}
 			catch (Exception)
 			{
@@ -980,7 +959,7 @@ namespace PngtoFshBatchtxt
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show(this, ex.Message + "\n" + ex.StackTrace, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show(this, ex.Message + Environment.NewLine + ex.StackTrace, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
 		Settings settings = null;
@@ -1133,7 +1112,7 @@ namespace PngtoFshBatchtxt
 				{
 					if (File.Exists(path))
 					{ 
-						string[] instarray = null;
+						string[] instTemp = null;
 						using (StreamReader sr = new StreamReader(path))
 						{
 							string line;
@@ -1142,33 +1121,28 @@ namespace PngtoFshBatchtxt
 							{
 								if (!string.IsNullOrEmpty(line))
 								{
-									instarray = line.Split(splitchar, StringSplitOptions.RemoveEmptyEntries);
+									instTemp = line.Split(splitchar, StringSplitOptions.RemoveEmptyEntries);
 								}
 
 							}
 						}
-						if (instarray != null)
+						if (instTemp != null)
 						{
-							string inst0 = instarray[0];
-							string inst1 = instarray[1];
+							string inst0 = instTemp[0];
+							string inst1 = instTemp[1];
   
-							if (inst0.Length == 10)
+							if (inst0.Length == 10 && inst0.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
 							{
-								if (inst0.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
-								{
-									lowerinst = inst0.Substring(2, 8);
-								}
+							    lowerinst = inst0.Substring(2, 8);
 							}
 							else if (inst0.Length == 8)
 							{
 								lowerinst = inst0;
 							}
-							if (inst1.Length == 10)
+							
+                            if (inst1.Length == 10 && inst1.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
 							{
-                                if (inst1.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
-								{
-									upperinst = inst1.Substring(2, 8);
-								}
+								upperinst = inst1.Substring(2, 8);
 							}
 							else if (inst1.Length == 8)
 							{
