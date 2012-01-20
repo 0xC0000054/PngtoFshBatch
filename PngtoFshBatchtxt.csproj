@@ -122,7 +122,6 @@
   <ItemGroup>
     <Content Include="Icon_2.ico" />
     <Content Include="PngtoFshBatch.xml" />
-    <Content Include="readme\Readme.html" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
