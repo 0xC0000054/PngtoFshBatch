@@ -2,6 +2,5 @@
 <settings>
   <AutoprocessMips>False</AutoprocessMips>
   <compDatcb_checked>True</compDatcb_checked>
-  <DefaultGroupId></DefaultGroupId>
   <fshwritecompcb_checked>False</fshwritecompcb_checked>
 </settings> 
