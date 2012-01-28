@@ -19,7 +19,7 @@ namespace PngtoFshBatchtxt
             int length = args.Length;
             for (int a = 0; a < length; a++)
             {
-                if (args[a].StartsWith("/dat:", StringComparison.OrdinalIgnoreCase) || args[a].StartsWith("/o", StringComparison.OrdinalIgnoreCase))
+                if (args[a].StartsWith("/dat:", StringComparison.OrdinalIgnoreCase) || args[a].StartsWith("/outdir:", StringComparison.OrdinalIgnoreCase))
                 {
                     int strlen;
                     string teststr;
@@ -36,6 +36,7 @@ namespace PngtoFshBatchtxt
                     if (string.IsNullOrEmpty(teststr))
                     {
                         MessageBox.Show(string.Format(CultureInfo.CurrentCulture, Resources.ArgumentPathEmpty, teststr), Form1.ProgramName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Environment.Exit(1);
                     }
                     // test if the directory exists
                     string[] path = new string[2];
@@ -50,87 +51,19 @@ namespace PngtoFshBatchtxt
 
                 }
 
-                if (args[a].StartsWith("/proc", StringComparison.OrdinalIgnoreCase) && (fcnt > 0))
+  
+                if (args[a].StartsWith("/outdir:", StringComparison.OrdinalIgnoreCase))
                 {
-                    if (!pngListBuilt)
+                    string[] dir = new string[2];
+                    dir[0] = args[a].Substring(0, 8);
+                    dir[1] = args[a].Substring(8, args[a].Length - 8);
+                    if (!string.IsNullOrEmpty(dir[1]))
                     {
-                        form1.BuildPngList();
-                        pngListBuilt = true;
-                    }
-
-                    form1.ProcessBatchCmd();
-                }
-                else if (args[a].StartsWith("/mips", StringComparison.OrdinalIgnoreCase) && (fcnt > 0))
-                {
-                    form1.autoProcMipsCb.Checked = true;
-                }
-                else if (args[a].StartsWith("/dat:", StringComparison.OrdinalIgnoreCase) && (fcnt > 0))
-                {
-                    try
-                    {
-                        string[] dat = new string[2];
-                        dat[0] = args[a].Substring(0, 5);
-                        dat[1] = args[a].Substring(5, args[a].Length - 5);
-                        if (!string.IsNullOrEmpty(dat[1]))
+                        if (Directory.Exists(Path.GetDirectoryName(dir[1])))
                         {
-
-                            string path = Path.GetDirectoryName(dat[1]);
-                            if (Directory.Exists(path))
-                            {
-                                if (!pngListBuilt)
-                                {
-                                    form1.BuildPngList();
-                                    pngListBuilt = true;
-                                }
-
-                                if (File.Exists(dat[1]))
-                                {
-                                    try
-                                    {
-                                        form1.dat = new DatFile(dat[1]);
-                                    }
-                                    catch (DatHeaderException)
-                                    {
-                                        form1.dat.Dispose();
-                                        form1.dat = new DatFile();
-                                    }
-                                }
-                                else if (form1.dat == null)
-                                {
-                                    form1.dat = new DatFile();
-                                }
-                                if (!form1.batch_processed)
-                                {
-                                    form1.ProcessBatchCmd();
-                                }
-
-                                if (form1.autoProcMipsCb.Checked)
-                                {
-                                    if (!form1.mipsbtn_clicked)
-                                    {
-                                        form1.ProcessMips();
-                                        form1.RebuildDatCmd(form1.dat);
-                                    }
-                                    else
-                                    {
-                                        form1.RebuildDatCmd(form1.dat);
-                                    }
-                                }
-                                else
-                                {
-                                    form1.RebuildDatCmd(form1.dat);
-                                }
-                                form1.dat.Save(dat[1].Trim());
-                                form1.dat.Close();
-                                form1.dat = null;
-                            }
+                            form1.outfolder = dir[1];
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message, form1.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-
                 }
                 else if (args[a].StartsWith("/group:", StringComparison.OrdinalIgnoreCase))
                 {
@@ -182,18 +115,92 @@ namespace PngtoFshBatchtxt
                         }
                     }
                 }
-                else if (args[a].StartsWith("/outdir:", StringComparison.OrdinalIgnoreCase))
+                else if (args[a].StartsWith("/mips", StringComparison.OrdinalIgnoreCase))
                 {
-                    string[] dir = new string[2];
-                    dir[0] = args[a].Substring(0, 8);
-                    dir[1] = args[a].Substring(8, args[a].Length - 8);
-                    if (!string.IsNullOrEmpty(dir[1]))
+                    form1.autoProcMipsCb.Checked = true;
+                }
+                else if (args[a].Equals("/fshwrite", StringComparison.OrdinalIgnoreCase))
+                {
+                    form1.fshWriteCompCb.Checked = true;
+                }
+                else if (args[a].StartsWith("/dat:", StringComparison.OrdinalIgnoreCase) && (fcnt > 0))
+                {
+                    try
                     {
-                        if (Directory.Exists(Path.GetDirectoryName(dir[1])))
+                        string[] datArgs = new string[2];
+                        datArgs[0] = args[a].Substring(0, 5);
+                        datArgs[1] = args[a].Substring(5, args[a].Length - 5);
+                        if (!string.IsNullOrEmpty(datArgs[1]))
                         {
-                            form1.outfolder = dir[1];
+
+                            string path = Path.GetDirectoryName(datArgs[1]);
+                            if (Directory.Exists(path))
+                            {
+                                if (!pngListBuilt)
+                                {
+                                    form1.BuildPngList();
+                                    pngListBuilt = true;
+                                }
+
+                                if (File.Exists(datArgs[1]))
+                                {
+                                    try
+                                    {
+                                        form1.dat = new DatFile(datArgs[1]);
+                                    }
+                                    catch (DatHeaderException)
+                                    {
+                                        form1.dat.Dispose();
+                                        form1.dat = new DatFile();
+                                    }
+                                }
+                                else if (form1.dat == null)
+                                {
+                                    form1.dat = new DatFile();
+                                }
+                                if (!form1.batch_processed)
+                                {
+                                    form1.ProcessBatchCmd();
+                                }
+
+                                if (form1.autoProcMipsCb.Checked)
+                                {
+                                    if (!form1.mipsbtn_clicked)
+                                    {
+                                        form1.ProcessMips();
+                                        form1.RebuildDatCmd(form1.dat);
+                                    }
+                                    else
+                                    {
+                                        form1.RebuildDatCmd(form1.dat);
+                                    }
+                                }
+                                else
+                                {
+                                    form1.RebuildDatCmd(form1.dat);
+                                }
+                                form1.dat.Save(datArgs[1].Trim());
+                                form1.dat.Close();
+                                form1.dat = null;
+                            }
                         }
                     }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, form1.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+
+                }
+                else if (args[a].StartsWith("/proc", StringComparison.OrdinalIgnoreCase) && (fcnt > 0))
+                {
+                    if (!pngListBuilt)
+                    {
+                        form1.BuildPngList();
+                        pngListBuilt = true;
+                    }
+
+                    form1.ProcessBatchCmd();
+                    form1.ProcessBatchSaveFilesCmd();
                 }
                 else if (args[a].Equals("/?", StringComparison.Ordinal))
                 {
@@ -236,12 +243,13 @@ namespace PngtoFshBatchtxt
                     bool haveSwitches = false;
                     foreach (string arg in args)
                     {
-                        if (arg.Equals("/proc", StringComparison.OrdinalIgnoreCase) ||
+                        if (arg.StartsWith("/outdir:", StringComparison.OrdinalIgnoreCase) ||
+                            arg.StartsWith("/group:", StringComparison.InvariantCultureIgnoreCase) ||
                             arg.Equals("/mips", StringComparison.OrdinalIgnoreCase) ||
+                            arg.Equals("/fshwrite", StringComparison.OrdinalIgnoreCase) ||
                             arg.StartsWith("/dat:", StringComparison.OrdinalIgnoreCase) ||
-                            arg.StartsWith("/outdir:", StringComparison.OrdinalIgnoreCase) ||
-                            arg.Equals("/?", StringComparison.OrdinalIgnoreCase) ||
-                            arg.StartsWith("/group:", StringComparison.InvariantCultureIgnoreCase))
+                            arg.Equals("/proc", StringComparison.OrdinalIgnoreCase) ||
+                            arg.Equals("/?", StringComparison.OrdinalIgnoreCase))
                         {
                             if (!haveSwitches)
                             {
@@ -316,10 +324,10 @@ namespace PngtoFshBatchtxt
                     }
 
                     if (haveSwitches)
-	                {
-		                ProcessCommandLineSwitches(args, form1, fcnt); 
-	                }
-                    
+                    {
+                        ProcessCommandLineSwitches(args, form1, fcnt);
+                    }
+
                     if (!cmdLineOnly)
                     {
                         Application.Run(form1);
@@ -334,7 +342,7 @@ namespace PngtoFshBatchtxt
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "System.Windows.Forms.MessageBox.Show(System.String,System.String)")]
         static void showhelp()
         {
-            MessageBox.Show("Command line arguments:\n\n PngtoFshBatch images [/outdir:<directory>] [/mips] [/group: <groupid>] [/dat:<filename>] [/proc] [/?] \n\n images a list or folder of images to process seperated by spaces \n /? show this help\n /proc process images and save\n /mips generate mipmaps for the zoom levels\n /dat:<filename> process images and save them as a dat\n /outdir:<directory> output the fsh files from /proc into directory.\n /group: <groupid> Assign the <groupid> to the files \n\n Paths containing spaces must be encased in quotes", Form1.ProgramName);
+            MessageBox.Show("Command line arguments:\n\n PngtoFshBatch images [/outdir:<directory>] [/group:<groupid>] [/mips] [/fshwrite] [/dat:<filename>] [/proc] [/?] \n\n images a list or folder of images to process seperated by spaces \n /outdir:<directory> Output the fsh files from /proc into directory.\n /group:<groupid> Assign the <groupid> to the files.\n /mips Generate mipmaps for the zoom levels.\n /fshwrite Compress the DXT1 and DXT3 images with FshWrite compression.\n /dat:<filename> Process images and save them into a new or existing dat.\n /proc Process images and save.\n /? Show this help. \n\n Paths containing spaces must be encased in quotes.", Form1.ProgramName);
         }
     }
 }
