@@ -37,11 +37,17 @@ namespace PngtoFshBatchtxt
 
 		internal void ProcessMips()
 		{             
-			for (int n = 0; n < batchListView.Items.Count; n++)
+            int count = batchListView.Items.Count;
+			for (int n = 0; n < count; n++)
 			{
 				BatchFshContainer batchFsh = batchFshList[n];
 				if (batchFsh.Mip64Fsh != null && batchFsh.Mip32Fsh != null && batchFsh.Mip16Fsh != null && batchFsh.Mip8Fsh != null)
 				{
+					batchFsh.Mip64Fsh.Dispose();
+					batchFsh.Mip32Fsh.Dispose();
+					batchFsh.Mip16Fsh.Dispose();
+					batchFsh.Mip8Fsh.Dispose();
+
 					batchFsh.Mip64Fsh = null;
 					batchFsh.Mip32Fsh = null;
 					batchFsh.Mip16Fsh = null;
@@ -49,7 +55,7 @@ namespace PngtoFshBatchtxt
 				}
 			}
 			
-			for (int n = 0; n < batchListView.Items.Count; n++)
+			for (int n = 0; n < count; n++)
 			{
 				this.Invoke(new SetProgressBarValueDelegate(SetProgressBarValue), new object[] { n, Resources.ProcessingMipsStatusTextFormat });
 				Bitmap[] bmps = new Bitmap[4];
@@ -232,6 +238,7 @@ namespace PngtoFshBatchtxt
 
                 using (StreamWriter sw = new StreamWriter(fs))
                 {
+                    fs = null;
                     sw.WriteLine("7ab50e44\t\n");
                     sw.WriteLine(string.Format(CultureInfo.InvariantCulture, "{0:X8}", batchListView.Items[index].SubItems[2].Text + "\n"));
 
@@ -419,16 +426,10 @@ namespace PngtoFshBatchtxt
                         if (fshimg[j] != null)
                         {
                             fshwrap[j] = new FshWrapper(fshimg[j]) { UseFshWrite = fshWriteCompCb.Checked };
-                            int index = CheckInstance(inputdat, group, instanceid[j]);
+                            CheckInstance(inputdat, group, instanceid[j]);
 
-                            if (index >= 0)
-                            {
-                                inputdat.Insert(fshwrap[j], index, group, instanceid[j], compress_datmips);
-                            }
-                            else
-                            {
-                                inputdat.Add(fshwrap[j], group, instanceid[j], compress_datmips);
-                            }
+                            
+                            inputdat.Add(fshwrap[j], group, instanceid[j], compress_datmips);
                         }
                     }
 
@@ -453,16 +454,9 @@ namespace PngtoFshBatchtxt
                     {
                         fshwrap = new FshWrapper(batchFshList[i].MainImage) { UseFshWrite = fshWriteCompCb.Checked };
 
-                        int index = CheckInstance(inputdat, group, instanceid);
-
-                        if (index >= 0)
-                        {
-                            inputdat.Insert(fshwrap, index, group, instanceid, compress_datmips);
-                        }
-                        else
-                        {
-                            inputdat.Add(fshwrap, group, instanceid, compress_datmips);
-                        }
+                        CheckInstance(inputdat, group, instanceid);
+                       
+                        inputdat.Add(fshwrap, group, instanceid, compress_datmips);
                     }
                 }
             }
@@ -484,21 +478,26 @@ namespace PngtoFshBatchtxt
             ListViewItem[] items = GetBatchListViewItems();
             int itemCount = items.Length;
             if (mipsbtn_clicked)
-            {
+            {                
+                uint[] instanceid = new uint[5];
+                FshWrapper[] fshwrap = new FshWrapper[5];
+                FSHImageWrapper[] fshimg = new FSHImageWrapper[5];
                 for (int i = 0; i < itemCount; i++)
                 {
                     BatchFshContainer batchFsh = batchFshList[i];
                     ListViewItem item = items[i];
                     uint group = uint.Parse(item.SubItems[2].Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
-                    uint[] instanceid = new uint[5];
-                    FshWrapper[] fshwrap = new FshWrapper[5];
-                    FSHImageWrapper[] fshimg = new FSHImageWrapper[5];
+
                     if (batchFsh.Mip64Fsh != null && batchFsh.Mip32Fsh != null && batchFsh.Mip16Fsh != null && batchFsh.Mip8Fsh != null)
                     {
                         fshimg[0] = batchFsh.Mip8Fsh;
                         fshimg[1] = batchFsh.Mip16Fsh;
                         fshimg[2] = batchFsh.Mip32Fsh;
                         fshimg[3] = batchFsh.Mip64Fsh;
+                    }
+                    else
+                    {
+
                     }
 
                     fshimg[4] = batchFsh.MainImage;
@@ -516,16 +515,9 @@ namespace PngtoFshBatchtxt
                         if (fshimg[j] != null)
                         {
                             fshwrap[j] = new FshWrapper(fshimg[j]) { UseFshWrite = fshWriteCompCb.Checked };
-                            int index = CheckInstance(inputdat, group, instanceid[j]);
+                            CheckInstance(inputdat, group, instanceid[j]);
 
-                            if (index >= 0)
-                            {
-                                inputdat.Insert(fshwrap[j], index, group, instanceid[j], compress_datmips);
-                            }
-                            else
-                            {
-                                inputdat.Add(fshwrap[j], group, instanceid[j], compress_datmips);
-                            }
+                            inputdat.Add(fshwrap[j], group, instanceid[j], compress_datmips);
                         }
                     }
 
@@ -548,16 +540,9 @@ namespace PngtoFshBatchtxt
                     {
                         fshwrap = new FshWrapper(batchFshList[i].MainImage) { UseFshWrite = fshWriteCompCb.Checked };
 
-                        int index = CheckInstance(inputdat, group, instanceid);
+                        CheckInstance(inputdat, group, instanceid);
 
-                        if (index >= 0)
-                        {
-                            inputdat.Insert(fshwrap, index, group, instanceid, compress_datmips);
-                        }
-                        else
-                        {
-                            inputdat.Add(fshwrap, group, instanceid, compress_datmips);
-                        }
+                        inputdat.Add(fshwrap, group, instanceid, compress_datmips);
                     }
                 }
             }
@@ -571,7 +556,7 @@ namespace PngtoFshBatchtxt
         /// <param name="checkdat">The Dat to check</param>
         /// <param name="group">The group id to check</param>
         /// <param name="instance">The instance id to check</param>
-        private static int CheckInstance(DatFile checkdat, uint group, uint instance)
+        private static void CheckInstance(DatFile checkdat, uint group, uint instance)
         {
             int count = checkdat.Indexes.Count;
             for (int n = 0; n < count; n++)
@@ -581,12 +566,10 @@ namespace PngtoFshBatchtxt
                 {
                     if (chkindex.Instance == instance)
                     {
-                        return checkdat.Remove(group, instance);
+                        checkdat.Remove(group, instance);
                     }
                 }
             }
-
-            return -1;
         }
 
 
@@ -1083,6 +1066,68 @@ namespace PngtoFshBatchtxt
 				}
 			}
 		}
+
+        /// <summary>
+        ///  Saves the batch files from the command line.
+        /// </summary>
+        internal void ProcessBatchSaveFilesCmd()
+        {
+            int itemCount = GetBatchListViewItemsCount();
+            for (int i = 0; i < itemCount; i++)
+            {
+                string filepath;
+                BatchFshContainer batchFsh = batchFshList[i];
+                if (batchFsh.MainImage != null)
+                {
+                    filepath = GetFilePath(pathArray[i], string.Empty, outfolder);
+                    using (FileStream fstream = new FileStream(filepath, FileMode.OpenOrCreate, FileAccess.Write))
+                    {
+                        SaveFsh(fstream, batchFsh.MainImage);
+                    }
+                    this.WriteTgi(filepath, 4, i);
+                }
+                if (autoProcMipsCb.Checked)
+                {
+                    if (batchFsh.Mip64Fsh != null)
+                    {
+                        filepath = GetFilePath(pathArray[i], "_s3", outfolder);
+                        using (FileStream fstream = new FileStream(filepath, FileMode.OpenOrCreate, FileAccess.Write))
+                        {
+                            SaveFsh(fstream, batchFsh.Mip64Fsh);
+                        }
+                        this.WriteTgi(filepath, 3, i);
+                    }
+                    if (batchFsh.Mip32Fsh != null)
+                    {
+                        filepath = GetFilePath(pathArray[i], "_s2", outfolder);
+                        using (FileStream fstream = new FileStream(filepath, FileMode.OpenOrCreate, FileAccess.Write))
+                        {
+                            SaveFsh(fstream, batchFsh.Mip32Fsh);
+                        }
+                        this.WriteTgi(filepath, 2, i);
+                    }
+                    if (batchFsh.Mip16Fsh != null)
+                    {
+                        filepath = GetFilePath(pathArray[i], "_s1", outfolder);
+                        using (FileStream fstream = new FileStream(filepath, FileMode.OpenOrCreate, FileAccess.Write))
+                        {
+                            SaveFsh(fstream, batchFsh.Mip16Fsh);
+                        }
+                        this.WriteTgi(filepath, 1, i);
+                    }
+                    if (batchFsh.Mip8Fsh != null)
+                    {
+                        filepath = GetFilePath(pathArray[i], "_s0", outfolder);
+                        using (FileStream fstream = new FileStream(filepath, FileMode.OpenOrCreate, FileAccess.Write))
+                        {
+                            SaveFsh(fstream, batchFsh.Mip8Fsh);
+                        }
+                        this.WriteTgi(filepath, 0, i);
+                    }
+                }
+            }
+        }
+
 		private Thread batchProcessThread = null;
 		private Thread mipProcessThread = null;
 		private Thread batchSaveFilesThread = null;

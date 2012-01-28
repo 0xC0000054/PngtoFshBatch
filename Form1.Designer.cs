@@ -514,10 +514,10 @@ namespace PngtoFshBatchtxt
         private System.Windows.Forms.Button clearlistbtn;
         internal System.Windows.Forms.ListView batchListView;
         private System.Windows.Forms.ToolTip toolTip1;
-        private System.Windows.Forms.CheckBox fshWriteCompCb;
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar1;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripProgressStatus;
+        internal System.Windows.Forms.CheckBox fshWriteCompCb;
     }
 }
 
