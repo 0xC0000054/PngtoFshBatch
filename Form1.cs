@@ -57,7 +57,7 @@ namespace PngtoFshBatchtxt
 			
 			for (int n = 0; n < count; n++)
 			{
-				this.Invoke(new SetProgressBarValueDelegate(SetProgressBarValue), new object[] { n, Resources.ProcessingMipsStatusTextFormat });
+				this.Invoke(new Action<int, string>(SetProgressBarValue), new object[] { n, Resources.ProcessingMipsStatusTextFormat });
 				Bitmap[] bmps = new Bitmap[4];
 				Bitmap[] alphas = new Bitmap[4];
 
@@ -222,7 +222,6 @@ namespace PngtoFshBatchtxt
             }
         }
 
-		delegate void WriteTgiDelegate(string fileName, int zoom, int cnt);
 		private char endreg;
 		private char end64;
 		private char end32;
@@ -395,7 +394,7 @@ namespace PngtoFshBatchtxt
             {
                 for (int i = 0; i < itemCount; i++)
                 {
-                    this.Invoke(new SetProgressBarValueDelegate(SetProgressBarValue), new object[] { i, Resources.BuildingDatStatusTextFormat });
+                    this.Invoke(new Action<int, string>(SetProgressBarValue), new object[] { i, Resources.BuildingDatStatusTextFormat });
 
                     BatchFshContainer batchFsh = batchFshList[i];
                     ListViewItem item = items[i];
@@ -440,7 +439,7 @@ namespace PngtoFshBatchtxt
             {
                 for (int i = 0; i < itemCount; i++)
                 {
-                    this.Invoke(new SetProgressBarValueDelegate(SetProgressBarValue), new object[] { i, Resources.BuildingDatStatusTextFormat });
+                    this.Invoke(new Action<int, string>(SetProgressBarValue), new object[] { i, Resources.BuildingDatStatusTextFormat });
 
                     ListViewItem item = items[i];
 
@@ -745,7 +744,7 @@ namespace PngtoFshBatchtxt
                 int count = batchListView.Items.Count;
 				for (int i = 0; i < count; i++)
 				{
-					this.Invoke(new SetProgressBarValueDelegate(SetProgressBarValue), new object[] { i, Resources.ProcessingStatusTextFormat });
+                    this.Invoke(new Action<int, string>(SetProgressBarValue), new object[] { i, Resources.ProcessingStatusTextFormat });
 					using(Bitmap temp = new Bitmap(pathArray[i]))
 					{
 						BitmapEntry item = new BitmapEntry();
@@ -992,7 +991,6 @@ namespace PngtoFshBatchtxt
         private TaskbarManager manager;
         private static JumpList jumpList;
 
-		delegate void SetProgressBarValueDelegate(int value, string statusTextFormat);
 		private void SetProgressBarValue(int value, string statusTextFormat)
 		{            
 			toolStripProgressBar1.PerformStep();			
@@ -1003,18 +1001,17 @@ namespace PngtoFshBatchtxt
                 manager.SetProgressValue(toolStripProgressBar1.Value, toolStripProgressBar1.Maximum, this.Handle);
             }
 		}
-        private int GetBatchListViewItemsCount()
-        {
-            return batchListView.Items.Count;
-        }
-
+       
 		private void ProcessBatchSaveFiles()
 		{
-            int itemCount = (int)this.Invoke(new Func<Int32>(GetBatchListViewItemsCount));
+            int itemCount = (int)this.Invoke(new Func<Int32>(delegate()
+                {
+                    return batchListView.Items.Count;
+                }));
 			for (int c = 0; c < itemCount; c++)
 			{
 				string filepath;
-                this.Invoke(new SetProgressBarValueDelegate(SetProgressBarValue), new object[] { c, Resources.SavingFshProgressTextFormat });
+                this.Invoke(new Action<int, string>(SetProgressBarValue), new object[] { c, Resources.SavingFshProgressTextFormat });
 				BatchFshContainer batchFsh = batchFshList[c];
 				if (batchFsh.MainImage != null)
 				{
@@ -1023,7 +1020,7 @@ namespace PngtoFshBatchtxt
 					{
 						SaveFsh(fstream, batchFsh.MainImage);
 					}
-					this.Invoke(new WriteTgiDelegate(WriteTgi), new object[] {filepath, 4, c});
+                    this.Invoke(new Action<string, int, int>(WriteTgi), new object[] { filepath, 4, c });
 				}
 				if (autoProcMipsCb.Checked)
 				{
@@ -1034,7 +1031,7 @@ namespace PngtoFshBatchtxt
 						{
 							SaveFsh(fstream, batchFsh.Mip64Fsh);
 						}
-                        this.Invoke(new WriteTgiDelegate(WriteTgi), new object[] { filepath, 3, c });
+                        this.Invoke(new Action<string, int, int>(WriteTgi), new object[] { filepath, 3, c });
                     }
 					if (batchFsh.Mip32Fsh != null)
 					{
@@ -1043,7 +1040,7 @@ namespace PngtoFshBatchtxt
 						{
 							SaveFsh(fstream, batchFsh.Mip32Fsh);
 						}
-                        this.Invoke(new WriteTgiDelegate(WriteTgi), new object[] { filepath, 2, c });
+                        this.Invoke(new Action<string, int, int>(WriteTgi), new object[] { filepath, 2, c });
                     }
 					if (batchFsh.Mip16Fsh != null)
 					{
@@ -1052,7 +1049,7 @@ namespace PngtoFshBatchtxt
 						{
 							SaveFsh(fstream, batchFsh.Mip16Fsh);
 						}
-                        this.Invoke(new WriteTgiDelegate(WriteTgi), new object[] { filepath, 1, c });
+                        this.Invoke(new Action<string, int, int>(WriteTgi), new object[] { filepath, 1, c });
                     }
 					if (batchFsh.Mip8Fsh != null)
 					{
@@ -1061,7 +1058,7 @@ namespace PngtoFshBatchtxt
 						{
 							SaveFsh(fstream, batchFsh.Mip8Fsh);
 						}
-                        this.Invoke(new WriteTgiDelegate(WriteTgi), new object[] { filepath, 0, c });
+                        this.Invoke(new Action<string, int, int>(WriteTgi), new object[] { filepath, 0, c });
                     }
 				}
 			}
@@ -1072,7 +1069,7 @@ namespace PngtoFshBatchtxt
         /// </summary>
         internal void ProcessBatchSaveFilesCmd()
         {
-            int itemCount = GetBatchListViewItemsCount();
+            int itemCount = batchListView.Items.Count;
             for (int i = 0; i < itemCount; i++)
             {
                 string filepath;
