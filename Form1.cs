@@ -1922,7 +1922,7 @@ namespace PngtoFshBatchtxt
 
 		private void batchListView1_DragEnter(object sender, DragEventArgs e)
 		{
-			if (e.Data.GetDataPresent(DataFormats.FileDrop, false) == true)
+			if (e.Data.GetDataPresent(DataFormats.FileDrop, false))
 			{
 				e.Effect = DragDropEffects.Copy;
 			}
@@ -2025,7 +2025,7 @@ namespace PngtoFshBatchtxt
 
 		private void addBtn_DragEnter(object sender, DragEventArgs e)
 		{
-			if (e.Data.GetDataPresent(DataFormats.FileDrop, false) == true)
+			if (e.Data.GetDataPresent(DataFormats.FileDrop, false))
 			{
 				e.Effect = DragDropEffects.Copy;
 			}
