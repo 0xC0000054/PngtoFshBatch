@@ -94,6 +94,7 @@
     <Compile Include="FSHImageWrapperExtensions.cs" />
     <Compile Include="JumpListHelper.cs" />
     <Compile Include="ListExtensions.cs" />
+    <Compile Include="MipmapFormat.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">
