@@ -67,10 +67,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\readfshdat\FshDatIO\bin\Release\FshDatIO.dll</HintPath>
     </Reference>
-    <Reference Include="FSHLib, Version=0.3.1.32075, Culture=neutral">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Fshlib_vista\Fshlib_vista\FSHLib.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.WindowsAPICodePack">
       <HintPath>..\..\..\Users\Nicholas\Desktop\Windows API Code Pack Self Extractor\Windows API Code Pack 1.1\binaries\Microsoft.WindowsAPICodePack.dll</HintPath>
     </Reference>
@@ -79,9 +75,6 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="SuperSample">
-      <HintPath>..\..\..\Users\Nicholas\Documents\Visual Studio 2008\Projects\SuperSample\bin\Release\SuperSample.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
