@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <settings>
-  <AutoprocessMips>False</AutoprocessMips>
+  <MipFormat>0</MipFormat>
   <compDatcb_checked>True</compDatcb_checked>
   <fshwritecompcb_checked>False</fshwritecompcb_checked>
 </settings> 
