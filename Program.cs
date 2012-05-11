@@ -117,7 +117,7 @@ namespace PngtoFshBatchtxt
                 }
                 else if (args[a].StartsWith("/mips", StringComparison.OrdinalIgnoreCase))
                 {
-                    form1.autoProcMipsCb.Checked = true;
+                    form1.mipFormatCbo.SelectedIndex = 0;
                 }
                 else if (args[a].Equals("/fshwrite", StringComparison.OrdinalIgnoreCase))
                 {
@@ -163,7 +163,7 @@ namespace PngtoFshBatchtxt
                                     form1.ProcessBatchCmd();
                                 }
 
-                                if (form1.autoProcMipsCb.Checked)
+                                if (form1.mipFormatCbo.SelectedIndex != 2)
                                 {
                                     if (!form1.mipsbtn_clicked)
                                     {
@@ -224,7 +224,7 @@ namespace PngtoFshBatchtxt
                 using (Form1 form1 = new Form1())
                 {
 
-                    form1.autoProcMipsCb.Checked = false;
+                    form1.mipFormatCbo.SelectedIndex = 2; // default to No Mipmaps
                     form1.compress_datmips = true;
                     string loc = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
                     form1.grppath = Path.Combine(loc, @"Groupid.txt");

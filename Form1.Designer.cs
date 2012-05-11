@@ -42,13 +42,10 @@ namespace PngtoFshBatchtxt
             this.instanceHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.compDatcb = new System.Windows.Forms.CheckBox();
             this.datFuncBox = new System.Windows.Forms.GroupBox();
-            this.Datnametxt = new System.Windows.Forms.Label();
-            this.datlbl = new System.Windows.Forms.Label();
             this.newDatbtn = new System.Windows.Forms.Button();
             this.saveDatBtn = new System.Windows.Forms.Button();
             this.processBatchBtn = new System.Windows.Forms.Button();
             this.saveDatDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.autoProcMipsCb = new System.Windows.Forms.CheckBox();
             this.outFolderBtn = new System.Windows.Forms.Button();
             this.OutputBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.PngopenDialog = new System.Windows.Forms.OpenFileDialog();
@@ -66,6 +63,7 @@ namespace PngtoFshBatchtxt
             this.clearlistbtn = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.fshWriteCompCb = new System.Windows.Forms.CheckBox();
+            this.mipFormatCbo = new System.Windows.Forms.ComboBox();
             this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripProgressStatus = new System.Windows.Forms.ToolStripStatusLabel();
@@ -126,7 +124,7 @@ namespace PngtoFshBatchtxt
             this.compDatcb.AutoSize = true;
             this.compDatcb.Checked = true;
             this.compDatcb.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.compDatcb.Location = new System.Drawing.Point(12, 167);
+            this.compDatcb.Location = new System.Drawing.Point(12, 173);
             this.compDatcb.Name = "compDatcb";
             this.compDatcb.Size = new System.Drawing.Size(90, 17);
             this.compDatcb.TabIndex = 3;
@@ -138,40 +136,19 @@ namespace PngtoFshBatchtxt
             // datFuncBox
             // 
             this.datFuncBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.datFuncBox.Controls.Add(this.Datnametxt);
-            this.datFuncBox.Controls.Add(this.datlbl);
             this.datFuncBox.Controls.Add(this.newDatbtn);
             this.datFuncBox.Controls.Add(this.saveDatBtn);
-            this.datFuncBox.Location = new System.Drawing.Point(315, 150);
+            this.datFuncBox.Location = new System.Drawing.Point(318, 150);
             this.datFuncBox.Name = "datFuncBox";
-            this.datFuncBox.Size = new System.Drawing.Size(167, 64);
+            this.datFuncBox.Size = new System.Drawing.Size(167, 45);
             this.datFuncBox.TabIndex = 12;
             this.datFuncBox.TabStop = false;
             this.datFuncBox.Text = "Dat Functions";
             // 
-            // Datnametxt
-            // 
-            this.Datnametxt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.Datnametxt.AutoSize = true;
-            this.Datnametxt.Location = new System.Drawing.Point(48, 18);
-            this.Datnametxt.Name = "Datnametxt";
-            this.Datnametxt.Size = new System.Drawing.Size(0, 13);
-            this.Datnametxt.TabIndex = 83;
-            // 
-            // datlbl
-            // 
-            this.datlbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.datlbl.AutoSize = true;
-            this.datlbl.Location = new System.Drawing.Point(6, 18);
-            this.datlbl.Name = "datlbl";
-            this.datlbl.Size = new System.Drawing.Size(36, 13);
-            this.datlbl.TabIndex = 82;
-            this.datlbl.Text = "Dat = ";
-            // 
             // newDatbtn
             // 
             this.newDatbtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.newDatbtn.Location = new System.Drawing.Point(6, 34);
+            this.newDatbtn.Location = new System.Drawing.Point(6, 15);
             this.newDatbtn.Name = "newDatbtn";
             this.newDatbtn.Size = new System.Drawing.Size(75, 23);
             this.newDatbtn.TabIndex = 12;
@@ -182,7 +159,7 @@ namespace PngtoFshBatchtxt
             // saveDatBtn
             // 
             this.saveDatBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.saveDatBtn.Location = new System.Drawing.Point(87, 34);
+            this.saveDatBtn.Location = new System.Drawing.Point(87, 15);
             this.saveDatBtn.Name = "saveDatBtn";
             this.saveDatBtn.Size = new System.Drawing.Size(75, 23);
             this.saveDatBtn.TabIndex = 15;
@@ -208,19 +185,6 @@ namespace PngtoFshBatchtxt
             this.saveDatDialog1.DefaultExt = "dat";
             this.saveDatDialog1.Filter = "Dat files (*.dat)|*.dat|All files (*.*)|*.*";
             this.saveDatDialog1.RestoreDirectory = true;
-            // 
-            // autoProcMipsCb
-            // 
-            this.autoProcMipsCb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.autoProcMipsCb.AutoSize = true;
-            this.autoProcMipsCb.Location = new System.Drawing.Point(12, 150);
-            this.autoProcMipsCb.Name = "autoProcMipsCb";
-            this.autoProcMipsCb.Size = new System.Drawing.Size(153, 17);
-            this.autoProcMipsCb.TabIndex = 2;
-            this.autoProcMipsCb.Text = "Automatically process Mips";
-            this.toolTip1.SetToolTip(this.autoProcMipsCb, global::PngtoFshBatchtxt.Properties.Resources.autoProcMipsCb_ToolTip);
-            this.autoProcMipsCb.UseVisualStyleBackColor = true;
-            this.autoProcMipsCb.CheckedChanged += new System.EventHandler(this.autoprocMipscb_CheckedChanged);
             // 
             // outFolderBtn
             // 
@@ -298,7 +262,7 @@ namespace PngtoFshBatchtxt
             // remBtn
             // 
             this.remBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.remBtn.Location = new System.Drawing.Point(399, 223);
+            this.remBtn.Location = new System.Drawing.Point(399, 226);
             this.remBtn.Name = "remBtn";
             this.remBtn.Size = new System.Drawing.Size(75, 23);
             this.remBtn.TabIndex = 16;
@@ -311,7 +275,7 @@ namespace PngtoFshBatchtxt
             // 
             this.addBtn.AllowDrop = true;
             this.addBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.addBtn.Location = new System.Drawing.Point(318, 223);
+            this.addBtn.Location = new System.Drawing.Point(318, 226);
             this.addBtn.Name = "addBtn";
             this.addBtn.Size = new System.Drawing.Size(75, 23);
             this.addBtn.TabIndex = 13;
@@ -408,7 +372,7 @@ namespace PngtoFshBatchtxt
             // 
             this.fshWriteCompCb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.fshWriteCompCb.AutoSize = true;
-            this.fshWriteCompCb.Location = new System.Drawing.Point(12, 184);
+            this.fshWriteCompCb.Location = new System.Drawing.Point(12, 190);
             this.fshWriteCompCb.Name = "fshWriteCompCb";
             this.fshWriteCompCb.Size = new System.Drawing.Size(128, 17);
             this.fshWriteCompCb.TabIndex = 107;
@@ -416,6 +380,21 @@ namespace PngtoFshBatchtxt
             this.toolTip1.SetToolTip(this.fshWriteCompCb, global::PngtoFshBatchtxt.Properties.Resources.fshWriteCompCb_ToolTip);
             this.fshWriteCompCb.UseVisualStyleBackColor = true;
             this.fshWriteCompCb.CheckedChanged += new System.EventHandler(this.fshwritecompcb_CheckedChanged);
+            // 
+            // mipFormatCbo
+            // 
+            this.mipFormatCbo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.mipFormatCbo.FormattingEnabled = true;
+            this.mipFormatCbo.Items.AddRange(new object[] {
+            "Normal Mipmaps",
+            "Embedded Mipmaps",
+            "No Mipmaps"});
+            this.mipFormatCbo.Location = new System.Drawing.Point(12, 150);
+            this.mipFormatCbo.Name = "mipFormatCbo";
+            this.mipFormatCbo.Size = new System.Drawing.Size(127, 21);
+            this.mipFormatCbo.TabIndex = 110;
+            this.toolTip1.SetToolTip(this.mipFormatCbo, global::PngtoFshBatchtxt.Properties.Resources.mipFormatCbo_Tooltip);
+            this.mipFormatCbo.SelectedIndexChanged += new System.EventHandler(this.mipFormatCbo_SelectedIndexChanged);
             // 
             // toolStripProgressBar1
             // 
@@ -448,6 +427,7 @@ namespace PngtoFshBatchtxt
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(493, 339);
+            this.Controls.Add(this.mipFormatCbo);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.fshWriteCompCb);
             this.Controls.Add(this.clearlistbtn);
@@ -464,7 +444,6 @@ namespace PngtoFshBatchtxt
             this.Controls.Add(this.compDatcb);
             this.Controls.Add(this.datFuncBox);
             this.Controls.Add(this.batchListView);
-            this.Controls.Add(this.autoProcMipsCb);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MinimumSize = new System.Drawing.Size(499, 342);
             this.Name = "Form1";
@@ -472,7 +451,6 @@ namespace PngtoFshBatchtxt
             this.Load += new System.EventHandler(this.Form1_Load);
             this.Shown += new System.EventHandler(this.Form1_Shown);
             this.datFuncBox.ResumeLayout(false);
-            this.datFuncBox.PerformLayout();
             this.InstendBox1.ResumeLayout(false);
             this.InstendBox1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
@@ -488,13 +466,10 @@ namespace PngtoFshBatchtxt
         private System.Windows.Forms.ColumnHeader alphaHeader;
         private System.Windows.Forms.CheckBox compDatcb;
         private System.Windows.Forms.GroupBox datFuncBox;
-        private System.Windows.Forms.Label Datnametxt;
-        private System.Windows.Forms.Label datlbl;
         private System.Windows.Forms.Button newDatbtn;
         private System.Windows.Forms.Button saveDatBtn;
         internal System.Windows.Forms.Button processBatchBtn;
         private System.Windows.Forms.SaveFileDialog saveDatDialog1;
-        internal System.Windows.Forms.CheckBox autoProcMipsCb;
         private System.Windows.Forms.ColumnHeader groupHeader;
         private System.Windows.Forms.ColumnHeader instanceHeader;
         private System.Windows.Forms.Button outFolderBtn;
@@ -518,6 +493,7 @@ namespace PngtoFshBatchtxt
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripProgressStatus;
         internal System.Windows.Forms.CheckBox fshWriteCompCb;
+        internal System.Windows.Forms.ComboBox mipFormatCbo;
     }
 }
 

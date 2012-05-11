@@ -434,8 +434,9 @@ namespace PngtoFshBatchtxt
 
                 }
             }
-            else if (!autoProcMipsCb.Checked && batchFshList != null)
+            else if (batchFshList != null)
             {
+                bool embeddedMipmaps = mipFormat == MipmapFormat.Embedded;
                 for (int i = 0; i < itemCount; i++)
                 {
                     this.Invoke(new Action<int, string>(SetProgressBarValue), new object[] { i, Resources.BuildingDatStatusTextFormat });
@@ -448,9 +449,15 @@ namespace PngtoFshBatchtxt
                     SetInstanceEndChars(i);
                     instanceid = uint.Parse(item.SubItems[3].Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
 
-                    if (batchFshList[i].MainImage != null)
+                    FSHImageWrapper mainImage = batchFshList[i].MainImage;
+                    if (mainImage != null)
                     {
-                        fshwrap = new FshWrapper(batchFshList[i].MainImage) { UseFshWrite = fshWriteCompCb.Checked };
+                        if (embeddedMipmaps)
+                        {
+                            mainImage.Bitmaps[0].CalculateMipmapCount();
+                        }
+
+                        fshwrap = new FshWrapper(mainImage) { UseFshWrite = fshWriteCompCb.Checked };
 
                         CheckInstance(inputdat, group, instanceid);
                        
@@ -522,8 +529,9 @@ namespace PngtoFshBatchtxt
 
                 }
             }
-            else if (!autoProcMipsCb.Checked && batchFshList != null)
+            else if (batchFshList != null)
             {
+                bool embeddedMipmaps = mipFormat == MipmapFormat.Embedded;
                 for (int i = 0; i < itemCount; i++)
                 {
                     ListViewItem item = items[i];
@@ -534,9 +542,17 @@ namespace PngtoFshBatchtxt
                     SetInstanceEndChars(i);
                     instanceid = uint.Parse(item.SubItems[3].Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
 
-                    if (batchFshList[i].MainImage != null)
+                    FSHImageWrapper mainImage = batchFshList[i].MainImage;
+                    if (mainImage != null)
                     {
-                        fshwrap = new FshWrapper(batchFshList[i].MainImage) { UseFshWrite = fshWriteCompCb.Checked };
+                        if (embeddedMipmaps)
+                        {
+                            foreach (var entry in mainImage.Bitmaps)
+                            {
+                                entry.CalculateMipmapCount();
+                            }
+                        }
+                        fshwrap = new FshWrapper(mainImage) { UseFshWrite = fshWriteCompCb.Checked };
 
                         CheckInstance(inputdat, group, instanceid);
 
@@ -576,8 +592,6 @@ namespace PngtoFshBatchtxt
 		{
             if (batchListView.Items.Count > 0)
             {
-
-
                 try
                 {
 
@@ -618,7 +632,7 @@ namespace PngtoFshBatchtxt
                             compress_datmips = true;
                         }
 
-                        if (autoProcMipsCb.Checked)
+                        if (this.mipFormat == MipmapFormat.Normal)
                         {
                             Application.DoEvents();
                             this.mipProcessThread = new Thread(new ThreadStart(ProcessMips)) { Priority = ThreadPriority.AboveNormal, IsBackground = true };
@@ -678,7 +692,7 @@ namespace PngtoFshBatchtxt
 		private void newDatbtn_Click(object sender, EventArgs e)
 		{
 			this.dat = new DatFile();
-			Datnametxt.Text = Resources.DatInMemory;
+            this.toolStripProgressStatus.Text = Resources.DatInMemory;
 		}
 		/// <summary>
 		/// Extracts the alpha channel bitmap from a transparent png
@@ -972,7 +986,7 @@ namespace PngtoFshBatchtxt
 
 		private void SetProgressBarMaximum()
 		{
-			if (this.autoProcMipsCb.Checked)
+			if (this.mipFormat == MipmapFormat.Normal)
 			{
 				toolStripProgressBar1.Maximum = (this.batchListView.Items.Count * 3);
 			}
@@ -1021,7 +1035,7 @@ namespace PngtoFshBatchtxt
 					}
                     this.Invoke(new Action<string, int, int>(WriteTgi), new object[] { filepath, 4, c });
 				}
-				if (autoProcMipsCb.Checked)
+				if (mipFormat == MipmapFormat.Normal)
 				{
 					if (batchFsh.Mip64Fsh != null)
 					{
@@ -1082,7 +1096,7 @@ namespace PngtoFshBatchtxt
                     }
                     this.WriteTgi(filepath, 4, i);
                 }
-                if (autoProcMipsCb.Checked)
+                if (mipFormat == MipmapFormat.Normal)
                 {
                     if (batchFsh.Mip64Fsh != null)
                     {
@@ -1147,7 +1161,7 @@ namespace PngtoFshBatchtxt
 					this.batchProcessThread.Join();
 				}
 
-				if (autoProcMipsCb.Checked)
+				if (mipFormat == MipmapFormat.Normal)
 				{
 					this.mipProcessThread = new Thread(new ThreadStart(ProcessMips)) { Priority = ThreadPriority.AboveNormal, IsBackground = true };
 					this.mipProcessThread.Start();
@@ -1189,8 +1203,8 @@ namespace PngtoFshBatchtxt
 			{
 				settings = new Settings(Path.Combine(Application.StartupPath, @"PngtoFshBatch.xml"));
 				compDatcb.Checked = bool.Parse(settings.GetSetting("compDatcb_checked", bool.TrueString));
-				autoProcMipsCb.Checked = bool.Parse(settings.GetSetting("AutoprocessMips", bool.FalseString));
-				fshWriteCompCb.Checked = bool.Parse(settings.GetSetting("fshwritecompcb_checked", bool.FalseString));
+                mipFormatCbo.SelectedIndex = int.Parse(settings.GetSetting("MipFormat", "0"), CultureInfo.InvariantCulture);
+                fshWriteCompCb.Checked = bool.Parse(settings.GetSetting("fshwritecompcb_checked", bool.FalseString));
 			}
 			catch (Exception ex)
 			{
@@ -1274,13 +1288,8 @@ namespace PngtoFshBatchtxt
 				settings.PutSetting("compDatcb_checked", compDatcb.Checked.ToString());
 			}
 		}
-		private void autoprocMipscb_CheckedChanged(object sender, EventArgs e)
-		{
-			if (settings != null)
-			{
-				settings.PutSetting("AutoprocessMips", autoProcMipsCb.Checked.ToString());
-			}
-		}
+
+	
 		internal string outfolder = string.Empty;
 		private void outfolderbtn_Click(object sender, EventArgs e)
 		{
@@ -2200,6 +2209,17 @@ namespace PngtoFshBatchtxt
                 jumpList = JumpList.CreateJumpList();
             }
 
+        }
+
+        private MipmapFormat mipFormat;
+        private void mipFormatCbo_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            this.mipFormat = (MipmapFormat)mipFormatCbo.SelectedIndex;
+
+            if (settings != null)
+            {
+                settings.PutSetting("MipFormat", mipFormatCbo.SelectedIndex.ToString(CultureInfo.InvariantCulture));
+            }
         }
 	}
 }
