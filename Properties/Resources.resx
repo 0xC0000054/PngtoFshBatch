@@ -216,4 +216,7 @@ It must only contain numbers 0-9 and letters A-F.</value>
     <value>The group id after /group: contains invalid characters.
  It must only contain numbers 0-9 and letters A-F.</value>
   </data>
+  <data name="mipFormatCbo_Tooltip" xml:space="preserve">
+    <value>Change the format of the mipmaps.</value>
+  </data>
 </root>
