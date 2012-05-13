@@ -181,7 +181,7 @@ namespace PngtoFshBatchtxt
             
             return image;
 #else
-            return SuperSample.SuperSample.GetBitmapThumbnail(source, width, height);
+            return SuperSample.GetBitmapThumbnail(source, width, height);
 #endif
 
         }
