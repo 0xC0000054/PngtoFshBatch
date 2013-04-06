@@ -1229,18 +1229,18 @@ namespace PngtoFshBatchtxt
 				long lower = long.Parse(lowerinst, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
 				long upper = long.Parse(upperinst, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
 			
-                double rn = (upper * 1.0 - lower * 1.0) * ra.NextDouble() + lower * 1.0;
+				double rn = (upper * 1.0 - lower * 1.0) * ra.NextDouble() + lower * 1.0;
 
-                return Convert.ToInt64(rn).ToString("X").Substring(0, 7);
-            }
+				return Convert.ToInt64(rn).ToString("X").Substring(0, 7);
+			}
 
-            byte[] buffer = new byte[length / 2];
-            ra.NextBytes(buffer);
-            string result = String.Concat(buffer.Select(x => x.ToString("X2")).ToArray());
-            if (length % 2 == 0)
-                return result;
+			byte[] buffer = new byte[length / 2];
+			ra.NextBytes(buffer);
+			string result = String.Concat(buffer.Select(x => x.ToString("X2")).ToArray());
+			if (length % 2 == 0)
+				return result;
 
-            return result + ra.Next(16).ToString("X");
+			return result + ra.Next(16).ToString("X");
 		}
   
 		private void compDatcb_CheckedChanged(object sender, EventArgs e)
@@ -1478,7 +1478,30 @@ namespace PngtoFshBatchtxt
 
 		private void SetEndFormat(Bitmap temp, int index)
 		{
-			SetInstanceEndChars(index);
+			if (Inst0_4rdo.Checked)
+			{
+				endreg = '4';
+				end64 = '3';
+				end32 = '2';
+				end16 = '1';
+				end8 = '0';
+			}
+			else if (Inst5_9rdo.Checked)
+			{
+				endreg = '9';
+				end64 = '8';
+				end32 = '7';
+				end16 = '6';
+				end8 = '5';
+			}
+			else
+			{
+				endreg = 'E';
+				end64 = 'D';
+				end32 = 'C';
+				end16 = 'B';
+				end8 = 'A';
+			}
 
 			if (temp.Width >= 128 && temp.Height >= 128)
 			{
