@@ -1,19 +1,18 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using FshDatIO;
-using PngtoFshBatchtxt.Properties;
 using Microsoft.WindowsAPICodePack.Taskbar;
-using System.Reflection;
+using PngtoFshBatchtxt.Properties;
 
 namespace PngtoFshBatchtxt
 {
@@ -1223,40 +1222,25 @@ namespace PngtoFshBatchtxt
 		private string upperinst = null;
 		private string RandomHexString(int length)
 		{
-			const string numbers = "0123456789";
-			const string hexcode = "ABCDEF";
-			char[] charArray = new char[length];
-			string hexstring = string.Empty;
-
-			hexstring += numbers;
-			hexstring += hexcode;
-
 			ReadRangetxt(rangepath, false);
 
-			long lower = -1;
-			long upper = -1;
 			if (!string.IsNullOrEmpty(lowerinst) && !string.IsNullOrEmpty(upperinst))
 			{
-				lower = long.Parse(lowerinst, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
-				upper = long.Parse(upperinst, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
-			}
+				long lower = long.Parse(lowerinst, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+				long upper = long.Parse(upperinst, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+			
+                double rn = (upper * 1.0 - lower * 1.0) * ra.NextDouble() + lower * 1.0;
 
-			for (int c = 0; c < charArray.Length; c++)
-			{
-				int index;
-				if (lower > 0 && upper > 0)
-				{
-					double id = (upper * 1.0 - lower * 1.0) * ra.NextDouble() + lower * 1.0;
-					return Convert.ToInt64(id).ToString("X8", CultureInfo.InvariantCulture);
-				}
-				else
-				{
-					index = ra.Next(0, hexstring.Length);
-					charArray[c] = hexstring[index];
-				}
+                return Convert.ToInt64(rn).ToString("X").Substring(0, 7);
+            }
 
-			}
-			return new string(charArray);
+            byte[] buffer = new byte[length / 2];
+            ra.NextBytes(buffer);
+            string result = String.Concat(buffer.Select(x => x.ToString("X2")).ToArray());
+            if (length % 2 == 0)
+                return result;
+
+            return result + ra.Next(16).ToString("X");
 		}
   
 		private void compDatcb_CheckedChanged(object sender, EventArgs e)
