@@ -200,7 +200,7 @@ namespace PngtoFshBatchtxt
             // 
             // PngopenDialog
             // 
-            this.PngopenDialog.Filter = global::PngtoFshBatchtxt.Properties.Resources.ImageFiles_Filter;
+            this.PngopenDialog.Filter = "Bitmap files (*.png;*.bmp)|*.png;*.bmp";
             this.PngopenDialog.Multiselect = true;
             // 
             // InstendBox1
