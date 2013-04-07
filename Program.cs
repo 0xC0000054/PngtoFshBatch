@@ -129,7 +129,7 @@ namespace PngtoFshBatchtxt
                     {
                         string[] datArgs = new string[2];
                         datArgs[0] = args[a].Substring(0, 5);
-                        datArgs[1] = args[a].Substring(5, args[a].Length - 5);
+                        datArgs[1] = args[a].Substring(5, args[a].Length - 5).Trim();
                         if (!string.IsNullOrEmpty(datArgs[1]))
                         {
 
@@ -179,7 +179,7 @@ namespace PngtoFshBatchtxt
                                 {
                                     form1.RebuildDatCmd(form1.dat);
                                 }
-                                form1.dat.Save(datArgs[1].Trim());
+                                form1.dat.Save(datArgs[1]);
                                 form1.dat.Close();
                                 form1.dat = null;
                             }
@@ -210,6 +210,67 @@ namespace PngtoFshBatchtxt
             }
         }
 
+        private static string[] GetImagePaths(string[] fileNames)
+        {
+            try
+            {
+                List<string> filePaths = new List<string>();
+                foreach (var fileName in fileNames)
+                {
+                    if (fileName.StartsWith("/proc", StringComparison.OrdinalIgnoreCase) ||
+                        fileName.StartsWith("/mips", StringComparison.OrdinalIgnoreCase) ||
+                        fileName.StartsWith("/dat:", StringComparison.OrdinalIgnoreCase) ||
+                        fileName.StartsWith("/outDir:", StringComparison.OrdinalIgnoreCase) ||
+                        fileName.StartsWith("/?", StringComparison.OrdinalIgnoreCase) ||
+                        fileName.StartsWith("/group:", StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue; // skip the command line switches
+                    }
+
+                    if ((File.GetAttributes(fileName) & FileAttributes.Directory) == FileAttributes.Directory)
+                    {
+                        DirectoryInfo di = new DirectoryInfo(fileName);
+                        List<FileInfo> files = new List<FileInfo>();
+
+                        files.AddRange(di.GetFiles("*.png", SearchOption.TopDirectoryOnly));
+                        FileInfo[] bmparr = di.GetFiles("*.bmp", SearchOption.TopDirectoryOnly);
+                        if (bmparr.Length > 0)
+                        {
+                            files.AddRange(bmparr);
+                        }
+
+                        foreach (FileInfo item in files)
+                        {
+                            if (!item.Name.Contains("_a"))
+                            {
+                                filePaths.Add(item.FullName);
+                            }
+                        }
+
+                    }
+                    else
+                    {
+                        string ext = Path.GetExtension(fileName);
+                        if (ext.Equals(".png", StringComparison.OrdinalIgnoreCase) || ext.Equals(".bmp", StringComparison.OrdinalIgnoreCase))
+                        {
+                            if (!Path.GetFileName(fileName).Contains("_a"))
+                            {
+                                filePaths.Add(fileName);
+                            }
+                        }
+                    }
+                }
+
+                return filePaths.ToArray();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Png to Fsh Batch", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            return new string[0];
+        }
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -227,19 +288,10 @@ namespace PngtoFshBatchtxt
                     form1.mipFormatCbo.SelectedIndex = 2; // default to No Mipmaps
                     form1.compress_datmips = true;
                     string loc = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-                    form1.grppath = Path.Combine(loc, @"Groupid.txt");
-                    form1.rangepath = Path.Combine(loc, @"instRange.txt");
+                    form1.groupPath = Path.Combine(loc, @"Groupid.txt");
+                    form1.rangePath = Path.Combine(loc, @"instRange.txt");
                     cmdLineOnly = false;
 
-                    int fcnt = Form1.Countpngs(args);
-                    if (fcnt > 0)
-                    {
-                        form1.pathArray = new List<string>(fcnt);
-                        form1.instArray = new List<string>(fcnt);
-                        form1.groupArray = new List<string>(fcnt);
-                        form1.typeArray = new List<string>(fcnt);
-                        form1.batchFshList = new List<BatchFshContainer>(fcnt);
-                    }
                     bool haveSwitches = false;
                     foreach (string arg in args)
                     {
@@ -262,59 +314,19 @@ namespace PngtoFshBatchtxt
                             {
                                 cmdLineOnly = true;
                             }
-
-
-                            continue;
                         }
+                       
+                    }
 
-                        FileInfo fi = new FileInfo(arg);
-
-                        if ((fi.Attributes & FileAttributes.Directory) == FileAttributes.Directory)
-                        {
-                            try
-                            {
-                                DirectoryInfo di = new DirectoryInfo(arg);
-                                ArrayList filearray = new ArrayList();
-
-                                filearray.AddRange(di.GetFiles("*.png", SearchOption.TopDirectoryOnly));
-                                FileInfo[] bmparr = di.GetFiles("*.bmp", SearchOption.TopDirectoryOnly);
-                                if (bmparr.Length > 0)
-                                {
-                                    filearray.AddRange(bmparr);
-                                }
-
-                                foreach (FileInfo info in filearray)
-                                {
-                                    if (Path.GetFileName(info.FullName).Contains("_a"))
-                                    {
-                                        continue;
-                                    }
-                                    else
-                                    {
-                                        form1.pathArray.Add(info.FullName);
-                                    }
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show(ex.Message, form1.Text);
-                            }
-
-                        }
-                        else if (fi.Extension.Equals(".png", StringComparison.OrdinalIgnoreCase) || fi.Extension.Equals(".bmp", StringComparison.OrdinalIgnoreCase))
-                        {
-                            if (fi.Exists)
-                            {
-                                if (fi.Name.Contains("_a"))
-                                {
-                                    continue;
-                                }
-                                else
-                                {
-                                    form1.pathArray.Add(fi.FullName);
-                                }
-                            }
-                        }
+                    string[] files = GetImagePaths(args);
+                    int fileCount = files.Length;
+                    if (fileCount > 0)
+                    {
+                        form1.pathArray = new List<string>(files);
+                        form1.instArray = new List<string>(fileCount);
+                        form1.groupArray = new List<string>(fileCount);
+                        form1.typeArray = new List<FshImageFormat>(fileCount);
+                        form1.batchFshList = new List<BatchFshContainer>(fileCount);
                     }
 
                     if (form1.pathArray != null && form1.pathArray.Count > 0 && !cmdLineOnly)
@@ -325,7 +337,7 @@ namespace PngtoFshBatchtxt
 
                     if (haveSwitches)
                     {
-                        ProcessCommandLineSwitches(args, form1, fcnt);
+                        ProcessCommandLineSwitches(args, form1, fileCount);
                     }
 
                     if (!cmdLineOnly)
