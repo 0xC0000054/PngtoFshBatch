@@ -12,6 +12,8 @@ namespace PngtoFshBatchtxt
     static class Program
     {
         private static bool pngListBuilt = false;
+        private const string ProgramName = "Png to Fsh Batch";
+
         private static void ProcessCommandLineSwitches(string[] args, Form1 form1, int fcnt)
         {
 
@@ -35,7 +37,7 @@ namespace PngtoFshBatchtxt
                     teststr = args[a].Substring(strlen, args[a].Length - strlen);
                     if (string.IsNullOrEmpty(teststr))
                     {
-                        MessageBox.Show(string.Format(CultureInfo.CurrentCulture, Resources.ArgumentPathEmpty, teststr), Form1.ProgramName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show(string.Format(CultureInfo.CurrentCulture, Resources.ArgumentPathEmpty, teststr), form1.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
                         Environment.Exit(1);
                     }
                     // test if the directory exists
@@ -45,7 +47,7 @@ namespace PngtoFshBatchtxt
                     string dir = Path.GetDirectoryName(path[1]);
                     if (!Directory.Exists(dir))
                     {
-                        MessageBox.Show(string.Format(CultureInfo.CurrentCulture, Resources.ArgumentDirectoryNotFound, dir), Form1.ProgramName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show(string.Format(CultureInfo.CurrentCulture, Resources.ArgumentDirectoryNotFound, dir), form1.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
                         Environment.Exit(1);
                     }
 
@@ -61,7 +63,7 @@ namespace PngtoFshBatchtxt
                     {
                         if (Directory.Exists(Path.GetDirectoryName(dir[1])))
                         {
-                            form1.outfolder = dir[1];
+                            form1.outputFolder = dir[1];
                         }
                     }
                 }
@@ -265,7 +267,7 @@ namespace PngtoFshBatchtxt
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Png to Fsh Batch", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, ProgramName, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             return new string[0];
@@ -354,7 +356,7 @@ namespace PngtoFshBatchtxt
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "System.Windows.Forms.MessageBox.Show(System.String,System.String)")]
         static void showhelp()
         {
-            MessageBox.Show("Command line arguments:\n\n PngtoFshBatch images [/outdir:<directory>] [/group:<groupid>] [/mips] [/fshwrite] [/dat:<filename>] [/proc] [/?] \n\n images a list or folder of images to process seperated by spaces \n /outdir:<directory> Output the fsh files from /proc into directory.\n /group:<groupid> Assign the <groupid> to the files.\n /mips Generate mipmaps for the zoom levels.\n /fshwrite Compress the DXT1 and DXT3 images with FshWrite compression.\n /dat:<filename> Process images and save them into a new or existing dat.\n /proc Process images and save.\n /? Show this help. \n\n Paths containing spaces must be encased in quotes.", Form1.ProgramName);
+            MessageBox.Show("Command line arguments:\n\n PngtoFshBatch images [/outdir:<directory>] [/group:<groupid>] [/mips] [/fshwrite] [/dat:<filename>] [/proc] [/?] \n\n images a list or folder of images to process seperated by spaces \n /outdir:<directory> Output the fsh files from /proc into directory.\n /group:<groupid> Assign the <groupid> to the files.\n /mips Generate mipmaps for the zoom levels.\n /fshwrite Compress the DXT1 and DXT3 images with FshWrite compression.\n /dat:<filename> Process images and save them into a new or existing dat.\n /proc Process images and save.\n /? Show this help. \n\n Paths containing spaces must be encased in quotes.", ProgramName);
         }
     }
 }
