@@ -60,7 +60,7 @@ namespace PngtoFshBatchtxt
             this.tgiGrouplbl = new System.Windows.Forms.Label();
             this.tgiInstanceTxt = new System.Windows.Forms.TextBox();
             this.tgiGroupTxt = new System.Windows.Forms.TextBox();
-            this.clearlistbtn = new System.Windows.Forms.Button();
+            this.clearListBtn = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.fshWriteCompCb = new System.Windows.Forms.CheckBox();
             this.mipFormatCbo = new System.Windows.Forms.ComboBox();
@@ -301,7 +301,6 @@ namespace PngtoFshBatchtxt
             this.fshTypeBox.Size = new System.Drawing.Size(172, 21);
             this.fshTypeBox.TabIndex = 6;
             this.toolTip1.SetToolTip(this.fshTypeBox, global::PngtoFshBatchtxt.Properties.Resources.fshTypeBox_ToolTip);
-            this.fshTypeBox.SelectedIndexChanged += new System.EventHandler(this.fshTypeBox_SelectedIndexChanged);
             this.fshTypeBox.SelectionChangeCommitted += new System.EventHandler(this.fshTypeBox_SelectionChangeCommitted);
             // 
             // tgiInstlbl
@@ -351,16 +350,16 @@ namespace PngtoFshBatchtxt
             this.tgiGroupTxt.TextChanged += new System.EventHandler(this.tgiGroupTxt_TextChanged);
             this.tgiGroupTxt.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tgiGroupTxt_KeyDown);
             // 
-            // clearlistbtn
+            // clearListBtn
             // 
-            this.clearlistbtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.clearlistbtn.Location = new System.Drawing.Point(399, 252);
-            this.clearlistbtn.Name = "clearlistbtn";
-            this.clearlistbtn.Size = new System.Drawing.Size(75, 23);
-            this.clearlistbtn.TabIndex = 106;
-            this.clearlistbtn.Text = "Clear List";
-            this.clearlistbtn.UseVisualStyleBackColor = true;
-            this.clearlistbtn.Click += new System.EventHandler(this.clearlistbtn_Click);
+            this.clearListBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.clearListBtn.Location = new System.Drawing.Point(399, 252);
+            this.clearListBtn.Name = "clearListBtn";
+            this.clearListBtn.Size = new System.Drawing.Size(75, 23);
+            this.clearListBtn.TabIndex = 106;
+            this.clearListBtn.Text = "Clear List";
+            this.clearListBtn.UseVisualStyleBackColor = true;
+            this.clearListBtn.Click += new System.EventHandler(this.clearlistbtn_Click);
             // 
             // toolTip1
             // 
@@ -430,7 +429,7 @@ namespace PngtoFshBatchtxt
             this.Controls.Add(this.mipFormatCbo);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.fshWriteCompCb);
-            this.Controls.Add(this.clearlistbtn);
+            this.Controls.Add(this.clearListBtn);
             this.Controls.Add(this.tgiInstlbl);
             this.Controls.Add(this.tgiGrouplbl);
             this.Controls.Add(this.tgiInstanceTxt);
@@ -486,7 +485,7 @@ namespace PngtoFshBatchtxt
         private System.Windows.Forms.Label tgiGrouplbl;
         private System.Windows.Forms.TextBox tgiInstanceTxt;
         internal System.Windows.Forms.TextBox tgiGroupTxt;
-        private System.Windows.Forms.Button clearlistbtn;
+        private System.Windows.Forms.Button clearListBtn;
         internal System.Windows.Forms.ListView batchListView;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar1;
