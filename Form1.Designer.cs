@@ -40,7 +40,7 @@ namespace PngtoFshBatchtxt
             this.alphaHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.groupHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.instanceHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.compDatcb = new System.Windows.Forms.CheckBox();
+            this.compDatCb = new System.Windows.Forms.CheckBox();
             this.datFuncBox = new System.Windows.Forms.GroupBox();
             this.newDatbtn = new System.Windows.Forms.Button();
             this.saveDatBtn = new System.Windows.Forms.Button();
@@ -120,18 +120,18 @@ namespace PngtoFshBatchtxt
             // 
             // compDatcb
             // 
-            this.compDatcb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.compDatcb.AutoSize = true;
-            this.compDatcb.Checked = true;
-            this.compDatcb.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.compDatcb.Location = new System.Drawing.Point(12, 173);
-            this.compDatcb.Name = "compDatcb";
-            this.compDatcb.Size = new System.Drawing.Size(90, 17);
-            this.compDatcb.TabIndex = 3;
-            this.compDatcb.Text = "Compress dat";
-            this.toolTip1.SetToolTip(this.compDatcb, global::PngtoFshBatchtxt.Properties.Resources.compDatcb_ToolTip);
-            this.compDatcb.UseVisualStyleBackColor = true;
-            this.compDatcb.CheckedChanged += new System.EventHandler(this.compDatcb_CheckedChanged);
+            this.compDatCb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.compDatCb.AutoSize = true;
+            this.compDatCb.Checked = true;
+            this.compDatCb.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.compDatCb.Location = new System.Drawing.Point(12, 173);
+            this.compDatCb.Name = "compDatcb";
+            this.compDatCb.Size = new System.Drawing.Size(90, 17);
+            this.compDatCb.TabIndex = 3;
+            this.compDatCb.Text = "Compress dat";
+            this.toolTip1.SetToolTip(this.compDatCb, global::PngtoFshBatchtxt.Properties.Resources.compDatcb_ToolTip);
+            this.compDatCb.UseVisualStyleBackColor = true;
+            this.compDatCb.CheckedChanged += new System.EventHandler(this.compDatcb_CheckedChanged);
             // 
             // datFuncBox
             // 
@@ -440,7 +440,7 @@ namespace PngtoFshBatchtxt
             this.Controls.Add(this.InstendBox1);
             this.Controls.Add(this.outFolderBtn);
             this.Controls.Add(this.processBatchBtn);
-            this.Controls.Add(this.compDatcb);
+            this.Controls.Add(this.compDatCb);
             this.Controls.Add(this.datFuncBox);
             this.Controls.Add(this.batchListView);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -463,7 +463,7 @@ namespace PngtoFshBatchtxt
 
         private System.Windows.Forms.ColumnHeader bitmapHeader;
         private System.Windows.Forms.ColumnHeader alphaHeader;
-        private System.Windows.Forms.CheckBox compDatcb;
+        private System.Windows.Forms.CheckBox compDatCb;
         private System.Windows.Forms.GroupBox datFuncBox;
         private System.Windows.Forms.Button newDatbtn;
         private System.Windows.Forms.Button saveDatBtn;

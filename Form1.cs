@@ -31,7 +31,7 @@ namespace PngtoFshBatchtxt
 			}
 		}
 		internal List<BatchFshContainer> batchFshList = null;
-		internal bool mipsbtn_clicked = false;
+		internal bool mipsBuilt = false;
 
 		internal void ProcessMips()
 		{             
@@ -145,7 +145,7 @@ namespace PngtoFshBatchtxt
 
 			}
 
-			mipsbtn_clicked = true;
+			mipsBuilt = true;
 		}
 		/// <summary>
 		/// Creates the mip thumbnail using Graphics.DrawImage
@@ -349,18 +349,15 @@ namespace PngtoFshBatchtxt
 		}
 
 		internal DatFile dat = null;
-		internal bool compress_datmips = false;
 		private Thread datRebuildThread = null;
 		private bool datRebuilt = false;
 
 		private void RebuildDat(DatFile inputdat)
 		{
 			ListViewItem[] items = (ListViewItem[])base.Invoke(new Func<ListViewItem[]>(GetBatchListViewItems));
-			int itemCount = items.Length;
-
-			if (mipsbtn_clicked)
+			if (mipsBuilt)
 			{
-				for (int i = 0; i < itemCount; i++)
+				for (int i = 0; i < items.Length; i++)
 				{
 					this.Invoke(new Action<int, string>(SetProgressBarValue), new object[] { i, Resources.BuildingDatStatusTextFormat });
 
@@ -368,7 +365,6 @@ namespace PngtoFshBatchtxt
 					ListViewItem item = items[i];
 					uint group = uint.Parse(item.SubItems[2].Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
 					uint[] instanceid = new uint[5];
-					FshWrapper[] fshwrap = new FshWrapper[5];
 					FSHImageWrapper[] fshimg = new FSHImageWrapper[5];
 					if (batchFsh.Mip64Fsh != null && batchFsh.Mip32Fsh != null && batchFsh.Mip16Fsh != null && batchFsh.Mip8Fsh != null)
 					{
@@ -387,17 +383,17 @@ namespace PngtoFshBatchtxt
 					instanceid[1] = uint.Parse(sub + end16, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
 					instanceid[2] = uint.Parse(sub + end32, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
 					instanceid[3] = uint.Parse(sub + end64, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
-					instanceid[4] = uint.Parse(item.SubItems[3].Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+					instanceid[4] = uint.Parse(sub + endreg, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
 
+					bool useFshWrite = this.fshWriteCompCb.Checked;
+					bool compress = this.compDatCb.Checked;
 					for (int j = 4; j >= 0; j--)
 					{
 						if (fshimg[j] != null)
-						{
-							fshwrap[j] = new FshWrapper(fshimg[j]) { UseFshWrite = fshWriteCompCb.Checked };
+						{							
 							CheckInstance(inputdat, group, instanceid[j]);
-
 							
-							inputdat.Add(fshwrap[j], group, instanceid[j], compress_datmips);
+							inputdat.Add(new FshFileItem(fshimg[j], useFshWrite), group, instanceid[j], compress);
 						}
 					}
 
@@ -406,32 +402,28 @@ namespace PngtoFshBatchtxt
 			}
 			else if (batchFshList != null)
 			{
-				bool embeddedMipmaps = mipFormat == MipmapFormat.Embedded;
-				for (int i = 0; i < itemCount; i++)
+				for (int i = 0; i < items.Length; i++)
 				{
 					this.Invoke(new Action<int, string>(SetProgressBarValue), new object[] { i, Resources.BuildingDatStatusTextFormat });
 
 					ListViewItem item = items[i];
 
 					uint group = uint.Parse(item.SubItems[2].Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
-					uint instanceid = new uint();
-					FshWrapper fshwrap = new FshWrapper();
 					SetInstanceEndChars(i);
-					instanceid = uint.Parse(item.SubItems[3].Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+					string inst = item.SubItems[3].Text.Substring(0, 7) + endreg;
+					uint instanceID = uint.Parse(inst, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
 
 					FSHImageWrapper mainImage = batchFshList[i].MainImage;
 					if (mainImage != null)
 					{
-						if (embeddedMipmaps)
+						if (mipFormat == MipmapFormat.Embedded)
 						{
 							mainImage.Bitmaps[0].CalculateMipmapCount();
 						}
 
-						fshwrap = new FshWrapper(mainImage) { UseFshWrite = fshWriteCompCb.Checked };
-
-						CheckInstance(inputdat, group, instanceid);
+						CheckInstance(inputdat, group, instanceID);
 					   
-						inputdat.Add(fshwrap, group, instanceid, compress_datmips);
+						inputdat.Add(new FshFileItem(mainImage, this.fshWriteCompCb.Checked), group, instanceID, this.compDatCb.Checked);
 					}
 				}
 			}
@@ -450,14 +442,12 @@ namespace PngtoFshBatchtxt
 		/// <param name="inputdat">The inputdat.</param>
 		internal void RebuildDatCmd(DatFile inputdat)
 		{
-			ListViewItem[] items = GetBatchListViewItems();
-			int itemCount = items.Length;
-			if (mipsbtn_clicked)
+			var items = this.batchListView.Items;
+			if (mipsBuilt)
 			{                
 				uint[] instanceid = new uint[5];
-				FshWrapper[] fshwrap = new FshWrapper[5];
 				FSHImageWrapper[] fshimg = new FSHImageWrapper[5];
-				for (int i = 0; i < itemCount; i++)
+				for (int i = 0; i < items.Count; i++)
 				{
 					BatchFshContainer batchFsh = batchFshList[i];
 					ListViewItem item = items[i];
@@ -470,10 +460,6 @@ namespace PngtoFshBatchtxt
 						fshimg[2] = batchFsh.Mip32Fsh;
 						fshimg[3] = batchFsh.Mip64Fsh;
 					}
-					else
-					{
-
-					}
 
 					fshimg[4] = batchFsh.MainImage;
 
@@ -485,14 +471,15 @@ namespace PngtoFshBatchtxt
 					instanceid[3] = uint.Parse(item.SubItems[3].Text.Substring(0, 7) + end64, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
 					instanceid[4] = uint.Parse(item.SubItems[3].Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
 
+					bool useFshWrite = this.fshWriteCompCb.Checked;
+
 					for (int j = 4; j >= 0; j--)
 					{
 						if (fshimg[j] != null)
 						{
-							fshwrap[j] = new FshWrapper(fshimg[j]) { UseFshWrite = fshWriteCompCb.Checked };
 							CheckInstance(inputdat, group, instanceid[j]);
 
-							inputdat.Add(fshwrap[j], group, instanceid[j], compress_datmips);
+							inputdat.Add(new FshFileItem(fshimg[j], useFshWrite), group, instanceid[j], true);
 						}
 					}
 
@@ -501,32 +488,25 @@ namespace PngtoFshBatchtxt
 			}
 			else if (batchFshList != null)
 			{
-				bool embeddedMipmaps = mipFormat == MipmapFormat.Embedded;
-				for (int i = 0; i < itemCount; i++)
+				bool useFshWrite = this.fshWriteCompCb.Checked;
+
+				for (int i = 0; i < items.Count; i++)
 				{
 					ListViewItem item = items[i];
 
 					uint group = uint.Parse(item.SubItems[2].Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
-					uint instanceid = new uint();
-					FshWrapper fshwrap = new FshWrapper();
-					SetInstanceEndChars(i);
-					instanceid = uint.Parse(item.SubItems[3].Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+					uint instanceid = uint.Parse(item.SubItems[3].Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
 
-					FSHImageWrapper mainImage = batchFshList[i].MainImage;
+					FSHImageWrapper mainImage = this.batchFshList[i].MainImage;
 					if (mainImage != null)
 					{
-						if (embeddedMipmaps)
+						if (this.mipFormat == MipmapFormat.Embedded)
 						{
-							foreach (var entry in mainImage.Bitmaps)
-							{
-								entry.CalculateMipmapCount();
-							}
+							mainImage.Bitmaps[0].CalculateMipmapCount();
 						}
-						fshwrap = new FshWrapper(mainImage) { UseFshWrite = fshWriteCompCb.Checked };
-
 						CheckInstance(inputdat, group, instanceid);
 
-						inputdat.Add(fshwrap, group, instanceid, compress_datmips);
+						inputdat.Add(new FshFileItem(mainImage, useFshWrite), group, instanceid, true);
 					}
 				}
 			}
@@ -594,10 +574,6 @@ namespace PngtoFshBatchtxt
 								Application.DoEvents();
 							}
 							this.batchProcessThread.Join();
-						}
-						if (compDatcb.Checked && !compress_datmips)
-						{
-							compress_datmips = true;
 						}
 
 						if (this.mipFormat == MipmapFormat.Normal)
@@ -969,13 +945,13 @@ namespace PngtoFshBatchtxt
 		private static JumpList jumpList;
 
 		private void SetProgressBarValue(int value, string statusTextFormat)
-		{            
-			toolStripProgressBar1.PerformStep();			
-			toolStripProgressStatus.Text = string.Format(CultureInfo.CurrentCulture, statusTextFormat, (value + 1), batchListView.Items.Count);
+		{
+			this.toolStripProgressBar1.PerformStep();
+			this.toolStripProgressStatus.Text = string.Format(CultureInfo.CurrentCulture, statusTextFormat, (value + 1), this.batchListView.Items.Count);
 
-			if (manager != null)
+			if (this.manager != null)
 			{
-				manager.SetProgressValue(toolStripProgressBar1.Value, toolStripProgressBar1.Maximum, this.Handle);
+				this.manager.SetProgressValue(this.toolStripProgressBar1.Value, this.toolStripProgressBar1.Maximum, this.Handle);
 			}
 		}
 	   
@@ -1165,11 +1141,11 @@ namespace PngtoFshBatchtxt
 		private void LoadSettings()
 		{
 			settings = new Settings(Path.Combine(Application.StartupPath, @"PngtoFshBatch.xml"));
-			compDatcb.Checked = bool.Parse(settings.GetSetting("compDatcb_checked", bool.TrueString));
+			compDatCb.Checked = bool.Parse(settings.GetSetting("compDatcb_checked", bool.TrueString));
 			mipFormatCbo.SelectedIndex = int.Parse(settings.GetSetting("MipFormat", "0"), CultureInfo.InvariantCulture);
 			fshWriteCompCb.Checked = bool.Parse(settings.GetSetting("fshwritecompcb_checked", bool.FalseString));
 		}  
-		private const uint SSE = 2;
+		private const uint SSE = 6;
 
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1060:MovePInvokesToNativeMethodsClass"), DllImport("kernel32.dll")]		
 		[return: MarshalAs(UnmanagedType.Bool)]
@@ -1233,7 +1209,7 @@ namespace PngtoFshBatchtxt
 		{
 			if (settings != null)
 			{
-				settings.PutSetting("compDatcb_checked", compDatcb.Checked.ToString());
+				settings.PutSetting("compDatcb_checked", compDatCb.Checked.ToString());
 			}
 		}
 
@@ -1927,7 +1903,7 @@ namespace PngtoFshBatchtxt
 			{
 				outputFolder = null;
 			}
-			mipsbtn_clicked = false;
+			mipsBuilt = false;
 			batch_processed = false;
 			datRebuilt = false;
 			tgiGroupTxt.Text = null;
