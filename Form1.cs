@@ -969,6 +969,11 @@ namespace PngtoFshBatchtxt
 				BatchFshContainer batchFsh = batchFshList[c];
 				if (batchFsh.MainImage != null)
 				{
+					if (this.mipFormat == MipmapFormat.Embedded)
+					{
+						batchFsh.MainImage.Bitmaps[0].CalculateMipmapCount();
+					}
+
 					filepath = GetFilePath(pathArray[c], string.Empty, outputFolder);
 					using (FileStream fstream = new FileStream(filepath, FileMode.OpenOrCreate, FileAccess.Write))
 					{
@@ -976,7 +981,7 @@ namespace PngtoFshBatchtxt
 					}
 					this.Invoke(new Action<string, int, int>(WriteTgi), new object[] { filepath, 4, c });
 				}
-				if (mipFormat == MipmapFormat.Normal)
+				if (this.mipFormat == MipmapFormat.Normal)
 				{
 					if (batchFsh.Mip64Fsh != null)
 					{
