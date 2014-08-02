@@ -9,354 +9,378 @@ using PngtoFshBatchtxt.Properties;
 
 namespace PngtoFshBatchtxt
 {
-    static class Program
-    {
-        private static bool pngListBuilt = false;
-        private const string ProgramName = "Png to Fsh Batch";
+	static class Program
+	{
+		private const string ProgramName = "Png to Fsh Batch";
 
-        private static void ProcessCommandLineSwitches(string[] args, Form1 form1, int fcnt)
-        {
+		private static class CommandLineSwitches
+		{
+			internal const string OutputDirectory = "/outdir:";
+			internal const string NormalMipmaps = "/mips";
+			internal const string EmbeddedMipmaps = "/embed";
+			internal const string GroupID = "/group:";
+			internal const string FshwriteCompression = "/fshwrite";
+			internal const string ProcessDat = "/dat:";
+			internal const string ProcessFiles = "/proc";
+		}
 
-            char[] splitchar = new char[] { ':' };
-            int length = args.Length;
-            for (int a = 0; a < length; a++)
-            {
-                if (args[a].StartsWith("/dat:", StringComparison.OrdinalIgnoreCase) || args[a].StartsWith("/outdir:", StringComparison.OrdinalIgnoreCase))
-                {
-                    int strlen;
-                    string teststr;
-                    // test for an empty path string
-                    if (args[a].StartsWith("/dat:", StringComparison.OrdinalIgnoreCase))
-                    {
-                        strlen = 5;
-                    }
-                    else
-                    {
-                        strlen = 8;
-                    }
-                    teststr = args[a].Substring(strlen, args[a].Length - strlen);
-                    if (string.IsNullOrEmpty(teststr))
-                    {
-                        MessageBox.Show(string.Format(CultureInfo.CurrentCulture, Resources.ArgumentPathEmpty, teststr), form1.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        Environment.Exit(1);
-                    }
-                    // test if the directory exists
-                    string[] path = new string[2];
-                    path[0] = args[a].Substring(0, strlen);
-                    path[1] = args[a].Substring(strlen, args[a].Length - strlen);
-                    string dir = Path.GetDirectoryName(path[1]);
-                    if (!Directory.Exists(dir))
-                    {
-                        MessageBox.Show(string.Format(CultureInfo.CurrentCulture, Resources.ArgumentDirectoryNotFound, dir), form1.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        Environment.Exit(1);
-                    }
+		private static void ValidateArgumentPaths(string[] args)
+		{ 
+			for (int i = 0; i < args.Length; i++)
+			{
+				string arg = args[i];
+				if (arg.StartsWith(CommandLineSwitches.ProcessDat, StringComparison.OrdinalIgnoreCase) || arg.StartsWith(CommandLineSwitches.OutputDirectory, StringComparison.OrdinalIgnoreCase))
+				{
+					int strlen;
+					// test for an empty path string
+					if (arg.StartsWith(CommandLineSwitches.ProcessDat, StringComparison.OrdinalIgnoreCase))
+					{
+						strlen = 5;
+					}
+					else
+					{
+						strlen = 8;
+					}
 
-                }
+					string teststr = arg.Substring(strlen, arg.Length - strlen);
 
-  
-                if (args[a].StartsWith("/outdir:", StringComparison.OrdinalIgnoreCase))
-                {
-                    string[] dir = new string[2];
-                    dir[0] = args[a].Substring(0, 8);
-                    dir[1] = args[a].Substring(8, args[a].Length - 8);
-                    if (!string.IsNullOrEmpty(dir[1]))
-                    {
-                        if (Directory.Exists(Path.GetDirectoryName(dir[1])))
-                        {
-                            form1.outputFolder = dir[1];
-                        }
-                    }
-                }
-                else if (args[a].StartsWith("/group:", StringComparison.OrdinalIgnoreCase))
-                {
-                    string[] group = new string[2];
-                    string groupid = null;
-                    group = args[a].Split(splitchar, StringSplitOptions.RemoveEmptyEntries);
-                    if (!string.IsNullOrEmpty(group[1]))
-                    {
-                        if (group[1].Length == 10 && group[1].StartsWith("0x", StringComparison.OrdinalIgnoreCase))
-                        {
-                            groupid = group[1].ToUpperInvariant().Substring(2, 8);
-                        }
-                        else if (group[1].Length == 8)
-                        {
-                            groupid = group[1].ToUpperInvariant();
-                        }
-                    }
-                    if (groupid != null)
-                    {
-                        if (Form1.ValidateHexString(groupid))
-                        {
-                            if (fcnt > 0)
-                            {
-                                for (int c = 0; c < form1.batchListView.Items.Count; c++)
-                                {
-                                    form1.groupArray.Insert(c, groupid);
-                                    form1.batchListView.Items[c].SubItems[2].Text = form1.groupArray[c];
-                                }
-                            }
-                            else
-                            {
-                                form1.tgiGroupTxt.Text = groupid;
-                            }
-                        }
-                        else
-                        {
+					if (string.IsNullOrEmpty(teststr))
+					{
+						MessageBox.Show(string.Format(CultureInfo.CurrentCulture, Resources.ArgumentPathEmpty, teststr), ProgramName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+						Environment.Exit(1);
+					}
+					// test if the directory exists
+					string path =  arg.Substring(strlen, arg.Length - strlen);
+					
+					string dir = Path.GetDirectoryName(path);
+					if (!Directory.Exists(dir))
+					{
+						MessageBox.Show(string.Format(CultureInfo.CurrentCulture, Resources.ArgumentDirectoryNotFound, dir), ProgramName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+						Environment.Exit(1);
+					}
+				} 
+			}
+		}
 
-                            if (fcnt > 0)
-                            {
-                                string errgrp = "1ABE787D";
-                                for (int c = 0; c < form1.batchListView.Items.Count; c++)
-                                {
-                                    form1.groupArray.Insert(c, errgrp);
-                                    form1.batchListView.Items[c].SubItems[2].Text = form1.groupArray[c];
-                                }
-                            }
+		private static void ProcessCommandLineSwitches(string[] args, Form1 form1, int fileCount, bool cmdLineOnly)
+		{
+			bool pngListBuilt = false;
 
-                            MessageBox.Show(Resources.InvalidGroupIDArgument, form1.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-                    }
-                }
-                else if (args[a].StartsWith("/mips", StringComparison.OrdinalIgnoreCase))
-                {
-                    form1.mipFormatCbo.SelectedIndex = 0;
-                }
-                else if (args[a].Equals("/fshwrite", StringComparison.OrdinalIgnoreCase))
-                {
-                    form1.fshWriteCompCb.Checked = true;
-                }
-                else if (args[a].StartsWith("/dat:", StringComparison.OrdinalIgnoreCase) && (fcnt > 0))
-                {
-                    try
-                    {
-                        string[] datArgs = new string[2];
-                        datArgs[0] = args[a].Substring(0, 5);
-                        datArgs[1] = args[a].Substring(5, args[a].Length - 5).Trim();
-                        if (!string.IsNullOrEmpty(datArgs[1]))
-                        {
+			if (args.Length == 1 && args[0] == "/?")
+			{
+				ShowHelp();
+				return;
+			}
 
-                            string path = Path.GetDirectoryName(datArgs[1]);
-                            if (Directory.Exists(path))
-                            {
-                                if (!pngListBuilt)
-                                {
-                                    form1.BuildPngList();
-                                    pngListBuilt = true;
-                                }
+			ValidateArgumentPaths(args);
 
-                                if (File.Exists(datArgs[1]))
-                                {
-                                    try
-                                    {
-                                        form1.dat = new DatFile(datArgs[1]);
-                                    }
-                                    catch (DatHeaderException)
-                                    {
-                                        form1.dat.Dispose();
-                                        form1.dat = new DatFile();
-                                    }
-                                }
-                                else if (form1.dat == null)
-                                {
-                                    form1.dat = new DatFile();
-                                }
-                                if (!form1.batch_processed)
-                                {
-                                    form1.ProcessBatchCmd();
-                                }
+			if (cmdLineOnly)
+			{
+				form1.mipFormatCbo.SelectedIndex = (int)MipmapFormat.None; 
+			}
 
-                                if (form1.mipFormatCbo.SelectedIndex != 2)
-                                {
-                                    if (!form1.mipsbtn_clicked)
-                                    {
-                                        form1.ProcessMips();
-                                        form1.RebuildDatCmd(form1.dat);
-                                    }
-                                    else
-                                    {
-                                        form1.RebuildDatCmd(form1.dat);
-                                    }
-                                }
-                                else
-                                {
-                                    form1.RebuildDatCmd(form1.dat);
-                                }
-                                form1.dat.Save(datArgs[1]);
-                                form1.dat.Close();
-                                form1.dat = null;
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message, form1.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
+			for (int i = 0; i < args.Length; i++)
+			{
+				string arg = args[i];
 
-                }
-                else if (args[a].StartsWith("/proc", StringComparison.OrdinalIgnoreCase) && (fcnt > 0))
-                {
-                    if (!pngListBuilt)
-                    {
-                        form1.BuildPngList();
-                        pngListBuilt = true;
-                    }
+				if (arg.StartsWith(CommandLineSwitches.OutputDirectory, StringComparison.OrdinalIgnoreCase))
+				{
+					string dir = arg.Substring(8, arg.Length - 8);
 
-                    form1.ProcessBatchCmd();
-                    form1.ProcessBatchSaveFilesCmd();
-                }
-                else if (args[a].Equals("/?", StringComparison.Ordinal))
-                {
-                    Program.showhelp();
-                }
+					if (!string.IsNullOrEmpty(dir))
+					{
+						if (Directory.Exists(Path.GetDirectoryName(dir)))
+						{
+							form1.outputFolder = dir;
+						}
+					}
+				}
+				else if (arg.StartsWith(CommandLineSwitches.GroupID, StringComparison.OrdinalIgnoreCase))
+				{
+					string group = arg.Substring(7, arg.Length - 7);
+					string groupid = null;
 
-            }
-        }
+					if (!string.IsNullOrEmpty(group))
+					{
+						if (group.Length == 10 && group.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+						{
+							groupid = group.ToUpperInvariant().Substring(2, 8);
+						}
+						else if (group.Length == 8)
+						{
+							groupid = group.ToUpperInvariant();
+						}
+					}
 
-        private static string[] GetImagePaths(string[] fileNames)
-        {
-            try
-            {
-                List<string> filePaths = new List<string>();
-                foreach (var fileName in fileNames)
-                {
-                    if (fileName.StartsWith("/proc", StringComparison.OrdinalIgnoreCase) ||
-                        fileName.StartsWith("/mips", StringComparison.OrdinalIgnoreCase) ||
-                        fileName.StartsWith("/dat:", StringComparison.OrdinalIgnoreCase) ||
-                        fileName.StartsWith("/outDir:", StringComparison.OrdinalIgnoreCase) ||
-                        fileName.StartsWith("/?", StringComparison.OrdinalIgnoreCase) ||
-                        fileName.StartsWith("/group:", StringComparison.OrdinalIgnoreCase))
-                    {
-                        continue; // skip the command line switches
-                    }
+					if (groupid != null)
+					{
+						if (Form1.ValidateHexString(groupid))
+						{
+							if (fileCount > 0)
+							{
+								for (int c = 0; c < form1.batchListView.Items.Count; c++)
+								{
+									form1.groupArray.Insert(c, groupid);
+									form1.batchListView.Items[c].SubItems[2].Text = form1.groupArray[c];
+								}
+							}
+							else
+							{
+								form1.tgiGroupTxt.Text = groupid;
+							}
+						}
+						else
+						{
+							if (fileCount > 0)
+							{
+								string defaultGroup = "1ABE787D";
+								for (int c = 0; c < form1.batchListView.Items.Count; c++)
+								{
+									form1.groupArray.Insert(c, defaultGroup);
+									form1.batchListView.Items[c].SubItems[2].Text = form1.groupArray[c];
+								}
+							}
 
-                    if ((File.GetAttributes(fileName) & FileAttributes.Directory) == FileAttributes.Directory)
-                    {
-                        DirectoryInfo di = new DirectoryInfo(fileName);
-                        List<FileInfo> files = new List<FileInfo>();
+							MessageBox.Show(Resources.InvalidGroupIDArgument, form1.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+						}
+					}
+				}
+				else if (arg.StartsWith(CommandLineSwitches.NormalMipmaps, StringComparison.OrdinalIgnoreCase))
+				{
+					form1.mipFormatCbo.SelectedIndex = (int)MipmapFormat.Normal;
+				}
+				else if (arg.StartsWith(CommandLineSwitches.EmbeddedMipmaps, StringComparison.OrdinalIgnoreCase))
+				{
+					form1.mipFormatCbo.SelectedIndex = (int)MipmapFormat.Embedded;
+				}
+				else if (arg.Equals(CommandLineSwitches.FshwriteCompression, StringComparison.OrdinalIgnoreCase))
+				{
+					form1.fshWriteCompCb.Checked = true;
+				}
+				else if (arg.StartsWith(CommandLineSwitches.ProcessDat, StringComparison.OrdinalIgnoreCase) && fileCount > 0)
+				{
+					try
+					{
+						string datFileName = arg.Substring(5, arg.Length - 5).Trim();
 
-                        files.AddRange(di.GetFiles("*.png", SearchOption.TopDirectoryOnly));
-                        FileInfo[] bmparr = di.GetFiles("*.bmp", SearchOption.TopDirectoryOnly);
-                        if (bmparr.Length > 0)
-                        {
-                            files.AddRange(bmparr);
-                        }
+						if (!string.IsNullOrEmpty(datFileName))
+						{
 
-                        foreach (FileInfo item in files)
-                        {
-                            if (!item.Name.Contains("_a"))
-                            {
-                                filePaths.Add(item.FullName);
-                            }
-                        }
+							string path = Path.GetDirectoryName(datFileName);
+							if (Directory.Exists(path))
+							{
+								if (!pngListBuilt)
+								{
+									form1.BuildPngList();
+									pngListBuilt = true;
+								}
 
-                    }
-                    else
-                    {
-                        string ext = Path.GetExtension(fileName);
-                        if (ext.Equals(".png", StringComparison.OrdinalIgnoreCase) || ext.Equals(".bmp", StringComparison.OrdinalIgnoreCase))
-                        {
-                            if (!Path.GetFileName(fileName).Contains("_a"))
-                            {
-                                filePaths.Add(fileName);
-                            }
-                        }
-                    }
-                }
+								if (File.Exists(datFileName))
+								{
+									try
+									{
+										form1.dat = new DatFile(datFileName);
+									}
+									catch (DatHeaderException)
+									{
+										form1.dat.Dispose();
+										form1.dat = new DatFile();
+									}
+								}
+								else if (form1.dat == null)
+								{
+									form1.dat = new DatFile();
+								}
+								if (!form1.batch_processed)
+								{
+									form1.ProcessBatchCmd();
+								}
 
-                return filePaths.ToArray();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, ProgramName, MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+								if (form1.mipFormatCbo.SelectedIndex == (int)MipmapFormat.Normal)
+								{
+									if (!form1.mipsBuilt)
+									{
+										form1.ProcessMips();
+										form1.RebuildDatCmd(form1.dat);
+									}
+									else
+									{
+										form1.RebuildDatCmd(form1.dat);
+									}
+								}
+								else
+								{
+									form1.RebuildDatCmd(form1.dat);
+								}
+								form1.dat.Save(datFileName);
+								form1.dat.Close();
+								form1.dat = null;
+							}
+						}
+					}
+					catch (Exception ex)
+					{
+						MessageBox.Show(ex.Message, form1.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+					}
 
-            return new string[0];
-        }
+				}
+				else if (arg.StartsWith(CommandLineSwitches.ProcessFiles, StringComparison.OrdinalIgnoreCase) && (fileCount > 0))
+				{
+					if (!pngListBuilt)
+					{
+						form1.BuildPngList();
+						pngListBuilt = true;
+					}
 
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope"), STAThread]
-        static void Main(string[] args)
-        {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            bool cmdLineOnly = false;
-            if (args.Length > 0)
-            {
-                using (Form1 form1 = new Form1())
-                {
+					form1.ProcessBatchCmd();
+					form1.ProcessBatchSaveFilesCmd();
+				}
+			}
+		}
 
-                    form1.mipFormatCbo.SelectedIndex = 2; // default to No Mipmaps
-                    form1.compress_datmips = true;
-                    string loc = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-                    form1.groupPath = Path.Combine(loc, @"Groupid.txt");
-                    form1.rangePath = Path.Combine(loc, @"instRange.txt");
-                    cmdLineOnly = false;
+		private static string[] GetImagePaths(string[] fileNames)
+		{
+			try
+			{
+				List<string> filePaths = new List<string>();
+				foreach (var fileName in fileNames)
+				{
+					if (fileName.StartsWith(CommandLineSwitches.ProcessFiles, StringComparison.OrdinalIgnoreCase) ||
+						fileName.StartsWith(CommandLineSwitches.NormalMipmaps, StringComparison.OrdinalIgnoreCase) ||
+						fileName.StartsWith(CommandLineSwitches.EmbeddedMipmaps, StringComparison.OrdinalIgnoreCase) ||
+						fileName.StartsWith(CommandLineSwitches.ProcessDat, StringComparison.OrdinalIgnoreCase) ||
+						fileName.StartsWith(CommandLineSwitches.OutputDirectory, StringComparison.OrdinalIgnoreCase) ||
+						fileName.StartsWith(CommandLineSwitches.GroupID, StringComparison.OrdinalIgnoreCase) ||
+						fileName.StartsWith("/?", StringComparison.Ordinal))
+					{
+						continue; // skip the command line switches
+					}
 
-                    bool haveSwitches = false;
-                    foreach (string arg in args)
-                    {
-                        if (arg.StartsWith("/outdir:", StringComparison.OrdinalIgnoreCase) ||
-                            arg.StartsWith("/group:", StringComparison.InvariantCultureIgnoreCase) ||
-                            arg.Equals("/mips", StringComparison.OrdinalIgnoreCase) ||
-                            arg.Equals("/fshwrite", StringComparison.OrdinalIgnoreCase) ||
-                            arg.StartsWith("/dat:", StringComparison.OrdinalIgnoreCase) ||
-                            arg.Equals("/proc", StringComparison.OrdinalIgnoreCase) ||
-                            arg.Equals("/?", StringComparison.OrdinalIgnoreCase))
-                        {
-                            if (!haveSwitches)
-                            {
-                                haveSwitches = true;
-                            }
+					if ((File.GetAttributes(fileName) & FileAttributes.Directory) == FileAttributes.Directory)
+					{
+						DirectoryInfo di = new DirectoryInfo(fileName);
+						List<FileInfo> files = new List<FileInfo>();
 
-                            if (arg.Equals("/proc", StringComparison.OrdinalIgnoreCase) ||
-                                arg.StartsWith("/dat:", StringComparison.OrdinalIgnoreCase) ||
-                                arg.Equals("/?", StringComparison.OrdinalIgnoreCase))
-                            {
-                                cmdLineOnly = true;
-                            }
-                        }
-                       
-                    }
+						files.AddRange(di.GetFiles("*.png", SearchOption.TopDirectoryOnly));
+						FileInfo[] bmparr = di.GetFiles("*.bmp", SearchOption.TopDirectoryOnly);
+						if (bmparr.Length > 0)
+						{
+							files.AddRange(bmparr);
+						}
 
-                    string[] files = GetImagePaths(args);
-                    int fileCount = files.Length;
-                    if (fileCount > 0)
-                    {
-                        form1.pathArray = new List<string>(files);
-                        form1.instArray = new List<string>(fileCount);
-                        form1.groupArray = new List<string>(fileCount);
-                        form1.typeArray = new List<FshImageFormat>(fileCount);
-                        form1.batchFshList = new List<BatchFshContainer>(fileCount);
-                    }
+						foreach (FileInfo item in files)
+						{
+							if (!item.Name.Contains("_a"))
+							{
+								filePaths.Add(item.FullName);
+							}
+						}
 
-                    if (form1.pathArray != null && form1.pathArray.Count > 0 && !cmdLineOnly)
-                    {
-                        form1.BuildPngList();
-                        pngListBuilt = true;
-                    }
+					}
+					else
+					{
+						string ext = Path.GetExtension(fileName);
+						if (ext.Equals(".png", StringComparison.OrdinalIgnoreCase) || ext.Equals(".bmp", StringComparison.OrdinalIgnoreCase))
+						{
+							if (!Path.GetFileName(fileName).Contains("_a"))
+							{
+								filePaths.Add(fileName);
+							}
+						}
+					}
+				}
 
-                    if (haveSwitches)
-                    {
-                        ProcessCommandLineSwitches(args, form1, fileCount);
-                    }
+				return filePaths.ToArray();
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(ex.Message, ProgramName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
 
-                    if (!cmdLineOnly)
-                    {
-                        Application.Run(form1);
-                    }
-                }
-            }
-            else
-            {
-                Application.Run(new Form1());
-            }
-        }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "System.Windows.Forms.MessageBox.Show(System.String,System.String)")]
-        static void showhelp()
-        {
-            MessageBox.Show("Command line arguments:\n\n PngtoFshBatch images [/outdir:<directory>] [/group:<groupid>] [/mips] [/fshwrite] [/dat:<filename>] [/proc] [/?] \n\n images a list or folder of images to process seperated by spaces \n /outdir:<directory> Output the fsh files from /proc into directory.\n /group:<groupid> Assign the <groupid> to the files.\n /mips Generate mipmaps for the zoom levels.\n /fshwrite Compress the DXT1 and DXT3 images with FshWrite compression.\n /dat:<filename> Process images and save them into a new or existing dat.\n /proc Process images and save.\n /? Show this help. \n\n Paths containing spaces must be encased in quotes.", ProgramName);
-        }
-    }
+			return new string[0];
+		}
+
+		/// <summary>
+		/// The main entry point for the application.
+		/// </summary>
+		/// <param name="args">The arguments.</param>
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope"), STAThread]
+		static void Main(string[] args)
+		{
+			Application.EnableVisualStyles();
+			Application.SetCompatibleTextRenderingDefault(false);
+			bool cmdLineOnly = false;
+			if (args.Length > 0)
+			{
+				using (Form1 form1 = new Form1())
+				{
+					string loc = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+					form1.groupPath = Path.Combine(loc, @"Groupid.txt");
+					form1.rangePath = Path.Combine(loc, @"instRange.txt");
+
+					bool haveSwitches = false;
+					foreach (string arg in args)
+					{
+						if (arg.StartsWith(CommandLineSwitches.OutputDirectory, StringComparison.OrdinalIgnoreCase) ||
+							arg.StartsWith(CommandLineSwitches.GroupID, StringComparison.InvariantCultureIgnoreCase) ||
+							arg.Equals(CommandLineSwitches.NormalMipmaps, StringComparison.OrdinalIgnoreCase) ||
+							arg.Equals(CommandLineSwitches.EmbeddedMipmaps, StringComparison.OrdinalIgnoreCase) ||
+							arg.Equals(CommandLineSwitches.FshwriteCompression, StringComparison.OrdinalIgnoreCase) ||
+							arg.StartsWith(CommandLineSwitches.ProcessDat, StringComparison.OrdinalIgnoreCase) ||
+							arg.Equals(CommandLineSwitches.ProcessFiles, StringComparison.OrdinalIgnoreCase) ||
+							arg.Equals("/?", StringComparison.Ordinal))
+						{
+							if (!haveSwitches)
+							{
+								haveSwitches = true;
+							}
+
+							if (arg.Equals(CommandLineSwitches.ProcessFiles, StringComparison.OrdinalIgnoreCase) ||
+								arg.StartsWith(CommandLineSwitches.ProcessDat, StringComparison.OrdinalIgnoreCase) ||
+								arg.Equals("/?", StringComparison.Ordinal))
+							{
+								cmdLineOnly = true;
+							}
+						}
+
+					}
+
+					string[] files = GetImagePaths(args);
+					int fileCount = files.Length;
+					if (fileCount > 0)
+					{
+						form1.pathArray = new List<string>(files);
+						form1.instArray = new List<string>(fileCount);
+						form1.groupArray = new List<string>(fileCount);
+						form1.typeArray = new List<FshImageFormat>(fileCount);
+						form1.batchFshList = new List<BatchFshContainer>(fileCount);
+					}
+
+					if (haveSwitches)
+					{
+						ProcessCommandLineSwitches(args, form1, fileCount, cmdLineOnly);
+					}
+
+					if (form1.pathArray != null && form1.pathArray.Count > 0 && !cmdLineOnly)
+					{
+						form1.BuildPngList();
+					}
+
+					if (!cmdLineOnly)
+					{
+						Application.Run(form1);
+					}
+				}
+			}
+			else
+			{
+				Application.Run(new Form1());
+			}
+		}
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "System.Windows.Forms.MessageBox.Show(System.String,System.String)")]
+		static void ShowHelp()
+		{
+			MessageBox.Show("Command line arguments:\n\n PngtoFshBatch images [/outdir:<directory>] [/group:<groupid>] [/mips] [/embed] [/fshwrite] [/dat:<filename>] [/proc] [/?] \n\n images a list or folder of images to process seperated by spaces \n /outdir:<directory> Output the fsh files from /proc into directory.\n /group:<groupid> Assign the <groupid> to the files.\n /mips Generate mipmaps and save in separate files.\n /embed Generate mipmaps and save after the main image (used by most automata).\n  /fshwrite Compress the DXT1 and DXT3 images with FshWrite compression.\n /dat:<filename> Process images and save them into a new or existing dat.\n /proc Process images and save.\n /? Show this help. \n\n Paths containing spaces must be encased in quotes.", ProgramName);
+		}
+	}
 }
