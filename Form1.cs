@@ -523,12 +523,12 @@ namespace PngtoFshBatchtxt
 		private static void CheckInstance(DatFile checkdat, uint group, uint instance)
 		{
 			int count = checkdat.Indexes.Count;
-			for (int n = 0; n < count; n++)
+			for (int i = 0; i < count; i++)
 			{
-				DatIndex chkindex = checkdat.Indexes[n];
-				if (chkindex.Type == 0x7ab50e44U && chkindex.Group == group && chkindex.IndexState != DatIndexState.New)
+				DatIndex index = checkdat.Indexes[i];
+				if (index.Type == 0x7ab50e44U && index.Group == group && index.IndexState == DatIndexState.None)
 				{
-					if (chkindex.Instance == instance)
+					if (index.Instance == instance)
 					{
 						checkdat.Remove(group, instance);
 					}
@@ -562,7 +562,7 @@ namespace PngtoFshBatchtxt
 							dat = new DatFile();
 						}
 
-						if (!batch_processed)
+						if (!batchProcessed)
 						{
 							this.SetProgressBarMaximum();
 							this.Cursor = Cursors.WaitCursor;
@@ -599,9 +599,7 @@ namespace PngtoFshBatchtxt
 								Application.DoEvents();
 							}
 							this.datRebuildThread.Join();
-
 						}
-
 
 						this.Cursor = Cursors.Default;
 						if (dat.Indexes.Count > 0)
@@ -620,7 +618,6 @@ namespace PngtoFshBatchtxt
 								ClearandReset();
 								dat = null;
 							}
-
 						}
 					}
 
@@ -691,7 +688,7 @@ namespace PngtoFshBatchtxt
 			return dest;
 		}
 
-		internal bool batch_processed = false;
+		internal bool batchProcessed = false;
 		private void ProcessBatch()
 		{
 			try
@@ -772,17 +769,12 @@ namespace PngtoFshBatchtxt
 							using (MemoryStream mstream = new MemoryStream())
 							{
 								SaveFsh(mstream, batchFshList[i].MainImage);
-
-								if (!fshWriteCompCb.Checked)
-								{
-									batchFshList[i].MainImage.SetRawData(mstream.ToArray());
-								}
 							}
 						}
 					}
 					
 				}
-				batch_processed = true;
+				batchProcessed = true;
 			}
 			catch (ArgumentOutOfRangeException ag)
 			{
@@ -790,7 +782,7 @@ namespace PngtoFshBatchtxt
 			}
 			catch (Exception)
 			{
-				batch_processed = false;
+				batchProcessed = false;
 				throw;
 			}
 		}
@@ -877,17 +869,12 @@ namespace PngtoFshBatchtxt
 							using (MemoryStream mstream = new MemoryStream())
 							{
 								SaveFsh(mstream, batchFshList[i].MainImage);
-
-								if (!fshWriteCompCb.Checked)
-								{
-									batchFshList[i].MainImage.SetRawData(mstream.ToArray());
-								}
 							}
 						}
 					}
 
 				}	
-				batch_processed = true;
+				batchProcessed = true;
 
 			}
 			catch (Exception)
@@ -1092,7 +1079,7 @@ namespace PngtoFshBatchtxt
 			try
 			{
 			   
-				if (!batch_processed)
+				if (!batchProcessed)
 				{
 					this.SetProgressBarMaximum();
 
@@ -1909,7 +1896,7 @@ namespace PngtoFshBatchtxt
 				outputFolder = null;
 			}
 			mipsBuilt = false;
-			batch_processed = false;
+			batchProcessed = false;
 			datRebuilt = false;
 			tgiGroupTxt.Text = null;
 			tgiInstanceTxt.Text = null;
