@@ -191,7 +191,7 @@ namespace PngtoFshBatchtxt
 								{
 									form1.dat = new DatFile();
 								}
-								if (!form1.batch_processed)
+								if (!form1.batchProcessed)
 								{
 									form1.ProcessBatchCmd();
 								}
