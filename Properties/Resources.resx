@@ -151,7 +151,7 @@ Dragging files or folders onto the list will create a new list</value>
     <value>Use Fshwrite compression when saving DXT1 and DXT3 fsh images</value>
   </data>
   <data name="FshWriteSSERequiredError" xml:space="preserve">
-    <value>A processor that supports SSE is required to for FshWrite save DXT1 and DXT3 fsh images</value>
+    <value>A processor that supports SSE is required to use FshWrite compression.</value>
   </data>
   <data name="ImageFiles_Filter" xml:space="preserve">
     <value>Bitmap files (*.png;*.bmp)|*.png;*.bmp|All files (*.*)|*.*</value>
