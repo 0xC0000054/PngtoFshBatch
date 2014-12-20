@@ -1449,7 +1449,7 @@ namespace PngtoFshBatchtxt
 
 					using (Bitmap temp = new Bitmap(pathArray[n]))
 					{
-						if (fileName.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+						if (fileName.Length == 10 && fileName.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
 						{
 							string pathinst = Path.GetFileNameWithoutExtension(pathArray[n]).Substring(2, 8);
 							instArray.Insert(n, pathinst);
@@ -1566,7 +1566,7 @@ namespace PngtoFshBatchtxt
 					{
 						string fileName = Path.GetFileName(pathArray[n]);
 
-						if (fileName.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+						if (fileName.Length == 10 && fileName.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
 						{
 							string pathinst = Path.GetFileNameWithoutExtension(pathArray[n]).Substring(2, 8);
 							instArray.Insert(n, pathinst);
