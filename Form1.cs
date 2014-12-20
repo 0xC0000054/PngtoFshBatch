@@ -27,14 +27,14 @@ namespace PngtoFshBatchtxt
 				{
 					this.manager = TaskbarManager.Instance;
 					this.manager.ApplicationId = "PngtoFshBatch";
-				} 
+				}
 			}
 		}
 		internal List<BatchFshContainer> batchFshList = null;
 		internal bool mipsBuilt = false;
 
 		internal void ProcessMips()
-		{             
+		{
 			int count = batchListView.Items.Count;
 			for (int n = 0; n < count; n++)
 			{
@@ -52,14 +52,14 @@ namespace PngtoFshBatchtxt
 					batchFsh.Mip8Fsh = null;
 				}
 			}
-			
+
 			for (int n = 0; n < count; n++)
 			{
 				this.Invoke(new Action<int, string>(SetProgressBarValue), new object[] { n, Resources.ProcessingMipsStatusTextFormat });
 				Bitmap[] bmps = new Bitmap[4];
 				Bitmap[] alphas = new Bitmap[4];
 
-				
+
 
 				BatchFshContainer batchFsh = batchFshList[n];
 
@@ -94,7 +94,7 @@ namespace PngtoFshBatchtxt
 							mipitm.Alpha = alphas[i];
 							mipitm.DirName = item.DirName;
 
-							if (item.BmpType == FshImageFormat.DXT3 || item.BmpType ==  FshImageFormat.ThirtyTwoBit)
+							if (item.BmpType == FshImageFormat.DXT3 || item.BmpType == FshImageFormat.ThirtyTwoBit)
 							{
 								mipitm.BmpType = FshImageFormat.DXT3;
 							}
@@ -113,7 +113,7 @@ namespace PngtoFshBatchtxt
 										batchFsh.Mip64Fsh.Save(mstream, fshWriteCompression);
 									}
 									break;
-								case 2: 
+								case 2:
 									batchFsh.Mip32Fsh = new FSHImageWrapper();
 									batchFsh.Mip32Fsh.Bitmaps.Add(mipitm);
 									using (MemoryStream mstream = new MemoryStream())
@@ -248,8 +248,8 @@ namespace PngtoFshBatchtxt
 					fs = null;
 				}
 			}
-			
-		   
+
+
 		}
 
 #if false
@@ -280,8 +280,8 @@ namespace PngtoFshBatchtxt
 		internal List<FshImageFormat> typeArray = null;
 		internal List<string> groupArray = null;
 		private static void Alphasrc(ListViewItem item, string path)
-		{ 
-			string alname = Path.Combine(Path.GetDirectoryName(path),Path.GetFileNameWithoutExtension(path) +"_a"+ Path.GetExtension(path));
+		{
+			string alname = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path) + "_a" + Path.GetExtension(path));
 			if (File.Exists(alname))
 			{
 				item.SubItems.Add(Path.GetFileName(alname));
@@ -305,7 +305,7 @@ namespace PngtoFshBatchtxt
 		private void batchListView1_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (batchListView.SelectedItems.Count > 0)
-			{ 
+			{
 				string inst = batchListView.SelectedItems[0].SubItems[3].Text;
 				if (inst.EndsWith("4", StringComparison.OrdinalIgnoreCase) || inst.EndsWith("3", StringComparison.OrdinalIgnoreCase) || inst.EndsWith("2", StringComparison.OrdinalIgnoreCase) || inst.EndsWith("1", StringComparison.OrdinalIgnoreCase) || inst.EndsWith("0", StringComparison.OrdinalIgnoreCase))
 				{
@@ -324,7 +324,7 @@ namespace PngtoFshBatchtxt
 				int index = batchListView.SelectedItems[0].Index;
 				FshImageFormat type = typeArray[index];
 				switch (type)
-				{ 
+				{
 					case FshImageFormat.TwentyFourBit:
 						fshTypeBox.SelectedIndex = 0;
 						break;
@@ -390,9 +390,9 @@ namespace PngtoFshBatchtxt
 					for (int j = 4; j >= 0; j--)
 					{
 						if (fshimg[j] != null)
-						{							
+						{
 							CheckInstance(inputdat, group, instanceid[j]);
-							
+
 							inputdat.Add(new FshFileItem(fshimg[j], useFshWrite), group, instanceid[j], compress);
 						}
 					}
@@ -422,14 +422,14 @@ namespace PngtoFshBatchtxt
 						}
 
 						CheckInstance(inputdat, group, instanceID);
-					   
+
 						inputdat.Add(new FshFileItem(mainImage, this.fshWriteCompCb.Checked), group, instanceID, this.compDatCb.Checked);
 					}
 				}
 			}
 
 			this.BeginInvoke(new MethodInvoker(delegate()
-			{                
+			{
 				this.toolStripProgressStatus.Text = Resources.SavingDatStatusText;
 			}));
 
@@ -444,7 +444,7 @@ namespace PngtoFshBatchtxt
 		{
 			var items = this.batchListView.Items;
 			if (mipsBuilt)
-			{                
+			{
 				uint[] instanceid = new uint[5];
 				FSHImageWrapper[] fshimg = new FSHImageWrapper[5];
 				for (int i = 0; i < items.Count; i++)
@@ -626,7 +626,7 @@ namespace PngtoFshBatchtxt
 				catch (Exception ex)
 				{
 					MessageBox.Show(this, ex.Message + Environment.NewLine + ex.StackTrace, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
-				} 
+				}
 			}
 		}
 
@@ -642,7 +642,7 @@ namespace PngtoFshBatchtxt
 		/// <returns>The extracted alpha channel bitmap</returns>
 		private unsafe static Bitmap GetAlphaFromTransparency(Bitmap source)
 		{
-			Bitmap dest = null;             
+			Bitmap dest = null;
 			Bitmap temp = new Bitmap(source.Width, source.Height, PixelFormat.Format24bppRgb);
 
 			try
@@ -697,7 +697,7 @@ namespace PngtoFshBatchtxt
 				for (int i = 0; i < count; i++)
 				{
 					this.Invoke(new Action<int, string>(SetProgressBarValue), new object[] { i, Resources.ProcessingStatusTextFormat });
-					using(Bitmap temp = new Bitmap(pathArray[i]))
+					using (Bitmap temp = new Bitmap(pathArray[i]))
 					{
 						BitmapEntry item = new BitmapEntry();
 
@@ -709,9 +709,9 @@ namespace PngtoFshBatchtxt
 							{
 								item.Alpha = alpha.Clone(new Rectangle(0, 0, alpha.Width, alpha.Height), PixelFormat.Format24bppRgb);
 							}
-						   
+
 						}
-						else if (Path.GetExtension(pathArray[i]).Equals(".png",StringComparison.OrdinalIgnoreCase) && temp.PixelFormat == PixelFormat.Format32bppArgb)
+						else if (Path.GetExtension(pathArray[i]).Equals(".png", StringComparison.OrdinalIgnoreCase) && temp.PixelFormat == PixelFormat.Format32bppArgb)
 						{
 							item.Alpha = GetAlphaFromTransparency(temp);
 						}
@@ -762,7 +762,7 @@ namespace PngtoFshBatchtxt
 						if (i <= batchFshList.Capacity)
 						{
 							FSHImageWrapper fsh = new FSHImageWrapper();
-								
+
 							fsh.Bitmaps.Add(item);
 							batchFshList.Insert(i, new BatchFshContainer(fsh));
 
@@ -772,7 +772,7 @@ namespace PngtoFshBatchtxt
 							}
 						}
 					}
-					
+
 				}
 				batchProcessed = true;
 			}
@@ -791,7 +791,7 @@ namespace PngtoFshBatchtxt
 		/// Processes the batch list for the command line.
 		/// </summary>
 		internal void ProcessBatchCmd()
-		{ 
+		{
 			int count = batchListView.Items.Count;
 			try
 			{
@@ -873,12 +873,12 @@ namespace PngtoFshBatchtxt
 						}
 					}
 
-				}	
+				}
 				batchProcessed = true;
 
 			}
 			catch (Exception)
-			{  
+			{
 				throw;
 			}
 		}
@@ -941,7 +941,7 @@ namespace PngtoFshBatchtxt
 				this.manager.SetProgressValue(this.toolStripProgressBar1.Value, this.toolStripProgressBar1.Maximum, this.Handle);
 			}
 		}
-	   
+
 		private void ProcessBatchSaveFiles()
 		{
 			int itemCount = (int)this.Invoke(new Func<Int32>(delegate()
@@ -1078,14 +1078,14 @@ namespace PngtoFshBatchtxt
 		{
 			try
 			{
-			   
+
 				if (!batchProcessed)
 				{
 					this.SetProgressBarMaximum();
 
 					this.Cursor = Cursors.WaitCursor;
 					Application.DoEvents();
-					this.batchProcessThread = new Thread(new ThreadStart(ProcessBatch)) {Priority = ThreadPriority.AboveNormal, IsBackground = true };
+					this.batchProcessThread = new Thread(new ThreadStart(ProcessBatch)) { Priority = ThreadPriority.AboveNormal, IsBackground = true };
 					this.batchProcessThread.Start();
 					while (batchProcessThread.IsAlive)
 					{
@@ -1111,16 +1111,16 @@ namespace PngtoFshBatchtxt
 					Application.DoEvents();
 				}
 				this.batchSaveFilesThread.Join();
-				
+
 				if (this.Cursor != Cursors.Default)
-				{ 
-					this.Cursor = Cursors.Default; 
+				{
+					this.Cursor = Cursors.Default;
 				}
 				ClearandReset();
 			}
 			catch (ArgumentOutOfRangeException ag)
 			{
-				MessageBox.Show(this,ag.Message,this.Text,MessageBoxButtons.OK,MessageBoxIcon.Error); 
+				MessageBox.Show(this, ag.Message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 			catch (Exception ex)
 			{
@@ -1136,10 +1136,10 @@ namespace PngtoFshBatchtxt
 			compDatCb.Checked = bool.Parse(settings.GetSetting("compDatcb_checked", bool.TrueString));
 			mipFormatCbo.SelectedIndex = int.Parse(settings.GetSetting("MipFormat", "0"), CultureInfo.InvariantCulture);
 			fshWriteCompCb.Checked = bool.Parse(settings.GetSetting("fshwritecompcb_checked", bool.FalseString));
-		}  
+		}
 		private const uint SSE = 6;
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1060:MovePInvokesToNativeMethodsClass"), DllImport("kernel32.dll")]		
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1060:MovePInvokesToNativeMethodsClass"), DllImport("kernel32.dll")]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		private static extern bool IsProcessorFeaturePresent(uint ProcessorFeature);
 
@@ -1151,7 +1151,7 @@ namespace PngtoFshBatchtxt
 				{
 					MessageBox.Show(Resources.FshWriteSSERequiredError, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 					fshWriteCompCb.Enabled = fshWriteCompCb.Checked = false;
-				} 
+				}
 			}
 		}
 		private void Form1_Load(object sender, EventArgs e)
@@ -1164,7 +1164,7 @@ namespace PngtoFshBatchtxt
 			CheckRangeFilesExist(rangePath);
 			CheckRangeFilesExist(groupPath);
 		}
-		
+
 		private Random ra = new Random();
 		private string lowerInstRange = null;
 		private string upperInstRange = null;
@@ -1172,7 +1172,7 @@ namespace PngtoFshBatchtxt
 		{
 			if (string.IsNullOrEmpty(lowerInstRange) && string.IsNullOrEmpty(upperInstRange))
 			{
-				ReadRangetxt(rangePath, false);
+				ReadRangetxt(rangePath);
 			}
 
 			if (!string.IsNullOrEmpty(lowerInstRange) && !string.IsNullOrEmpty(upperInstRange))
@@ -1184,7 +1184,7 @@ namespace PngtoFshBatchtxt
 				{
 					double rn = (upper * 1.0 - lower * 1.0) * ra.NextDouble() + lower * 1.0;
 
-					return Convert.ToInt64(rn).ToString("X").Substring(0, 7); 
+					return Convert.ToInt64(rn).ToString("X").Substring(0, 7);
 				}
 			}
 
@@ -1196,7 +1196,7 @@ namespace PngtoFshBatchtxt
 
 			return result + ra.Next(16).ToString("X");
 		}
-  
+
 		private void compDatcb_CheckedChanged(object sender, EventArgs e)
 		{
 			if (settings != null)
@@ -1205,7 +1205,7 @@ namespace PngtoFshBatchtxt
 			}
 		}
 
-	
+
 		internal string outputFolder = string.Empty;
 		private void outfolderbtn_Click(object sender, EventArgs e)
 		{
@@ -1214,100 +1214,97 @@ namespace PngtoFshBatchtxt
 				outputFolder = OutputBrowserDialog1.SelectedPath;
 			}
 		}
-		
-		internal void ReadRangetxt(string path, bool grouptxt)
+
+		private void ReadGrouptxt(string path)
 		{
 			int pathArrayCount = pathArray.Count;
-			if (grouptxt)
+
+			if (File.Exists(path))
 			{
-				if (File.Exists(path))
+				using (StreamReader sr = new StreamReader(path))
 				{
-					using (StreamReader sr = new StreamReader(path))
+					string line;
+					while ((line = sr.ReadLine()) != null)
 					{
-						string line;
-						while ((line = sr.ReadLine()) != null)
+						if (!string.IsNullOrEmpty(line))
 						{
-							if (!string.IsNullOrEmpty(line))
+							string g = null;
+							if (ValidateHexString(line))
 							{
-								string g = null;
-								if (ValidateHexString(line))
-								{
-									g = line;
-								}
-								else
-								{
-									g = "1ABE787D";
-									MessageBox.Show(this, Resources.InvalidGroupID, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
-								}
-								for (int i = 0; i < pathArrayCount; i++)
-								{
-									groupArray.Insert(i, g);
-								}
+								g = line;
+							}
+							else
+							{
+								g = "1ABE787D";
+								MessageBox.Show(this, Resources.InvalidGroupID, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+							}
+							for (int i = 0; i < pathArrayCount; i++)
+							{
+								groupArray.Insert(i, g);
 							}
 						}
 					}
-				}
-				else
-				{
-					// 
-					for (int i = 0; i < pathArrayCount; i++)
-					{
-						groupArray.Insert(i, "1ABE787D");
-					}
-					string message = string.Format(CultureInfo.CurrentCulture, Resources.FileNotFoundFormat, Path.GetFileName(path), path);
-					throw new FileNotFoundException(message);
 				}
 			}
 			else
 			{
-				if (File.Exists(path))
-				{ 
-					string[] instTemp = null;
-					using (StreamReader sr = new StreamReader(path))
-					{
-						string line;
-						char[] splitchar = new char[] { ',' };
-						while ((line = sr.ReadLine()) != null)
-						{
-							if (!string.IsNullOrEmpty(line))
-							{
-								instTemp = line.Split(splitchar, StringSplitOptions.RemoveEmptyEntries);
-							}
-
-						}
-					}
-					if ((instTemp != null) && instTemp.Length == 2)
-					{
-						string inst0 = instTemp[0];
-						string inst1 = instTemp[1];
-  
-						if (inst0.Length == 10 && inst0.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
-						{
-							lowerInstRange = inst0.Substring(2, 8);
-						}
-						else if (inst0.Length == 8)
-						{
-							lowerInstRange = inst0;
-						}
-							
-						if (inst1.Length == 10 && inst1.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
-						{
-							upperInstRange = inst1.Substring(2, 8);
-						}
-						else if (inst1.Length == 8)
-						{
-							upperInstRange = inst1;
-						}
-					}
-
-				}
-				else
+				for (int i = 0; i < pathArrayCount; i++)
 				{
-					lowerInstRange = string.Empty;
-					upperInstRange = string.Empty;
+					groupArray.Insert(i, "1ABE787D");
 				}
+				string message = string.Format(CultureInfo.CurrentCulture, Resources.FileNotFoundFormat, Path.GetFileName(path), path);
+				throw new FileNotFoundException(message);
 			}
-			
+		}
+
+		private void ReadRangetxt(string path)
+		{
+			if (File.Exists(path))
+			{
+				string[] instTemp = null;
+				using (StreamReader sr = new StreamReader(path))
+				{
+					string line;
+					char[] splitchar = new char[] { ',' };
+					while ((line = sr.ReadLine()) != null)
+					{
+						if (!string.IsNullOrEmpty(line))
+						{
+							instTemp = line.Split(splitchar, StringSplitOptions.RemoveEmptyEntries);
+						}
+
+					}
+				}
+				if ((instTemp != null) && instTemp.Length == 2)
+				{
+					string inst0 = instTemp[0];
+					string inst1 = instTemp[1];
+
+					if (inst0.Length == 10 && inst0.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+					{
+						lowerInstRange = inst0.Substring(2, 8);
+					}
+					else if (inst0.Length == 8)
+					{
+						lowerInstRange = inst0;
+					}
+
+					if (inst1.Length == 10 && inst1.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+					{
+						upperInstRange = inst1.Substring(2, 8);
+					}
+					else if (inst1.Length == 8)
+					{
+						upperInstRange = inst1;
+					}
+				}
+
+			}
+			else
+			{
+				lowerInstRange = string.Empty;
+				upperInstRange = string.Empty;
+			}
 		}
 		internal static bool ValidateHexString(string str)
 		{
@@ -1349,7 +1346,7 @@ namespace PngtoFshBatchtxt
 				}
 
 				jumpList.Refresh();
-			} 
+			}
 		}
 
 		private void SetEndFormat(Bitmap temp, int index)
@@ -1407,7 +1404,7 @@ namespace PngtoFshBatchtxt
 			{
 				SetEndFormat(temp, index);
 			}
-			
+
 			batchListView.SelectedItems[0].SubItems[3].Text = instArray[index];
 			tgiInstanceTxt.Text = instArray[index];
 		}
@@ -1429,7 +1426,7 @@ namespace PngtoFshBatchtxt
 			try
 			{
 				int pathArrayCount = pathArray.Count;
-				if (tgiGroupTxt.Text.Length > 0 && tgiGroupTxt.Text.Length == 8)
+				if (tgiGroupTxt.Text.Length == 8)
 				{
 					for (int j = 0; j < pathArrayCount; j++)
 					{
@@ -1438,10 +1435,8 @@ namespace PngtoFshBatchtxt
 				}
 				else
 				{
-					ReadRangetxt(groupPath, true);
+					ReadGrouptxt(groupPath);
 				}
-
-
 
 				for (int n = 0; n < pathArrayCount; n++)
 				{
@@ -1509,9 +1504,9 @@ namespace PngtoFshBatchtxt
 			{
 				MessageBox.Show(ex.Message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
-			
+
 		}
-	   
+
 		private void remBtn_Click(object sender, EventArgs e)
 		{
 			if (batchListView.SelectedItems.Count > 0 && batchListView.Items.Count > 1)
@@ -1529,7 +1524,7 @@ namespace PngtoFshBatchtxt
 						batchFshList.Capacity = batchFshList.Count;
 					}
 				}
-				   
+
 				batchListView.Items.RemoveAt(index);
 				ListViewItem selitem = batchListView.Items[0];
 				selitem.Selected = true;
@@ -1541,14 +1536,14 @@ namespace PngtoFshBatchtxt
 			}
 
 		}
-	   
+
 		private void BuildAddList(int startIndex)
 		{
 			try
 			{
 				int pathArrayCount = pathArray.Count;
 
-				if (tgiGroupTxt.Text.Length > 0 && tgiGroupTxt.Text.Length == 8)
+				if (tgiGroupTxt.Text.Length == 8)
 				{
 					for (int j = 0; j < pathArrayCount; j++)
 					{
@@ -1557,7 +1552,7 @@ namespace PngtoFshBatchtxt
 				}
 				else
 				{
-					ReadRangetxt(groupPath, true);
+					ReadGrouptxt(groupPath);
 				}
 
 				for (int n = startIndex; n < pathArrayCount; n++)
@@ -1638,7 +1633,7 @@ namespace PngtoFshBatchtxt
 			{
 				MessageBox.Show(ex.Message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
-			
+
 		}
 		private void addBtn_Click(object sender, EventArgs e)
 		{
@@ -1646,7 +1641,7 @@ namespace PngtoFshBatchtxt
 			{
 				// remove the alpha mask images from the file
 				string[] files = PngopenDialog.FileNames.Where(f => !Path.GetFileName(f).Contains("_a")).ToArray();
-				
+
 				int fileCount = files.Length;
 				if (fileCount > 0)
 				{
@@ -1690,10 +1685,10 @@ namespace PngtoFshBatchtxt
 					}
 
 					BuildAddList(startIndex);
-				
+
 				}
 			}
-			
+
 		}
 		private void tgiGroupTxt_KeyDown(object sender, KeyEventArgs e)
 		{
@@ -1715,7 +1710,7 @@ namespace PngtoFshBatchtxt
 		}
 
 		private void tgiGroupTxt_TextChanged(object sender, EventArgs e)
-		{                
+		{
 			if (batchListView.SelectedItems.Count > 0)
 			{
 				int index = batchListView.SelectedItems[0].Index;
@@ -1781,7 +1776,7 @@ namespace PngtoFshBatchtxt
 				e.Effect = DragDropEffects.Copy;
 			}
 		}
-		
+
 		private string[] GetFilesfromDirectory(string[] filenames)
 		{
 			List<string> fileList = new List<string>();
@@ -1904,7 +1899,7 @@ namespace PngtoFshBatchtxt
 
 			this.toolStripProgressBar1.Value = 0;
 
-			this.toolStripProgressStatus.Text = Resources.StatusTextReset;   
+			this.toolStripProgressStatus.Text = Resources.StatusTextReset;
 			if (manager != null)
 			{
 				this.manager.SetProgressState(TaskbarProgressBarState.NoProgress, this.Handle);
@@ -1953,7 +1948,7 @@ namespace PngtoFshBatchtxt
 					pathArray.Add(file);
 				}
 			}
-				
+
 			int startIndex = 0;
 			if (existingFileCount != 0)
 			{
@@ -1961,14 +1956,14 @@ namespace PngtoFshBatchtxt
 			}
 
 			BuildAddList(startIndex);
-			
+
 		}
 
 		private void clearlistbtn_Click(object sender, EventArgs e)
 		{
 			ClearandReset();
 		}
-	   
+
 		private void CheckRangeFilesExist(string path)
 		{
 			if (!File.Exists(path))
