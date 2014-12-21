@@ -1440,13 +1440,18 @@ namespace PngtoFshBatchtxt
 
 				for (int n = 0; n < pathArrayCount; n++)
 				{
-					string fileName = Path.GetFileName(pathArray[n]);
+					string fileName = Path.GetFileNameWithoutExtension(pathArray[n]);
 
 					using (Bitmap temp = new Bitmap(pathArray[n]))
 					{
-						if (fileName.Length == 10 && fileName.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+						if (fileName.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
 						{
-							string pathinst = Path.GetFileNameWithoutExtension(pathArray[n]).Substring(2, 8);
+							if (!ValidateHexString(fileName))
+							{
+								throw new FormatException(string.Format(Resources.InvalidInstanceIDFormat, fileName));
+							}
+
+							string pathinst = fileName.Substring(2, 8);
 							instArray.Insert(n, pathinst);
 						}
 						else
@@ -1456,7 +1461,7 @@ namespace PngtoFshBatchtxt
 						}
 
 
-						string alphaName = Path.Combine(Path.GetDirectoryName(pathArray[n]), Path.GetFileNameWithoutExtension(pathArray[n]) + "_a" + Path.GetExtension(pathArray[n]));
+						string alphaName = Path.Combine(Path.GetDirectoryName(pathArray[n]), fileName + "_a" + Path.GetExtension(pathArray[n]));
 						if (File.Exists(alphaName))
 						{
 							typeArray.Insert(n, FshImageFormat.DXT3);
@@ -1499,6 +1504,10 @@ namespace PngtoFshBatchtxt
 			catch (FileNotFoundException fx)
 			{
 				MessageBox.Show(fx.Message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+			catch (FormatException ex)
+			{
+				MessageBox.Show(ex.Message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 			catch (IOException ex)
 			{
@@ -1559,11 +1568,16 @@ namespace PngtoFshBatchtxt
 				{
 					using (Bitmap temp = new Bitmap(pathArray[n]))
 					{
-						string fileName = Path.GetFileName(pathArray[n]);
+						string fileName = Path.GetFileNameWithoutExtension(pathArray[n]);
 
-						if (fileName.Length == 10 && fileName.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+						if (fileName.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
 						{
-							string pathinst = Path.GetFileNameWithoutExtension(pathArray[n]).Substring(2, 8);
+							if (!ValidateHexString(fileName))
+							{
+								throw new FormatException(string.Format(Resources.InvalidInstanceIDFormat, fileName));
+							}
+
+							string pathinst = fileName.Substring(2, 8);
 							instArray.Insert(n, pathinst);
 						}
 						else
@@ -1572,7 +1586,7 @@ namespace PngtoFshBatchtxt
 							SetEndFormat(temp, n);
 						}
 
-						string alphaName = Path.Combine(Path.GetDirectoryName(pathArray[n]), Path.GetFileNameWithoutExtension(pathArray[n]) + "_a" + Path.GetExtension(pathArray[n]));
+						string alphaName = Path.Combine(Path.GetDirectoryName(pathArray[n]), fileName + "_a" + Path.GetExtension(pathArray[n]));
 						if (File.Exists(alphaName))
 						{
 							if (fileName.StartsWith("hd", StringComparison.OrdinalIgnoreCase))
@@ -1624,6 +1638,10 @@ namespace PngtoFshBatchtxt
 			catch (FileNotFoundException fx)
 			{
 				MessageBox.Show(fx.Message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+			catch (FormatException ex)
+			{
+				MessageBox.Show(ex.Message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 			catch (IndexOutOfRangeException ex)
 			{
