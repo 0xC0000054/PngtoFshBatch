@@ -226,6 +226,15 @@ namespace PngtoFshBatchtxt.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} is not a valid instance..
+        /// </summary>
+        internal static string InvalidInstanceIDFormat {
+            get {
+                return ResourceManager.GetString("InvalidInstanceIDFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Change the format of the mipmaps..
         /// </summary>
         internal static string mipFormatCbo_Tooltip {

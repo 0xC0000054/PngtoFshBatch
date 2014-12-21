@@ -219,4 +219,7 @@ It must only contain numbers 0-9 and letters A-F.</value>
   <data name="mipFormatCbo_Tooltip" xml:space="preserve">
     <value>Change the format of the mipmaps.</value>
   </data>
+  <data name="InvalidInstanceIDFormat" xml:space="preserve">
+    <value>{0} is not a valid instance.</value>
+  </data>
 </root>
