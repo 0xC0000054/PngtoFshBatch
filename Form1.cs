@@ -166,10 +166,10 @@ namespace PngtoFshBatchtxt
 		/// Sets the instance end chars.
 		/// </summary>
 		/// <param name="index">The index in the instArray to compare to.</param>
-		private void SetInstanceEndChars(int index)
+		private void SetInstanceEndChars(string instance)
 		{
-			if (instArray[index].EndsWith("4", StringComparison.Ordinal) || instArray[index].EndsWith("3", StringComparison.Ordinal)
-						   || instArray[index].EndsWith("2", StringComparison.Ordinal) || instArray[index].EndsWith("1", StringComparison.Ordinal) || instArray[index].EndsWith("0", StringComparison.Ordinal))
+			if (instance.EndsWith("4", StringComparison.Ordinal) || instance.EndsWith("3", StringComparison.Ordinal)
+						   || instance.EndsWith("2", StringComparison.Ordinal) || instance.EndsWith("1", StringComparison.Ordinal) || instance.EndsWith("0", StringComparison.Ordinal))
 			{
 				endreg = '4';
 				end64 = '3';
@@ -177,8 +177,8 @@ namespace PngtoFshBatchtxt
 				end16 = '1';
 				end8 = '0';
 			}
-			else if (instArray[index].EndsWith("9", StringComparison.Ordinal) || instArray[index].EndsWith("8", StringComparison.Ordinal)
-				|| instArray[index].EndsWith("7", StringComparison.Ordinal) || instArray[index].EndsWith("6", StringComparison.Ordinal) || instArray[index].EndsWith("5", StringComparison.Ordinal))
+			else if (instance.EndsWith("9", StringComparison.Ordinal) || instance.EndsWith("8", StringComparison.Ordinal)
+				|| instance.EndsWith("7", StringComparison.Ordinal) || instance.EndsWith("6", StringComparison.Ordinal) || instance.EndsWith("5", StringComparison.Ordinal))
 			{
 				endreg = '9';
 				end64 = '8';
@@ -186,8 +186,8 @@ namespace PngtoFshBatchtxt
 				end16 = '6';
 				end8 = '5';
 			}
-			else if (instArray[index].EndsWith("E", StringComparison.Ordinal) || instArray[index].EndsWith("D", StringComparison.Ordinal)
-				|| instArray[index].EndsWith("C", StringComparison.Ordinal) || instArray[index].EndsWith("B", StringComparison.Ordinal) || instArray[index].EndsWith("A", StringComparison.Ordinal))
+			else if (instance.EndsWith("E", StringComparison.Ordinal) || instance.EndsWith("D", StringComparison.Ordinal)
+				|| instance.EndsWith("C", StringComparison.Ordinal) || instance.EndsWith("B", StringComparison.Ordinal) || instance.EndsWith("A", StringComparison.Ordinal))
 			{
 				endreg = 'E';
 				end64 = 'D';
@@ -216,24 +216,25 @@ namespace PngtoFshBatchtxt
 					sw.WriteLine("7ab50e44\t\n");
 					sw.WriteLine(string.Format(CultureInfo.InvariantCulture, "{0:X8}", batchListView.Items[index].SubItems[2].Text + "\n"));
 
-					SetInstanceEndChars(index);
+					string instance = batchListView.Items[index].SubItems[3].Text;
+					SetInstanceEndChars(instance);
 
 					switch (zoom)
 					{
 						case 0:
-							sw.WriteLine(string.Format(CultureInfo.InvariantCulture, "{0:X8}", batchListView.Items[index].SubItems[3].Text.Substring(0, 7) + end8));
+							sw.WriteLine(string.Format(CultureInfo.InvariantCulture, "{0:X8}", instance.Substring(0, 7) + end8));
 							break;
 						case 1:
-							sw.WriteLine(string.Format(CultureInfo.InvariantCulture, "{0:X8}", batchListView.Items[index].SubItems[3].Text.Substring(0, 7) + end16));
+							sw.WriteLine(string.Format(CultureInfo.InvariantCulture, "{0:X8}", instance.Substring(0, 7) + end16));
 							break;
 						case 2:
-							sw.WriteLine(string.Format(CultureInfo.InvariantCulture, "{0:X8}", batchListView.Items[index].SubItems[3].Text.Substring(0, 7) + end32));
+							sw.WriteLine(string.Format(CultureInfo.InvariantCulture, "{0:X8}", instance.Substring(0, 7) + end32));
 							break;
 						case 3:
-							sw.WriteLine(string.Format(CultureInfo.InvariantCulture, "{0:X8}", batchListView.Items[index].SubItems[3].Text.Substring(0, 7) + end64));
+							sw.WriteLine(string.Format(CultureInfo.InvariantCulture, "{0:X8}", instance.Substring(0, 7) + end64));
 							break;
 						case 4:
-							sw.WriteLine(string.Format(CultureInfo.InvariantCulture, "{0:X8}", batchListView.Items[index].SubItems[3].Text));
+							sw.WriteLine(string.Format(CultureInfo.InvariantCulture, "{0:X8}", instance));
 							break;
 					}
 				}
@@ -376,7 +377,7 @@ namespace PngtoFshBatchtxt
 
 					fshimg[4] = batchFsh.MainImage;
 
-					SetInstanceEndChars(i);
+					SetInstanceEndChars(item.SubItems[3].Text);
 
 					string sub = item.SubItems[3].Text.Substring(0, 7);
 					instanceid[0] = uint.Parse(sub + end8, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
@@ -409,9 +410,9 @@ namespace PngtoFshBatchtxt
 					ListViewItem item = items[i];
 
 					uint group = uint.Parse(item.SubItems[2].Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
-					SetInstanceEndChars(i);
-					string inst = item.SubItems[3].Text.Substring(0, 7) + endreg;
-					uint instanceID = uint.Parse(inst, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+					string inst = item.SubItems[3].Text;
+					SetInstanceEndChars(inst);
+					uint instanceID = uint.Parse(inst.Substring(0, 7) + endreg, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
 
 					FSHImageWrapper mainImage = batchFshList[i].MainImage;
 					if (mainImage != null)
@@ -462,14 +463,15 @@ namespace PngtoFshBatchtxt
 					}
 
 					fshimg[4] = batchFsh.MainImage;
+					string instance = item.SubItems[3].Text;
 
-					SetInstanceEndChars(i);
+					SetInstanceEndChars(instance);
 
-					instanceid[0] = uint.Parse(item.SubItems[3].Text.Substring(0, 7) + end8, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
-					instanceid[1] = uint.Parse(item.SubItems[3].Text.Substring(0, 7) + end16, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
-					instanceid[2] = uint.Parse(item.SubItems[3].Text.Substring(0, 7) + end32, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
-					instanceid[3] = uint.Parse(item.SubItems[3].Text.Substring(0, 7) + end64, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
-					instanceid[4] = uint.Parse(item.SubItems[3].Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+					instanceid[0] = uint.Parse(instance.Substring(0, 7) + end8, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+					instanceid[1] = uint.Parse(instance.Substring(0, 7) + end16, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+					instanceid[2] = uint.Parse(instance.Substring(0, 7) + end32, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+					instanceid[3] = uint.Parse(instance.Substring(0, 7) + end64, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+					instanceid[4] = uint.Parse(instance, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
 
 					bool useFshWrite = this.fshWriteCompCb.Checked;
 
@@ -759,6 +761,7 @@ namespace PngtoFshBatchtxt
 						item.BmpType = typeArray[i];
 						item.DirName = "FiSH";
 
+
 						if (i <= batchFshList.Capacity)
 						{
 							FSHImageWrapper fsh = new FSHImageWrapper();
@@ -771,6 +774,7 @@ namespace PngtoFshBatchtxt
 								SaveFsh(mstream, batchFshList[i].MainImage);
 							}
 						}
+						
 					}
 
 				}
