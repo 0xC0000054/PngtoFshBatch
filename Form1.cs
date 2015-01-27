@@ -278,7 +278,6 @@ namespace PngtoFshBatchtxt
 
 		internal List<string> instArray = null;
 		internal List<FshImageFormat> typeArray = null;
-		internal List<string> groupArray = null;
 		private static void Alphasrc(ListViewItem item, string path)
 		{
 			string alname = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path) + "_a" + Path.GetExtension(path));
@@ -1244,7 +1243,7 @@ namespace PngtoFshBatchtxt
 							}
 							for (int i = 0; i < pathArrayCount; i++)
 							{
-								groupArray.Insert(i, g);
+								batchFshList[i].GroupId = g;
 							}
 						}
 					}
@@ -1254,7 +1253,7 @@ namespace PngtoFshBatchtxt
 			{
 				for (int i = 0; i < pathArrayCount; i++)
 				{
-					groupArray.Insert(i, "1ABE787D");
+					batchFshList[i].GroupId = "1ABE787D";
 				}
 				string message = string.Format(CultureInfo.CurrentCulture, Resources.FileNotFoundFormat, Path.GetFileName(path), path);
 				throw new FileNotFoundException(message);
@@ -1432,9 +1431,9 @@ namespace PngtoFshBatchtxt
 				int pathArrayCount = batchFshList.Count;
 				if (tgiGroupTxt.Text.Length == 8)
 				{
-					for (int j = 0; j < pathArrayCount; j++)
+					for (int i = 0; i < pathArrayCount; i++)
 					{
-						groupArray.Insert(j, tgiGroupTxt.Text);
+						batchFshList[i].GroupId = tgiGroupTxt.Text;
 					}
 				}
 				else
@@ -1504,7 +1503,7 @@ namespace PngtoFshBatchtxt
 					string fileName = batch.FileName;
 					ListViewItem item1 = new ListViewItem(Path.GetFileName(fileName));
 					Alphasrc(item1, fileName);
-					item1.SubItems.Add(groupArray[i]);
+					item1.SubItems.Add(batch.GroupId);
 					item1.SubItems.Add(instArray[i]);
 					batchListView.Items.Add(item1);
 				}
@@ -1529,7 +1528,6 @@ namespace PngtoFshBatchtxt
 			if (batchListView.SelectedItems.Count > 0 && batchListView.Items.Count > 1)
 			{
 				int index = batchListView.SelectedItems[0].Index;
-				groupArray.RemoveAt(index);
 				instArray.RemoveAt(index);
 				typeArray.RemoveAt(index);
 				
@@ -1556,9 +1554,9 @@ namespace PngtoFshBatchtxt
 
 				if (tgiGroupTxt.Text.Length == 8)
 				{
-					for (int j = 0; j < pathArrayCount; j++)
+					for (int i = 0; i < pathArrayCount; i++)
 					{
-						groupArray.Insert(j, tgiGroupTxt.Text);
+						batchFshList[i].GroupId = tgiGroupTxt.Text;
 					}
 				}
 				else
@@ -1628,12 +1626,13 @@ namespace PngtoFshBatchtxt
 
 				for (int i = startIndex; i < pathArrayCount; i++)
 				{
-					string path = batchFshList[i].FileName;
+					BatchFshContainer batch = batchFshList[i];
+					string path = batch.FileName;
 					if (File.Exists(path))
 					{
 						ListViewItem item1 = new ListViewItem(Path.GetFileName(path));
 						Alphasrc(item1, path);
-						item1.SubItems.Add(groupArray[i]);
+						item1.SubItems.Add(batch.GroupId);
 						item1.SubItems.Add(instArray[i]);
 						batchListView.Items.Insert(i, item1);
 					}
@@ -1729,12 +1728,13 @@ namespace PngtoFshBatchtxt
 			if (batchListView.SelectedItems.Count > 0)
 			{
 				int index = batchListView.SelectedItems[0].Index;
-				if (tgiGroupTxt.Text.Length > 0 && tgiGroupTxt.Text.Length == 8)
+				if (tgiGroupTxt.Text.Length == 8)
 				{
-					if (!tgiGroupTxt.Text.Equals(groupArray[index], StringComparison.OrdinalIgnoreCase))
+					string group = tgiGroupTxt.Text;
+					if (!group.Equals(batchFshList[index].GroupId, StringComparison.OrdinalIgnoreCase))
 					{
-						groupArray[index] = tgiGroupTxt.Text;
-						batchListView.SelectedItems[0].SubItems[2].Text = groupArray[index];
+						batchFshList[index].GroupId = group;
+						batchListView.SelectedItems[0].SubItems[2].Text = group;
 					}
 				}
 			}
