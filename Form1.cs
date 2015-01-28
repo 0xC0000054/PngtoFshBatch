@@ -17,10 +17,45 @@ using PngtoFshBatchtxt.Properties;
 namespace PngtoFshBatchtxt
 {
 	internal partial class Form1 : Form
-	{
+	{        
+		private TaskbarManager manager;
+		private JumpList jumpList;
+		private Settings settings;
+		private char endreg;
+		private char end64;
+		private char end32;
+		private char end16;
+		private char end8;
+		private Thread batchProcessThread;
+		private Thread mipProcessThread;
+		private Thread batchSaveFilesThread;
+		private Thread datRebuildThread;
+		private bool datRebuilt;
+		private Random random;
+		private string lowerInstRange;
+		private string upperInstRange;
+		private MipmapFormat mipFormat;
+
+		internal BatchFshCollection batchFshList;
+		internal bool mipsBuilt;
+		internal string outputFolder;
+		internal string groupPath;
+		internal string rangePath;
+		internal DatFile dat;
+		internal bool batchProcessed;
+
+		private static class NativeMethods
+		{
+			internal const uint SSE = 6;
+
+			[return: MarshalAs(UnmanagedType.Bool)]
+			internal static extern bool IsProcessorFeaturePresent(uint ProcessorFeature);
+		} 
+
 		public Form1()
 		{
 			InitializeComponent();
+
 			if (Type.GetType("Mono.Runtime") == null) // skip the Windows 7 code if we are on mono 
 			{
 				if (TaskbarManager.IsPlatformSupported)
@@ -30,8 +65,6 @@ namespace PngtoFshBatchtxt
 				}
 			}
 		}
-		internal BatchFshCollection batchFshList = null;
-		internal bool mipsBuilt = false;
 
 		internal void ProcessMips()
 		{
@@ -197,11 +230,6 @@ namespace PngtoFshBatchtxt
 			}
 		}
 
-		private char endreg;
-		private char end64;
-		private char end32;
-		private char end16;
-		private char end8;
 		private void WriteTgi(string filename, int zoom, int index)
 		{
 			FileStream fs = null;
@@ -339,10 +367,6 @@ namespace PngtoFshBatchtxt
 				}
 			}
 		}
-
-		internal DatFile dat = null;
-		private Thread datRebuildThread = null;
-		private bool datRebuilt = false;
 
 		private void RebuildDat(DatFile inputdat)
 		{
@@ -674,7 +698,6 @@ namespace PngtoFshBatchtxt
 			return dest;
 		}
 
-		internal bool batchProcessed = false;
 		private void ProcessBatch()
 		{
 			try
@@ -912,9 +935,6 @@ namespace PngtoFshBatchtxt
 			}
 		}
 
-		private TaskbarManager manager;
-		private static JumpList jumpList;
-
 		private void SetProgressBarValue(int value, string statusTextFormat)
 		{
 			this.toolStripProgressBar1.PerformStep();
@@ -1061,9 +1081,6 @@ namespace PngtoFshBatchtxt
 			}
 		}
 
-		private Thread batchProcessThread = null;
-		private Thread mipProcessThread = null;
-		private Thread batchSaveFilesThread = null;
 		internal void processbatchbtn_Click(object sender, EventArgs e)
 		{
 			try
@@ -1117,9 +1134,7 @@ namespace PngtoFshBatchtxt
 				MessageBox.Show(this, ex.Message + Environment.NewLine + ex.StackTrace, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
-		private Settings settings = null;
-		internal string groupPath = null;
-		internal string rangePath = null;
+
 		private void LoadSettings()
 		{
 			settings = new Settings(Path.Combine(Application.StartupPath, @"PngtoFshBatch.xml"));
@@ -1127,17 +1142,12 @@ namespace PngtoFshBatchtxt
 			mipFormatCbo.SelectedIndex = int.Parse(settings.GetSetting("MipFormat", "0"), CultureInfo.InvariantCulture);
 			fshWriteCompCb.Checked = bool.Parse(settings.GetSetting("fshwritecompcb_checked", bool.FalseString));
 		}
-		private const uint SSE = 6;
-
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1060:MovePInvokesToNativeMethodsClass"), DllImport("kernel32.dll")]
-		[return: MarshalAs(UnmanagedType.Bool)]
-		private static extern bool IsProcessorFeaturePresent(uint ProcessorFeature);
 
 		private void CheckForSSE()
 		{
 			if (Type.GetType("Mono.Runtime") == null)
 			{
-				if (!IsProcessorFeaturePresent(SSE))
+				if (!NativeMethods.IsProcessorFeaturePresent(NativeMethods.SSE))
 				{
 					MessageBox.Show(Resources.FshWriteSSERequiredError, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 					fshWriteCompCb.Enabled = fshWriteCompCb.Checked = false;
@@ -1156,11 +1166,13 @@ namespace PngtoFshBatchtxt
 			CheckRangeFilesExist(groupPath);
 		}
 
-		private Random ra = new Random();
-		private string lowerInstRange = null;
-		private string upperInstRange = null;
 		private string RandomHexString(int length)
 		{
+			if (random == null)
+			{
+				random = new Random();
+			}
+
 			if (string.IsNullOrEmpty(lowerInstRange) && string.IsNullOrEmpty(upperInstRange))
 			{
 				ReadRangetxt(rangePath);
@@ -1173,19 +1185,19 @@ namespace PngtoFshBatchtxt
 				if (long.TryParse(lowerInstRange, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out lower) &&
 					long.TryParse(upperInstRange, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out upper))
 				{
-					double rn = (upper * 1.0 - lower * 1.0) * ra.NextDouble() + lower * 1.0;
+					double rn = (upper * 1.0 - lower * 1.0) * random.NextDouble() + lower * 1.0;
 
 					return Convert.ToInt64(rn).ToString("X").Substring(0, 7);
 				}
 			}
 
 			byte[] buffer = new byte[length / 2];
-			ra.NextBytes(buffer);
+			random.NextBytes(buffer);
 			string result = string.Concat(buffer.Select(x => x.ToString("X2")).ToArray());
 			if ((length % 2) == 0)
 				return result;
 
-			return result + ra.Next(16).ToString("X");
+			return result + random.Next(16).ToString("X");
 		}
 
 		private void compDatcb_CheckedChanged(object sender, EventArgs e)
@@ -1196,7 +1208,6 @@ namespace PngtoFshBatchtxt
 			}
 		}
 
-		internal string outputFolder = string.Empty;
 		private void outfolderbtn_Click(object sender, EventArgs e)
 		{
 			if (OutputBrowserDialog1.ShowDialog() == DialogResult.OK)
@@ -1868,7 +1879,6 @@ namespace PngtoFshBatchtxt
 
 		}
 
-		private MipmapFormat mipFormat;
 		private void mipFormatCbo_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			this.mipFormat = (MipmapFormat)mipFormatCbo.SelectedIndex;
