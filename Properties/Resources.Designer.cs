@@ -97,15 +97,6 @@ namespace PngtoFshBatchtxt.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} path must not be empty..
-        /// </summary>
-        internal static string ArgumentPathEmpty {
-            get {
-                return ResourceManager.GetString("ArgumentPathEmpty", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Generate mipmaps for the zoom levels.
         /// </summary>
         internal static string autoProcMipsCb_ToolTip {
