@@ -219,4 +219,7 @@ It must only contain numbers 0-9 and letters A-F.</value>
   <data name="InvalidInstanceIDFormat" xml:space="preserve">
     <value>{0} is not a valid instance.</value>
   </data>
+  <data name="ArgumentPathEmpty" xml:space="preserve">
+    <value>{0} is an empty string.</value>
+  </data>
 </root>
