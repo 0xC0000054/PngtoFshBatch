@@ -44,10 +44,12 @@ namespace PngtoFshBatchtxt
 		internal DatFile dat;
 		internal bool batchProcessed;
 
+
 		private static class NativeMethods
 		{
 			internal const uint SSE = 6;
 
+			[DllImport("kernel32.dll", ExactSpelling = true)]
 			[return: MarshalAs(UnmanagedType.Bool)]
 			internal static extern bool IsProcessorFeaturePresent(uint ProcessorFeature);
 		} 
@@ -68,7 +70,7 @@ namespace PngtoFshBatchtxt
 
 		internal void ProcessMips()
 		{
-			int count = batchListView.Items.Count;
+			int count = batchFshList.Count;
 			for (int n = 0; n < count; n++)
 			{
 				BatchFshContainer batchFsh = batchFshList[n];
@@ -85,17 +87,15 @@ namespace PngtoFshBatchtxt
 					batchFsh.Mip8Fsh = null;
 				}
 			}
+					
+			Bitmap[] bmps = new Bitmap[4];
+			Bitmap[] alphas = new Bitmap[4];
 
-			for (int n = 0; n < count; n++)
+			for (int i = 0; i < count; i++)
 			{
-				this.Invoke(new Action<int, string>(SetProgressBarValue), new object[] { n, Resources.ProcessingMipsStatusTextFormat });
-				Bitmap[] bmps = new Bitmap[4];
-				Bitmap[] alphas = new Bitmap[4];
-
-
-
-				BatchFshContainer batchFsh = batchFshList[n];
-
+				this.Invoke(new Action<int, string>(SetProgressBarValue), new object[] { i, Resources.ProcessingMipsStatusTextFormat });
+				
+				BatchFshContainer batchFsh = batchFshList[i];
 				BitmapEntry item = batchFsh.MainImage.Bitmaps[0];
 
 				if (item.Bitmap.Width >= 128 && item.Bitmap.Height >= 128)
@@ -118,29 +118,25 @@ namespace PngtoFshBatchtxt
 					}
 
 					bool fshWriteCompression = fshWriteCompCb.Checked;
-					for (int i = 3; i >= 0; i--)
+					for (int j = 3; j >= 0; j--)
 					{
-						if (bmps[i] != null && alphas[i] != null)
+						if (bmps[j] != null && alphas[j] != null)
 						{
-							BitmapEntry mipitm = new BitmapEntry();
-							mipitm.Bitmap = bmps[i];
-							mipitm.Alpha = alphas[i];
-							mipitm.DirName = item.DirName;
-
+							FshImageFormat bmpType;
 							if (item.BmpType == FshImageFormat.DXT3 || item.BmpType == FshImageFormat.ThirtyTwoBit)
 							{
-								mipitm.BmpType = FshImageFormat.DXT3;
+								bmpType = FshImageFormat.DXT3;
 							}
 							else
 							{
-								mipitm.BmpType = FshImageFormat.DXT1;
+								bmpType = FshImageFormat.DXT1;
 							}
 
-							switch (i)
+							switch (j)
 							{
 								case 3:
 									batchFsh.Mip64Fsh = new FSHImageWrapper();
-									batchFsh.Mip64Fsh.Bitmaps.Add(mipitm);
+									batchFsh.Mip64Fsh.Bitmaps.Add(new BitmapEntry(bmps[j], alphas[j], bmpType, item.DirName));
 									using (MemoryStream mstream = new MemoryStream())
 									{
 										batchFsh.Mip64Fsh.Save(mstream, fshWriteCompression);
@@ -148,7 +144,7 @@ namespace PngtoFshBatchtxt
 									break;
 								case 2:
 									batchFsh.Mip32Fsh = new FSHImageWrapper();
-									batchFsh.Mip32Fsh.Bitmaps.Add(mipitm);
+									batchFsh.Mip32Fsh.Bitmaps.Add(new BitmapEntry(bmps[j], alphas[j], bmpType, item.DirName));
 									using (MemoryStream mstream = new MemoryStream())
 									{
 										batchFsh.Mip32Fsh.Save(mstream, fshWriteCompression);
@@ -156,7 +152,7 @@ namespace PngtoFshBatchtxt
 									break;
 								case 1:
 									batchFsh.Mip16Fsh = new FSHImageWrapper();
-									batchFsh.Mip16Fsh.Bitmaps.Add(mipitm);
+									batchFsh.Mip16Fsh.Bitmaps.Add(new BitmapEntry(bmps[j], alphas[j], bmpType, item.DirName));
 									using (MemoryStream mstream = new MemoryStream())
 									{
 										batchFsh.Mip16Fsh.Save(mstream, fshWriteCompression);
@@ -164,7 +160,7 @@ namespace PngtoFshBatchtxt
 									break;
 								case 0:
 									batchFsh.Mip8Fsh = new FSHImageWrapper();
-									batchFsh.Mip8Fsh.Bitmaps.Add(mipitm);
+									batchFsh.Mip8Fsh.Bitmaps.Add(new BitmapEntry(bmps[j], alphas[j], bmpType, item.DirName));
 									using (MemoryStream mstream = new MemoryStream())
 									{
 										batchFsh.Mip8Fsh.Save(mstream, fshWriteCompression);
@@ -172,16 +168,20 @@ namespace PngtoFshBatchtxt
 									break;
 							}
 
+							bmps[j].Dispose();
+							alphas[j].Dispose();
+							bmps[j] = null;
+							alphas[j] = null;
 						}
 					}
-				}
 
+				}
 			}
 
 			mipsBuilt = true;
 		}
 		/// <summary>
-		/// Creates the mip thumbnail using Graphics.DrawImage
+		/// Creates the mipmap thumbnail
 		/// </summary>
 		/// <param name="source">The Bitmap to draw</param>
 		/// <param name="width">The width of the new bitmap</param>
@@ -571,67 +571,68 @@ namespace PngtoFshBatchtxt
 						{
 							dat = new DatFile();
 						}
+						SetControlsEnabled(false);
 
-						if (!batchProcessed)
+						try
 						{
-							SetProgressBarMaximum();
-							this.Cursor = Cursors.WaitCursor;
-							Application.DoEvents();
-							this.batchProcessThread = new Thread(new ThreadStart(ProcessBatch)) { Priority = ThreadPriority.AboveNormal, IsBackground = true };
-							this.batchProcessThread.Start();
-							while (batchProcessThread.IsAlive)
+							if (!batchProcessed)
+							{
+								SetProgressBarMaximum();
+								this.Cursor = Cursors.WaitCursor;
+								Application.DoEvents();
+								this.batchProcessThread = new Thread(new ThreadStart(ProcessBatch)) { Priority = ThreadPriority.AboveNormal, IsBackground = true };
+								this.batchProcessThread.Start();
+								while (batchProcessThread.IsAlive)
+								{
+									Application.DoEvents();
+								}
+								this.batchProcessThread.Join();
+							}
+
+							if (this.mipFormat == MipmapFormat.Normal)
 							{
 								Application.DoEvents();
+								this.mipProcessThread = new Thread(new ThreadStart(ProcessMips)) { Priority = ThreadPriority.AboveNormal, IsBackground = true };
+								this.mipProcessThread.Start();
+								while (mipProcessThread.IsAlive)
+								{
+									Application.DoEvents();
+								}
+								this.mipProcessThread.Join();
 							}
-							this.batchProcessThread.Join();
-						}
 
-						if (this.mipFormat == MipmapFormat.Normal)
-						{
-							Application.DoEvents();
-							this.mipProcessThread = new Thread(new ThreadStart(ProcessMips)) { Priority = ThreadPriority.AboveNormal, IsBackground = true };
-							this.mipProcessThread.Start();
-							while (mipProcessThread.IsAlive)
+
+							if (!datRebuilt)
 							{
 								Application.DoEvents();
+								this.datRebuildThread = new Thread(() => RebuildDat(dat)) { Priority = ThreadPriority.AboveNormal, IsBackground = true };
+								this.datRebuildThread.Start();
+								while (datRebuildThread.IsAlive)
+								{
+									Application.DoEvents();
+								}
+								this.datRebuildThread.Join();
 							}
-							this.mipProcessThread.Join();
-						}
 
-
-						if (!datRebuilt)
-						{
-							Application.DoEvents();
-							this.datRebuildThread = new Thread(() => RebuildDat(dat)) { Priority = ThreadPriority.AboveNormal, IsBackground = true };
-							this.datRebuildThread.Start();
-							while (datRebuildThread.IsAlive)
-							{
-								Application.DoEvents();
-							}
-							this.datRebuildThread.Join();
-						}
-
-						this.Cursor = Cursors.Default;
-						if (dat.Indexes.Count > 0)
-						{
-							try
+							this.Cursor = Cursors.Default;
+							if (dat.Indexes.Count > 0)
 							{
 								dat.Save(saveDatDialog1.FileName);
-								dat.Close();
-							}
-							catch (Exception)
-							{
-								throw;
-							}
-							finally
-							{
-								ClearandReset();
-								dat = null;
 							}
 						}
+						catch (Exception)
+						{
+							throw;
+						}
+						finally
+						{                                    
+							dat.Close();
+							dat = null;
+							SetControlsEnabled(true);
+
+							ClearandReset();
+						}
 					}
-
-
 				}
 				catch (Exception ex)
 				{
@@ -702,7 +703,7 @@ namespace PngtoFshBatchtxt
 		{
 			try
 			{
-				int count = batchListView.Items.Count;
+				int count = batchFshList.Count;
 				for (int i = 0; i < count; i++)
 				{
 					this.Invoke(new Action<int, string>(SetProgressBarValue), new object[] { i, Resources.ProcessingStatusTextFormat });
@@ -800,7 +801,7 @@ namespace PngtoFshBatchtxt
 		/// </summary>
 		internal void ProcessBatchCmd()
 		{
-			int count = batchListView.Items.Count;
+			int count = batchFshList.Count;
 			try
 			{
 				for (int i = 0; i < count; i++)
@@ -948,17 +949,13 @@ namespace PngtoFshBatchtxt
 
 		private void ProcessBatchSaveFiles()
 		{
-			int itemCount = (int)this.Invoke(new Func<Int32>(delegate()
-				{
-					return batchListView.Items.Count;
-				}));
-
-			for (int i = 0; i < itemCount; i++)
+			for (int i = 0; i < batchFshList.Count; i++)
 			{
 				string filepath;
 				this.Invoke(new Action<int, string>(SetProgressBarValue), new object[] { i, Resources.SavingFshProgressTextFormat });
 				BatchFshContainer batchFsh = batchFshList[i];
 				string fileName = batchFsh.FileName;
+				
 				if (batchFsh.MainImage != null)
 				{
 					if (this.mipFormat == MipmapFormat.Embedded)
@@ -971,7 +968,7 @@ namespace PngtoFshBatchtxt
 					{
 						SaveFsh(fstream, batchFsh.MainImage);
 					}
-					this.Invoke(new Action<string, int, int>(WriteTgi), new object[] { filepath, 4, i });
+					WriteTgi(filepath, 4, i);
 				}
 				if (this.mipFormat == MipmapFormat.Normal)
 				{
@@ -982,7 +979,7 @@ namespace PngtoFshBatchtxt
 						{
 							SaveFsh(fstream, batchFsh.Mip64Fsh);
 						}
-						this.Invoke(new Action<string, int, int>(WriteTgi), new object[] { filepath, 3, i });
+						WriteTgi(filepath, 3, i);
 					}
 					if (batchFsh.Mip32Fsh != null)
 					{
@@ -991,7 +988,7 @@ namespace PngtoFshBatchtxt
 						{
 							SaveFsh(fstream, batchFsh.Mip32Fsh);
 						}
-						this.Invoke(new Action<string, int, int>(WriteTgi), new object[] { filepath, 2, i });
+						WriteTgi(filepath, 2, i);
 					}
 					if (batchFsh.Mip16Fsh != null)
 					{
@@ -1000,7 +997,7 @@ namespace PngtoFshBatchtxt
 						{
 							SaveFsh(fstream, batchFsh.Mip16Fsh);
 						}
-						this.Invoke(new Action<string, int, int>(WriteTgi), new object[] { filepath, 1, i });
+						WriteTgi(filepath, 1, i);
 					}
 					if (batchFsh.Mip8Fsh != null)
 					{
@@ -1009,7 +1006,7 @@ namespace PngtoFshBatchtxt
 						{
 							SaveFsh(fstream, batchFsh.Mip8Fsh);
 						}
-						this.Invoke(new Action<string, int, int>(WriteTgi), new object[] { filepath, 0, i });
+						WriteTgi(filepath, 0, i);
 					}
 				}
 			}
@@ -1085,12 +1082,12 @@ namespace PngtoFshBatchtxt
 		{
 			try
 			{
+				SetProgressBarMaximum();
+				this.Cursor = Cursors.WaitCursor;
+				SetControlsEnabled(false);
 
 				if (!batchProcessed)
 				{
-					this.SetProgressBarMaximum();
-
-					this.Cursor = Cursors.WaitCursor;
 					Application.DoEvents();
 					this.batchProcessThread = new Thread(new ThreadStart(ProcessBatch)) { Priority = ThreadPriority.AboveNormal, IsBackground = true };
 					this.batchProcessThread.Start();
@@ -1119,11 +1116,7 @@ namespace PngtoFshBatchtxt
 				}
 				this.batchSaveFilesThread.Join();
 
-				if (this.Cursor != Cursors.Default)
-				{
-					this.Cursor = Cursors.Default;
-				}
-				ClearandReset();
+				
 			}
 			catch (ArgumentOutOfRangeException ag)
 			{
@@ -1132,6 +1125,15 @@ namespace PngtoFshBatchtxt
 			catch (Exception ex)
 			{
 				MessageBox.Show(this, ex.Message + Environment.NewLine + ex.StackTrace, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+			finally
+			{ 
+				if (this.Cursor != Cursors.Default)
+				{
+					this.Cursor = Cursors.Default;
+				}
+				SetControlsEnabled(true);
+				ClearandReset();
 			}
 		}
 
@@ -1702,26 +1704,16 @@ namespace PngtoFshBatchtxt
 					List<FileInfo> infos = new List<FileInfo>();
 
 					infos.AddRange(di.GetFiles("*.png", SearchOption.TopDirectoryOnly));
-					FileInfo[] bmparr = di.GetFiles("*.bmp", SearchOption.TopDirectoryOnly);
-					if (bmparr.Length > 0)
-					{
-						infos.AddRange(bmparr);
-					}
+					infos.AddRange(di.GetFiles("*.bmp", SearchOption.TopDirectoryOnly));
+					
 					int count = infos.Count;
 					for (int i = 0; i < count; i++)
 					{
 						FileInfo fi = infos[i];
-						string ext = fi.Extension;
-						if (ext.Equals(".png", StringComparison.OrdinalIgnoreCase) || ext.Equals(".bmp", StringComparison.OrdinalIgnoreCase))
+						
+						if (!fi.Name.Contains("_a"))
 						{
-							if (!fi.Name.Contains("_a"))
-							{
-								fileList.Add(fi.FullName);
-							}
-							else
-							{
-								continue;
-							}
+							fileList.Add(fi.FullName);
 						}
 					}
 
@@ -1735,10 +1727,6 @@ namespace PngtoFshBatchtxt
 						if (!Path.GetFileName(file).Contains("_a"))
 						{
 							fileList.Add(file);
-						}
-						else
-						{
-							continue;
 						}
 					}
 				}
@@ -1887,6 +1875,26 @@ namespace PngtoFshBatchtxt
 			{
 				settings.PutSetting("MipFormat", mipFormatCbo.SelectedIndex.ToString(CultureInfo.InvariantCulture));
 			}
+		}
+
+		private void SetControlsEnabled(bool enabled)
+		{
+			this.mipFormatCbo.Enabled = enabled;
+			this.compDatCb.Enabled = enabled;
+			this.fshWriteCompCb.Enabled = enabled;
+			this.tgiGroupTxt.Enabled = enabled;
+			this.tgiInstanceTxt.Enabled = enabled;
+			this.fshTypeBox.Enabled = enabled;
+			this.Inst0_4rdo.Enabled = enabled;
+			this.Inst5_9rdo.Enabled = enabled;
+			this.InstA_Erdo.Enabled = enabled;
+			this.newDatbtn.Enabled = enabled;
+			this.saveDatBtn.Enabled = enabled;
+			this.addBtn.Enabled = enabled;
+			this.remBtn.Enabled = enabled;
+			this.clearListBtn.Enabled = enabled;
+			this.outFolderBtn.Enabled = enabled;
+			this.processBatchBtn.Enabled = enabled;
 		}
 	}
 }
