@@ -29,7 +29,9 @@ namespace PngtoFshBatchtxt
 		private Thread batchProcessThread;
 		private Thread mipProcessThread;
 		private Thread batchSaveFilesThread;
-		private Thread datRebuildThread;
+		private Thread datRebuildThread;		
+		private bool batchProcessed;
+		private bool mipsBuilt;
 		private bool datRebuilt;
 		private Random random;
 		private string lowerInstRange;
@@ -37,13 +39,11 @@ namespace PngtoFshBatchtxt
 		private MipmapFormat mipFormat;
 
 		internal BatchFshCollection batchFshList;
-		internal bool mipsBuilt;
 		internal string outputFolder;
 		internal string groupPath;
 		internal string rangePath;
 		internal DatFile dat;
-		internal bool batchProcessed;
-
+		internal bool displayProgress;
 
 		private static class NativeMethods
 		{
@@ -58,6 +58,7 @@ namespace PngtoFshBatchtxt
 		{
 			InitializeComponent();
 
+			this.displayProgress = true;
 			if (Type.GetType("Mono.Runtime") == null) // skip the Windows 7 code if we are on mono 
 			{
 				if (TaskbarManager.IsPlatformSupported)
@@ -93,8 +94,10 @@ namespace PngtoFshBatchtxt
 
 			for (int i = 0; i < count; i++)
 			{
-				this.Invoke(new Action<int, string>(SetProgressBarValue), new object[] { i, Resources.ProcessingMipsStatusTextFormat });
-				
+				if (displayProgress)
+				{
+					Invoke(new Action<int, string>(SetProgressBarValue), new object[] { i, Resources.ProcessingMipsStatusTextFormat });
+				}
 				BatchFshContainer batchFsh = batchFshList[i];
 				BitmapEntry item = batchFsh.MainImage.Bitmaps[0];
 
@@ -368,14 +371,16 @@ namespace PngtoFshBatchtxt
 			}
 		}
 
-		private void RebuildDat(DatFile inputdat)
+		internal void RebuildDat(DatFile inputdat)
 		{
 			if (mipsBuilt)
 			{
 				for (int i = 0; i < batchFshList.Count; i++)
 				{
-					this.Invoke(new Action<int, string>(SetProgressBarValue), new object[] { i, Resources.BuildingDatStatusTextFormat });
-
+					if (displayProgress)
+					{
+						Invoke(new Action<int, string>(SetProgressBarValue), new object[] { i, Resources.BuildingDatStatusTextFormat });
+					}
 					BatchFshContainer batchFsh = batchFshList[i];
 					uint group = uint.Parse(batchFsh.GroupId, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
 					uint[] instanceid = new uint[5];
@@ -416,8 +421,10 @@ namespace PngtoFshBatchtxt
 			{
 				for (int i = 0; i < batchFshList.Count; i++)
 				{
-					this.Invoke(new Action<int, string>(SetProgressBarValue), new object[] { i, Resources.BuildingDatStatusTextFormat });
-
+					if (displayProgress)
+					{
+						Invoke(new Action<int, string>(SetProgressBarValue), new object[] { i, Resources.BuildingDatStatusTextFormat });
+					}
 					BatchFshContainer batchFsh = batchFshList[i];
 					uint group = uint.Parse(batchFsh.GroupId, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
 					string inst = batchFsh.InstanceId;
@@ -439,88 +446,13 @@ namespace PngtoFshBatchtxt
 				}
 			}
 
-			this.BeginInvoke(new MethodInvoker(delegate()
+			if (displayProgress)
 			{
-				this.toolStripProgressStatus.Text = Resources.SavingDatStatusText;
-			}));
-
-			datRebuilt = true;
-		}
-
-		/// <summary>
-		/// Rebuilds the dat for the command line processing.
-		/// </summary>
-		/// <param name="inputdat">The inputdat.</param>
-		internal void RebuildDatCmd(DatFile inputdat)
-		{
-			if (mipsBuilt)
-			{
-				uint[] instanceid = new uint[5];
-				FSHImageWrapper[] fshimg = new FSHImageWrapper[5];
-				for (int i = 0; i < batchFshList.Count; i++)
+				BeginInvoke(new MethodInvoker(delegate()
 				{
-					BatchFshContainer batchFsh = batchFshList[i];
-					uint group = uint.Parse(batchFsh.GroupId, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
-
-					if (batchFsh.Mip64Fsh != null && batchFsh.Mip32Fsh != null && batchFsh.Mip16Fsh != null && batchFsh.Mip8Fsh != null)
-					{
-						fshimg[0] = batchFsh.Mip8Fsh;
-						fshimg[1] = batchFsh.Mip16Fsh;
-						fshimg[2] = batchFsh.Mip32Fsh;
-						fshimg[3] = batchFsh.Mip64Fsh;
-					}
-
-					fshimg[4] = batchFsh.MainImage;
-					string instance = batchFsh.InstanceId;
-
-					SetInstanceEndChars(instance);
-
-					instanceid[0] = uint.Parse(instance.Substring(0, 7) + end8, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
-					instanceid[1] = uint.Parse(instance.Substring(0, 7) + end16, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
-					instanceid[2] = uint.Parse(instance.Substring(0, 7) + end32, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
-					instanceid[3] = uint.Parse(instance.Substring(0, 7) + end64, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
-					instanceid[4] = uint.Parse(instance, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
-
-					bool useFshWrite = this.fshWriteCompCb.Checked;
-
-					for (int j = 4; j >= 0; j--)
-					{
-						if (fshimg[j] != null)
-						{
-							CheckInstance(inputdat, group, instanceid[j]);
-
-							inputdat.Add(new FshFileItem(fshimg[j], useFshWrite), group, instanceid[j], true);
-						}
-					}
-
-
-				}
+					this.toolStripProgressStatus.Text = Resources.SavingDatStatusText;
+				}));
 			}
-			else if (batchFshList != null)
-			{
-				bool useFshWrite = this.fshWriteCompCb.Checked;
-
-				for (int i = 0; i < batchFshList.Count; i++)
-				{
-					BatchFshContainer batchFsh = batchFshList[i];
-
-					uint group = uint.Parse(batchFsh.GroupId, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
-					uint instanceid = uint.Parse(batchFsh.InstanceId, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
-
-					FSHImageWrapper mainImage = batchFsh.MainImage;
-					if (mainImage != null)
-					{
-						if (this.mipFormat == MipmapFormat.Embedded)
-						{
-							mainImage.Bitmaps[0].CalculateMipmapCount();
-						}
-						CheckInstance(inputdat, group, instanceid);
-
-						inputdat.Add(new FshFileItem(mainImage, useFshWrite), group, instanceid, true);
-					}
-				}
-			}
-
 			datRebuilt = true;
 		}
 
@@ -699,14 +631,17 @@ namespace PngtoFshBatchtxt
 			return dest;
 		}
 
-		private void ProcessBatch()
+		internal void ProcessBatch()
 		{
 			try
 			{
 				int count = batchFshList.Count;
 				for (int i = 0; i < count; i++)
 				{
-					this.Invoke(new Action<int, string>(SetProgressBarValue), new object[] { i, Resources.ProcessingStatusTextFormat });
+					if (displayProgress)
+					{
+						Invoke(new Action<int, string>(SetProgressBarValue), new object[] { i, Resources.ProcessingStatusTextFormat });
+					}
 					BatchFshContainer batch = batchFshList[i];
 					string fileName = batch.FileName;
 					using (Bitmap temp = new Bitmap(fileName))
@@ -796,101 +731,6 @@ namespace PngtoFshBatchtxt
 			}
 		}
 
-		/// <summary>
-		/// Processes the batch list for the command line.
-		/// </summary>
-		internal void ProcessBatchCmd()
-		{
-			int count = batchFshList.Count;
-			try
-			{
-				for (int i = 0; i < count; i++)
-				{
-					BatchFshContainer batch = batchFshList[i];
-					string fileName = batch.FileName;
-					using (Bitmap temp = new Bitmap(fileName))
-					{
-						BitmapEntry item = new BitmapEntry();
-
-						item.Bitmap = temp.Clone(new Rectangle(0, 0, temp.Width, temp.Height), PixelFormat.Format24bppRgb);
-						string alname = Path.Combine(Path.GetDirectoryName(fileName), Path.GetFileNameWithoutExtension(fileName) + "_a" + Path.GetExtension(fileName));
-						if (File.Exists(alname))
-						{
-							using (Bitmap alpha = new Bitmap(alname))
-							{
-								item.Alpha = alpha.Clone(new Rectangle(0, 0, alpha.Width, alpha.Height), PixelFormat.Format24bppRgb);
-							}
-
-						}
-						else if (Path.GetExtension(fileName).Equals(".png", StringComparison.OrdinalIgnoreCase) && temp.PixelFormat == PixelFormat.Format32bppArgb)
-						{
-							item.Alpha = GetAlphaFromTransparency(temp);
-						}
-						else
-						{
-							Bitmap alpha = new Bitmap(temp.Width, temp.Height, PixelFormat.Format24bppRgb);
-							try
-							{
-								BitmapData data = alpha.LockBits(new Rectangle(0, 0, alpha.Width, alpha.Height), ImageLockMode.WriteOnly, PixelFormat.Format24bppRgb);
-
-								try
-								{
-									unsafe
-									{
-										byte* scan0 = (byte*)data.Scan0.ToPointer();
-										int stride = data.Stride;
-										for (int y = 0; y < data.Height; y++)
-										{
-											byte* p = scan0 + (y * stride);
-											for (int x = 0; x < data.Width; x++)
-											{
-												p[0] = p[1] = p[2] = 255;
-												p += 3;
-											}
-										}
-									}
-
-								}
-								finally
-								{
-									alpha.UnlockBits(data);
-								}
-
-								item.Alpha = alpha.Clone(new Rectangle(0, 0, alpha.Width, alpha.Height), alpha.PixelFormat);
-							}
-							finally
-							{
-								if (alpha != null)
-								{
-									alpha.Dispose();
-									alpha = null;
-								}
-							}
-						}
-						item.BmpType = batch.Format;
-						item.DirName = "FiSH";
-
-						FSHImageWrapper fsh = new FSHImageWrapper();
-						fsh.Bitmaps.Add(item);
-
-						using (MemoryStream mstream = new MemoryStream())
-						{
-							SaveFsh(mstream, fsh);
-						}
-
-						batch.MainImage = fsh;
-					}
-
-				}
-				batchProcessed = true;
-
-			}
-			catch (Exception)
-			{
-				throw;
-			}
-		}
-
 		private static string GetFilePath(string filePath, string addToPath, string outDir)
 		{
 			if (!string.IsNullOrEmpty(outDir))
@@ -947,15 +787,18 @@ namespace PngtoFshBatchtxt
 			}
 		}
 
-		private void ProcessBatchSaveFiles()
+		internal void ProcessBatchSaveFiles()
 		{
 			for (int i = 0; i < batchFshList.Count; i++)
 			{
-				string filepath;
-				this.Invoke(new Action<int, string>(SetProgressBarValue), new object[] { i, Resources.SavingFshProgressTextFormat });
+				if (displayProgress)
+				{
+					Invoke(new Action<int, string>(SetProgressBarValue), new object[] { i, Resources.SavingFshProgressTextFormat });
+				}
 				BatchFshContainer batchFsh = batchFshList[i];
 				string fileName = batchFsh.FileName;
-				
+				string filepath;
+
 				if (batchFsh.MainImage != null)
 				{
 					if (this.mipFormat == MipmapFormat.Embedded)
@@ -1012,73 +855,7 @@ namespace PngtoFshBatchtxt
 			}
 		}
 
-		/// <summary>
-		///  Saves the batch files from the command line.
-		/// </summary>
-		internal void ProcessBatchSaveFilesCmd()
-		{
-			for (int i = 0; i < batchFshList.Count; i++)
-			{
-				string filepath;
-				BatchFshContainer batchFsh = batchFshList[i];
-				string fileName = batchFsh.FileName;
-				if (batchFsh.MainImage != null)
-				{
-					if (this.mipFormat == MipmapFormat.Embedded)
-					{
-						batchFsh.MainImage.Bitmaps[0].CalculateMipmapCount();
-					}
-
-					filepath = GetFilePath(fileName, string.Empty, outputFolder);
-					using (FileStream fstream = new FileStream(filepath, FileMode.OpenOrCreate, FileAccess.Write))
-					{
-						SaveFsh(fstream, batchFsh.MainImage);
-					}
-					this.Invoke(new Action<string, int, int>(WriteTgi), new object[] { filepath, 4, i });
-				}
-				if (this.mipFormat == MipmapFormat.Normal)
-				{
-					if (batchFsh.Mip64Fsh != null)
-					{
-						filepath = GetFilePath(fileName, "_s3", outputFolder);
-						using (FileStream fstream = new FileStream(filepath, FileMode.OpenOrCreate, FileAccess.Write))
-						{
-							SaveFsh(fstream, batchFsh.Mip64Fsh);
-						}
-						this.Invoke(new Action<string, int, int>(WriteTgi), new object[] { filepath, 3, i });
-					}
-					if (batchFsh.Mip32Fsh != null)
-					{
-						filepath = GetFilePath(fileName, "_s2", outputFolder);
-						using (FileStream fstream = new FileStream(filepath, FileMode.OpenOrCreate, FileAccess.Write))
-						{
-							SaveFsh(fstream, batchFsh.Mip32Fsh);
-						}
-						this.Invoke(new Action<string, int, int>(WriteTgi), new object[] { filepath, 2, i });
-					}
-					if (batchFsh.Mip16Fsh != null)
-					{
-						filepath = GetFilePath(fileName, "_s1", outputFolder);
-						using (FileStream fstream = new FileStream(filepath, FileMode.OpenOrCreate, FileAccess.Write))
-						{
-							SaveFsh(fstream, batchFsh.Mip16Fsh);
-						}
-						this.Invoke(new Action<string, int, int>(WriteTgi), new object[] { filepath, 1, i });
-					}
-					if (batchFsh.Mip8Fsh != null)
-					{
-						filepath = GetFilePath(fileName, "_s0", outputFolder);
-						using (FileStream fstream = new FileStream(filepath, FileMode.OpenOrCreate, FileAccess.Write))
-						{
-							SaveFsh(fstream, batchFsh.Mip8Fsh);
-						}
-						this.Invoke(new Action<string, int, int>(WriteTgi), new object[] { filepath, 0, i });
-					}
-				}
-			}
-		}
-
-		internal void processbatchbtn_Click(object sender, EventArgs e)
+		private void processbatchbtn_Click(object sender, EventArgs e)
 		{
 			try
 			{
@@ -1115,8 +892,6 @@ namespace PngtoFshBatchtxt
 					Application.DoEvents();
 				}
 				this.batchSaveFilesThread.Join();
-
-				
 			}
 			catch (ArgumentOutOfRangeException ag)
 			{
@@ -1218,7 +993,7 @@ namespace PngtoFshBatchtxt
 			}
 		}
 
-		private void ReadGrouptxt(string path)
+		internal void ReadGrouptxt(string path)
 		{
 			int count = batchFshList.Count;
 
@@ -1255,8 +1030,6 @@ namespace PngtoFshBatchtxt
 				{
 					batchFshList[i].GroupId = "1ABE787D";
 				}
-				string message = string.Format(CultureInfo.CurrentCulture, Resources.FileNotFoundFormat, Path.GetFileName(path), path);
-				throw new FileNotFoundException(message);
 			}
 		}
 
@@ -1446,6 +1219,41 @@ namespace PngtoFshBatchtxt
 				ClearandReset();
 			}
 
+		}
+
+		/// <summary>
+		/// Sets the group and instance ids when using command line processing.
+		/// </summary>
+		/// <exception cref="System.FormatException">The filename is not a valid instance id.</exception>
+		internal void SetGroupAndInstanceIds()
+		{
+			for (int i = 0; i < batchFshList.Count; i++)
+			{
+				BatchFshContainer batch = batchFshList[i];
+				if (string.IsNullOrEmpty(batch.GroupId))
+				{
+					batch.GroupId = "1ABE787D";
+				}
+				
+				if (string.IsNullOrEmpty(batch.InstanceId))
+				{
+					string fileName = Path.GetFileNameWithoutExtension(batch.FileName);
+
+					if (fileName.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+					{
+						if (!ValidateHexString(fileName))
+						{
+							throw new FormatException(string.Format(Resources.InvalidInstanceIDFormat, fileName));
+						}
+
+						batch.InstanceId = fileName.Substring(2, 8);
+					}
+					else
+					{
+						batch.InstanceId = RandomHexString(7);
+					}
+				}
+			}
 		}
 
 		internal void AddFilesToListView()
@@ -1772,7 +1580,6 @@ namespace PngtoFshBatchtxt
 				batchFshList = null;
 			}
 			
-				
 			outputFolder = null;
 			
 			mipsBuilt = false;
