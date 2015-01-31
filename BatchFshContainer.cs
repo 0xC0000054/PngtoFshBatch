@@ -3,30 +3,86 @@ using FshDatIO;
 
 namespace PngtoFshBatchtxt
 {
-    sealed class BatchFshContainer
+    internal sealed class BatchFshContainer : IDisposable
     {
+        private string fileName;
+        private string groupId;
+        private string instanceId;
+        private FshImageFormat format;
         private FSHImageWrapper mainImage;
         private FSHImageWrapper mip64Fsh;
         private FSHImageWrapper mip32Fsh;
         private FSHImageWrapper mip16Fsh;
         private FSHImageWrapper mip8Fsh;
+        private bool disposed;
 
         /// <summary>
         /// Creates a new BatchFshContainer
         /// </summary>
-        public BatchFshContainer()
+        /// <param name="fileName">The name of the file.</param>
+        public BatchFshContainer(string fileName)
         {
-
+            this.fileName = fileName;
+            this.groupId = null;
+            this.instanceId = null;
+            this.format = FshImageFormat.DXT1;
+            this.mainImage = null;
+            this.mip64Fsh = null;
+            this.mip32Fsh = null;
+            this.mip16Fsh = null;
+            this.mip8Fsh = null;
+            this.disposed = false;
         }
-        /// <summary>
-        /// Creates a new BatchFshContainer with the specified main image.
-        /// </summary>
-        /// <param name="mainImage">The image to add, this may be smaller than 128x128</param>
-        public BatchFshContainer(FSHImageWrapper mainImage)
+
+        public string FileName
         {
-            this.MainImage = mainImage;
+            get
+            {
+                return fileName;
+            }
         }
 
+        public string GroupId
+        {
+            get
+            {
+                return groupId;
+            }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value", "value is null.");
+
+                groupId = value;
+            }
+        }
+
+        public string InstanceId
+        {
+            get
+            {
+                return instanceId;
+            }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value", "value is null.");
+
+                instanceId = value;
+            }
+        }
+
+        public FshImageFormat Format
+        {
+            get
+            {
+                return format;
+            }
+            set
+            {
+                format = value;
+            }
+        }
 
         public FSHImageWrapper MainImage
         {
@@ -103,5 +159,51 @@ namespace PngtoFshBatchtxt
             }
         }
 
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (!disposed)
+            {
+                this.disposed = true;
+
+                if (disposing)
+                {
+                    if (mainImage != null)
+                    {
+                        mainImage.Dispose();
+                        mainImage = null;
+                    }
+
+                    if (mip64Fsh != null)
+                    {
+                        mip64Fsh.Dispose();
+                        mip64Fsh = null;
+                    }
+
+                    if (mip32Fsh != null)
+                    {      
+                        mip32Fsh.Dispose();
+                        mip32Fsh = null;
+                    }
+
+                    if (mip16Fsh != null)
+                    {      
+                        mip16Fsh.Dispose();
+                        mip16Fsh = null;
+                    }
+
+                    if (mip8Fsh != null)
+                    {      
+                        mip8Fsh.Dispose();
+                        mip8Fsh = null;
+                    }
+                }
+            }
+        }
     }
 }
