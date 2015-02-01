@@ -119,63 +119,44 @@ namespace PngtoFshBatchtxt
 						alphas[2] = GetBitmapThumbnail(alpha, 32, 32);
 						alphas[3] = GetBitmapThumbnail(alpha, 64, 64);
 					}
+					
+					string dirName = item.DirName;
+					FshImageFormat bmpType;
+					if (item.BmpType == FshImageFormat.DXT3 || item.BmpType == FshImageFormat.ThirtyTwoBit)
+					{
+						bmpType = FshImageFormat.DXT3;
+					}
+					else
+					{
+						bmpType = FshImageFormat.DXT1;
+					}
 
-					bool fshWriteCompression = fshWriteCompCb.Checked;
 					for (int j = 3; j >= 0; j--)
 					{
-						if (bmps[j] != null && alphas[j] != null)
+						switch (j)
 						{
-							FshImageFormat bmpType;
-							if (item.BmpType == FshImageFormat.DXT3 || item.BmpType == FshImageFormat.ThirtyTwoBit)
-							{
-								bmpType = FshImageFormat.DXT3;
-							}
-							else
-							{
-								bmpType = FshImageFormat.DXT1;
-							}
-
-							switch (j)
-							{
-								case 3:
-									batchFsh.Mip64Fsh = new FSHImageWrapper();
-									batchFsh.Mip64Fsh.Bitmaps.Add(new BitmapEntry(bmps[j], alphas[j], bmpType, item.DirName));
-									using (MemoryStream mstream = new MemoryStream())
-									{
-										batchFsh.Mip64Fsh.Save(mstream, fshWriteCompression);
-									}
-									break;
-								case 2:
-									batchFsh.Mip32Fsh = new FSHImageWrapper();
-									batchFsh.Mip32Fsh.Bitmaps.Add(new BitmapEntry(bmps[j], alphas[j], bmpType, item.DirName));
-									using (MemoryStream mstream = new MemoryStream())
-									{
-										batchFsh.Mip32Fsh.Save(mstream, fshWriteCompression);
-									}
-									break;
-								case 1:
-									batchFsh.Mip16Fsh = new FSHImageWrapper();
-									batchFsh.Mip16Fsh.Bitmaps.Add(new BitmapEntry(bmps[j], alphas[j], bmpType, item.DirName));
-									using (MemoryStream mstream = new MemoryStream())
-									{
-										batchFsh.Mip16Fsh.Save(mstream, fshWriteCompression);
-									}
-									break;
-								case 0:
-									batchFsh.Mip8Fsh = new FSHImageWrapper();
-									batchFsh.Mip8Fsh.Bitmaps.Add(new BitmapEntry(bmps[j], alphas[j], bmpType, item.DirName));
-									using (MemoryStream mstream = new MemoryStream())
-									{
-										batchFsh.Mip8Fsh.Save(mstream, fshWriteCompression);
-									}
-									break;
-							}
-
-							bmps[j].Dispose();
-							alphas[j].Dispose();
-							bmps[j] = null;
-							alphas[j] = null;
+							case 3:
+								batchFsh.Mip64Fsh = new FSHImageWrapper();
+								batchFsh.Mip64Fsh.Bitmaps.Add(new BitmapEntry(bmps[j], alphas[j], bmpType, dirName));
+								break;
+							case 2:
+								batchFsh.Mip32Fsh = new FSHImageWrapper();
+								batchFsh.Mip32Fsh.Bitmaps.Add(new BitmapEntry(bmps[j], alphas[j], bmpType, dirName));
+								break;
+							case 1:
+								batchFsh.Mip16Fsh = new FSHImageWrapper();
+								batchFsh.Mip16Fsh.Bitmaps.Add(new BitmapEntry(bmps[j], alphas[j], bmpType, dirName));
+								break;
+							case 0:
+								batchFsh.Mip8Fsh = new FSHImageWrapper();
+								batchFsh.Mip8Fsh.Bitmaps.Add(new BitmapEntry(bmps[j], alphas[j], bmpType, dirName));
+								break;
 						}
+
+						bmps[j].Dispose();
+						alphas[j].Dispose();
+						bmps[j] = null;
+						alphas[j] = null;
 					}
 
 				}
@@ -709,11 +690,6 @@ namespace PngtoFshBatchtxt
 						FSHImageWrapper fsh = new FSHImageWrapper();
 						fsh.Bitmaps.Add(item);
 							
-						using (MemoryStream mstream = new MemoryStream())
-						{
-							SaveFsh(mstream, fsh);
-						}
-
 						batch.MainImage = fsh;
 					}
 
@@ -948,10 +924,6 @@ namespace PngtoFshBatchtxt
 			if (random == null)
 			{
 				random = new Random();
-			}
-
-			if (string.IsNullOrEmpty(lowerInstRange) && string.IsNullOrEmpty(upperInstRange))
-			{
 				ReadRangetxt(rangePath);
 			}
 
