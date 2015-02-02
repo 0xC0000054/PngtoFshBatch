@@ -34,8 +34,8 @@ namespace PngtoFshBatchtxt
 		private bool mipsBuilt;
 		private bool datRebuilt;
 		private Random random;
-		private string lowerInstRange;
-		private string upperInstRange;
+		private Nullable<long> lowerInstRange;
+		private Nullable<long> upperInstRange;
 		private MipmapFormat mipFormat;
 
 		internal BatchFshCollection batchFshList;
@@ -927,17 +927,14 @@ namespace PngtoFshBatchtxt
 				ReadRangetxt(rangePath);
 			}
 
-			if (!string.IsNullOrEmpty(lowerInstRange) && !string.IsNullOrEmpty(upperInstRange))
+			if (lowerInstRange.HasValue && upperInstRange.HasValue)
 			{
-				long lower, upper;
+				long lower = lowerInstRange.Value;
+				long upper = upperInstRange.Value;
 
-				if (long.TryParse(lowerInstRange, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out lower) &&
-					long.TryParse(upperInstRange, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out upper))
-				{
-					double rn = (upper * 1.0 - lower * 1.0) * random.NextDouble() + lower * 1.0;
+				double rn = (upper * 1.0 - lower * 1.0) * random.NextDouble() + lower * 1.0;
 
-					return Convert.ToInt64(rn).ToString("X").Substring(0, 7);
-				}
+				return Convert.ToInt64(rn).ToString("X").Substring(0, 7);
 			}
 
 			byte[] buffer = new byte[length / 2];
@@ -1009,7 +1006,7 @@ namespace PngtoFshBatchtxt
 		{
 			if (File.Exists(path))
 			{
-				string[] instTemp = null;
+				string[] instArray = null;
 				using (StreamReader sr = new StreamReader(path))
 				{
 					string line;
@@ -1018,65 +1015,83 @@ namespace PngtoFshBatchtxt
 					{
 						if (!string.IsNullOrEmpty(line))
 						{
-							instTemp = line.Split(splitchar, StringSplitOptions.RemoveEmptyEntries);
+							instArray = line.Split(splitchar, StringSplitOptions.RemoveEmptyEntries);
 						}
 
 					}
 				}
-				if ((instTemp != null) && instTemp.Length == 2)
-				{
-					string inst0 = instTemp[0];
-					string inst1 = instTemp[1];
 
+				if (instArray != null)
+				{
+					if (instArray.Length != 2)
+					{
+						throw new FormatException(Resources.InvalidInstanceRange);
+					}
+
+					string inst0 = instArray[0].Trim();
+					string inst1 = instArray[1].Trim();
+
+					if (!ValidateHexString(inst0))
+					{
+						throw new FormatException(string.Format(Resources.InvalidInstanceIdFormat, inst0));
+					}
+					if (!ValidateHexString(inst1))
+					{
+						throw new FormatException(string.Format(Resources.InvalidInstanceIdFormat, inst1));
+					}
+
+					string lowerRange;
+					string upperRange;
 					if (inst0.Length == 10 && inst0.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
 					{
-						lowerInstRange = inst0.Substring(2, 8);
+						lowerRange = inst0.Substring(2, 8);
 					}
-					else if (inst0.Length == 8)
+					else
 					{
-						lowerInstRange = inst0;
+						lowerRange = inst0;
 					}
 
 					if (inst1.Length == 10 && inst1.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
 					{
-						upperInstRange = inst1.Substring(2, 8);
+						upperRange = inst1.Substring(2, 8);
 					}
-					else if (inst1.Length == 8)
+					else
 					{
-						upperInstRange = inst1;
+						upperRange = inst1;
+					}
+
+					long lower, upper;
+					
+					if (long.TryParse(lowerRange, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out lower) &&
+						long.TryParse(upperRange, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out upper))
+					{
+						if (lower >= upper)
+						{
+							throw new FormatException(Resources.InvalidInstanceRange);
+						}
+
+						lowerInstRange = lower;
+						upperInstRange = upper;
 					}
 				}
 
 			}
 			else
 			{
-				lowerInstRange = string.Empty;
-				upperInstRange = string.Empty;
+				lowerInstRange = null;
+				upperInstRange = null;
 			}
 		}
 
 		internal static bool ValidateHexString(string str)
 		{
-			string tmp = null;
 			if (!string.IsNullOrEmpty(str))
 			{
-
-				if (str.Length == 10 && str.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+				if (str.Length == 8 || str.Length == 10)
 				{
-					tmp = str.Substring(2, 8);
-				}
-
-				if (str.Length == 8 || tmp != null)
-				{
-					Regex r = new Regex(@"^[A-Fa-f0-9]*$"); ;
-					if (tmp != null)
-					{
-						return r.IsMatch(tmp);
-					}
-					else
-					{
-						return r.IsMatch(str);
-					}
+					Regex r = new Regex(@"^(0x|0X)?[a-fA-F0-9]+$");
+					
+					return r.IsMatch(str);
 				}
 			}
 			return false;
@@ -1215,7 +1230,7 @@ namespace PngtoFshBatchtxt
 					{
 						if (!ValidateHexString(fileName))
 						{
-							throw new FormatException(string.Format(Resources.InvalidInstanceIDFormat, fileName));
+							throw new FormatException(string.Format(Resources.InvalidInstanceFileNameFormat, fileName));
 						}
 
 						batch.InstanceId = fileName.Substring(2, 8);
@@ -1263,7 +1278,7 @@ namespace PngtoFshBatchtxt
 						{
 							if (!ValidateHexString(fileName))
 							{
-								throw new FormatException(string.Format(Resources.InvalidInstanceIDFormat, fileName));
+								throw new FormatException(string.Format(Resources.InvalidInstanceFileNameFormat, fileName));
 							}
 
 							batch.InstanceId = fileName.Substring(2, 8);
