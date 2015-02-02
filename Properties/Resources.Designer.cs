@@ -217,7 +217,7 @@ namespace PngtoFshBatchtxt.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to The group id after /group: contains invalid characters.
-        /// It must only contain numbers 0-9 and letters A-F..
+        ///It must only contain numbers 0-9 and letters A-F..
         /// </summary>
         internal static string InvalidGroupIDArgument {
             get {
@@ -228,9 +228,29 @@ namespace PngtoFshBatchtxt.Properties {
         /// <summary>
         ///   Looks up a localized string similar to {0} is not a valid instance..
         /// </summary>
-        internal static string InvalidInstanceIDFormat {
+        internal static string InvalidInstanceFileNameFormat {
             get {
-                return ResourceManager.GetString("InvalidInstanceIDFormat", resourceCulture);
+                return ResourceManager.GetString("InvalidInstanceFileNameFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The instance id &apos;{0}&apos; in instRange.txt contains invalid characters.
+        ///It must only contain numbers 0-9 and letters A-F..
+        /// </summary>
+        internal static string InvalidInstanceIdFormat {
+            get {
+                return ResourceManager.GetString("InvalidInstanceIdFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The instance range in instRange.txt is not valid. 
+        ///It must consist of the lower and upper texture range separated by a comma..
+        /// </summary>
+        internal static string InvalidInstanceRange {
+            get {
+                return ResourceManager.GetString("InvalidInstanceRange", resourceCulture);
             }
         }
         

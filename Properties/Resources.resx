@@ -132,7 +132,6 @@
   <data name="batchListView_ToolTip" xml:space="preserve">
     <value>The list of images to convert. 
 Dragging files or folders onto the list will create a new list</value>
-    <comment>The {0} is a placeholder for a newline.</comment>
   </data>
   <data name="BuildingDatStatusTextFormat" xml:space="preserve">
     <value>Building Dat ({0} of {1})</value>
@@ -211,15 +210,23 @@ It must only contain numbers 0-9 and letters A-F.</value>
   </data>
   <data name="InvalidGroupIDArgument" xml:space="preserve">
     <value>The group id after /group: contains invalid characters.
- It must only contain numbers 0-9 and letters A-F.</value>
+It must only contain numbers 0-9 and letters A-F.</value>
   </data>
   <data name="mipFormatCbo_Tooltip" xml:space="preserve">
     <value>Change the format of the mipmaps.</value>
   </data>
-  <data name="InvalidInstanceIDFormat" xml:space="preserve">
+  <data name="InvalidInstanceFileNameFormat" xml:space="preserve">
     <value>{0} is not a valid instance.</value>
   </data>
   <data name="ArgumentPathEmpty" xml:space="preserve">
     <value>{0} is an empty string.</value>
+  </data>
+  <data name="InvalidInstanceRange" xml:space="preserve">
+    <value>The instance range in instRange.txt is not valid. 
+It must consist of the lower and upper texture range separated by a comma.</value>
+  </data>
+  <data name="InvalidInstanceIdFormat" xml:space="preserve">
+    <value>The instance id '{0}' in instRange.txt contains invalid characters.
+It must only contain numbers 0-9 and letters A-F.</value>
   </data>
 </root>
