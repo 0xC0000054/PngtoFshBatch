@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Globalization;
@@ -8,7 +9,6 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Windows.Forms;
 using FshDatIO;
 using Microsoft.WindowsAPICodePack.Taskbar;
@@ -26,10 +26,6 @@ namespace PngtoFshBatchtxt
 		private char end32;
 		private char end16;
 		private char end8;
-		private Thread batchProcessThread;
-		private Thread mipProcessThread;
-		private Thread batchSaveFilesThread;
-		private Thread datRebuildThread;		
 		private bool batchProcessed;
 		private bool mipsBuilt;
 		private bool datRebuilt;
@@ -76,6 +72,11 @@ namespace PngtoFshBatchtxt
 			}
 		}
 
+		private void ShowErrorMessage(string message)
+		{
+			MessageBox.Show(this, message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, 0);
+		}
+
 		internal void ProcessMips()
 		{
 			int count = batchFshList.Count;
@@ -103,7 +104,7 @@ namespace PngtoFshBatchtxt
 			{
 				if (displayProgress)
 				{
-					Invoke(new Action<int, string>(SetProgressBarValue), new object[] { i, Resources.ProcessingMipsStatusTextFormat });
+					SetProgressBarValue(i, Resources.ProcessingMipsStatusTextFormat);
 				}
 				BatchFshContainer batchFsh = batchFshList[i];
 				BitmapEntry item = batchFsh.MainImage.Bitmaps[0];
@@ -171,6 +172,7 @@ namespace PngtoFshBatchtxt
 
 			mipsBuilt = true;
 		}
+
 		/// <summary>
 		/// Creates the mipmap thumbnail
 		/// </summary>
@@ -367,7 +369,7 @@ namespace PngtoFshBatchtxt
 				{
 					if (displayProgress)
 					{
-						Invoke(new Action<int, string>(SetProgressBarValue), new object[] { i, Resources.BuildingDatStatusTextFormat });
+						SetProgressBarValue(i, Resources.BuildingDatStatusTextFormat);
 					}
 					BatchFshContainer batchFsh = batchFshList[i];
 					uint group = uint.Parse(batchFsh.GroupId, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
@@ -411,7 +413,7 @@ namespace PngtoFshBatchtxt
 				{
 					if (displayProgress)
 					{
-						Invoke(new Action<int, string>(SetProgressBarValue), new object[] { i, Resources.BuildingDatStatusTextFormat });
+						SetProgressBarValue(i, Resources.BuildingDatStatusTextFormat);
 					}
 					BatchFshContainer batchFsh = batchFshList[i];
 					uint group = uint.Parse(batchFsh.GroupId, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
@@ -434,13 +436,6 @@ namespace PngtoFshBatchtxt
 				}
 			}
 
-			if (displayProgress)
-			{
-				BeginInvoke(new MethodInvoker(delegate()
-				{
-					this.toolStripProgressStatus.Text = Resources.SavingDatStatusText;
-				}));
-			}
 			datRebuilt = true;
 		}
 
@@ -472,7 +467,6 @@ namespace PngtoFshBatchtxt
 			{
 				try
 				{
-
 					if (saveDatDialog1.ShowDialog(this) == DialogResult.OK)
 					{
 						if (File.Exists(saveDatDialog1.FileName))
@@ -493,69 +487,66 @@ namespace PngtoFshBatchtxt
 						}
 						SetControlsEnabled(false);
 
-						try
+						using (BackgroundWorker worker = new BackgroundWorker())
 						{
-							if (!batchProcessed)
+							worker.DoWork += delegate(object s, DoWorkEventArgs args)
 							{
-								SetProgressBarMaximum();
-								this.Cursor = Cursors.WaitCursor;
-								Application.DoEvents();
-								this.batchProcessThread = new Thread(new ThreadStart(ProcessBatch)) { Priority = ThreadPriority.AboveNormal, IsBackground = true };
-								this.batchProcessThread.Start();
-								while (batchProcessThread.IsAlive)
+								if (!this.batchProcessed)
 								{
-									Application.DoEvents();
+									ProcessBatch();
 								}
-								this.batchProcessThread.Join();
-							}
 
-							if (this.mipFormat == MipmapFormat.Normal)
-							{
-								Application.DoEvents();
-								this.mipProcessThread = new Thread(new ThreadStart(ProcessMips)) { Priority = ThreadPriority.AboveNormal, IsBackground = true };
-								this.mipProcessThread.Start();
-								while (mipProcessThread.IsAlive)
+								if (this.mipFormat == MipmapFormat.Normal)
 								{
-									Application.DoEvents();
+									ProcessMips();
 								}
-								this.mipProcessThread.Join();
-							}
 
-
-							if (!datRebuilt)
-							{
-								Application.DoEvents();
-								this.datRebuildThread = new Thread(() => RebuildDat(dat)) { Priority = ThreadPriority.AboveNormal, IsBackground = true };
-								this.datRebuildThread.Start();
-								while (datRebuildThread.IsAlive)
+								if (!this.datRebuilt)
 								{
-									Application.DoEvents();
+									RebuildDat(this.dat);
 								}
-								this.datRebuildThread.Join();
-							}
+							};
 
-							if (dat.Indexes.Count > 0)
+							worker.RunWorkerCompleted += delegate(object s, RunWorkerCompletedEventArgs args)
 							{
-								dat.Save(saveDatDialog1.FileName);
-							}
+								if (args.Error != null)
+								{
+									ShowErrorMessage(args.Error.Message);
+								}
+								else
+								{
+									this.toolStripProgressStatus.Text = Resources.SavingDatStatusText;
+									this.statusStrip1.Refresh();
+
+									if (dat.Indexes.Count > 0)
+									{
+										dat.Save(saveDatDialog1.FileName);
+									}
+								}
+
+								dat.Close();
+								dat = null;
+								ClearandReset();
+								SetControlsEnabled(true);
+								this.Cursor = Cursors.Default;
+							};
+
+							worker.RunWorkerAsync();
 						}
-						catch (Exception)
-						{
-							throw;
-						}
-						finally
-						{
-							dat.Close();
-							dat = null;
-							ClearandReset();
-							SetControlsEnabled(true);
-							this.Cursor = Cursors.Default;
-						}
+
 					}
 				}
-				catch (Exception ex)
+				catch (DirectoryNotFoundException ex)
 				{
-					MessageBox.Show(this, ex.Message + Environment.NewLine + ex.StackTrace, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+					ShowErrorMessage(ex.Message);
+				}
+				catch (IOException ex)
+				{
+					ShowErrorMessage(ex.Message);
+				}
+				catch (UnauthorizedAccessException ex)
+				{
+					ShowErrorMessage(ex.Message);
 				}
 			}
 		}
@@ -620,97 +611,86 @@ namespace PngtoFshBatchtxt
 
 		internal void ProcessBatch()
 		{
-			try
+
+			int count = batchFshList.Count;
+			for (int i = 0; i < count; i++)
 			{
-				int count = batchFshList.Count;
-				for (int i = 0; i < count; i++)
+				if (displayProgress)
 				{
-					if (displayProgress)
+					SetProgressBarValue(i, Resources.ProcessingStatusTextFormat);
+				}
+				BatchFshContainer batch = batchFshList[i];
+				string fileName = batch.FileName;
+				using (Bitmap temp = new Bitmap(fileName))
+				{
+					BitmapEntry item = new BitmapEntry();
+
+					item.Bitmap = temp.Clone(new Rectangle(0, 0, temp.Width, temp.Height), PixelFormat.Format24bppRgb);
+					string alname = Path.Combine(Path.GetDirectoryName(fileName), Path.GetFileNameWithoutExtension(fileName) + AlphaMapSuffix + Path.GetExtension(fileName));
+					if (File.Exists(alname))
 					{
-						Invoke(new Action<int, string>(SetProgressBarValue), new object[] { i, Resources.ProcessingStatusTextFormat });
+						using (Bitmap alpha = new Bitmap(alname))
+						{
+							item.Alpha = alpha.Clone(new Rectangle(0, 0, alpha.Width, alpha.Height), PixelFormat.Format24bppRgb);
+						}
+
 					}
-					BatchFshContainer batch = batchFshList[i];
-					string fileName = batch.FileName;
-					using (Bitmap temp = new Bitmap(fileName))
+					else if (Path.GetExtension(fileName).Equals(".png", StringComparison.OrdinalIgnoreCase) && temp.PixelFormat == PixelFormat.Format32bppArgb)
 					{
-						BitmapEntry item = new BitmapEntry();
+						item.Alpha = GetAlphaFromTransparency(temp);
+					}
+					else
+					{
+						Bitmap alpha = new Bitmap(temp.Width, temp.Height, PixelFormat.Format24bppRgb);
+						try
+						{
+							BitmapData data = alpha.LockBits(new Rectangle(0, 0, alpha.Width, alpha.Height), ImageLockMode.WriteOnly, PixelFormat.Format24bppRgb);
 
-						item.Bitmap = temp.Clone(new Rectangle(0, 0, temp.Width, temp.Height), PixelFormat.Format24bppRgb);
-						string alname = Path.Combine(Path.GetDirectoryName(fileName), Path.GetFileNameWithoutExtension(fileName) + AlphaMapSuffix + Path.GetExtension(fileName));
-						if (File.Exists(alname))
-						{
-							using (Bitmap alpha = new Bitmap(alname))
-							{
-								item.Alpha = alpha.Clone(new Rectangle(0, 0, alpha.Width, alpha.Height), PixelFormat.Format24bppRgb);
-							}
-
-						}
-						else if (Path.GetExtension(fileName).Equals(".png", StringComparison.OrdinalIgnoreCase) && temp.PixelFormat == PixelFormat.Format32bppArgb)
-						{
-							item.Alpha = GetAlphaFromTransparency(temp);
-						}
-						else
-						{
-							Bitmap alpha = new Bitmap(temp.Width, temp.Height, PixelFormat.Format24bppRgb);
 							try
 							{
-								BitmapData data = alpha.LockBits(new Rectangle(0, 0, alpha.Width, alpha.Height), ImageLockMode.WriteOnly, PixelFormat.Format24bppRgb);
-
-								try
+								unsafe
 								{
-									unsafe
+									byte* scan0 = (byte*)data.Scan0.ToPointer();
+									int stride = data.Stride;
+									for (int y = 0; y < data.Height; y++)
 									{
-										byte* scan0 = (byte*)data.Scan0.ToPointer();
-										int stride = data.Stride;
-										for (int y = 0; y < data.Height; y++)
+										byte* p = scan0 + (y * stride);
+										for (int x = 0; x < data.Width; x++)
 										{
-											byte* p = scan0 + (y * stride);
-											for (int x = 0; x < data.Width; x++)
-											{
-												p[0] = p[1] = p[2] = 255;
-												p += 3;
-											}
+											p[0] = p[1] = p[2] = 255;
+											p += 3;
 										}
 									}
-
-								}
-								finally
-								{
-									alpha.UnlockBits(data);
 								}
 
-								item.Alpha = alpha.Clone(new Rectangle(0, 0, alpha.Width, alpha.Height), alpha.PixelFormat);
 							}
 							finally
 							{
-								if (alpha != null)
-								{
-									alpha.Dispose();
-									alpha = null;
-								}
+								alpha.UnlockBits(data);
+							}
+
+							item.Alpha = alpha.Clone(new Rectangle(0, 0, alpha.Width, alpha.Height), alpha.PixelFormat);
+						}
+						finally
+						{
+							if (alpha != null)
+							{
+								alpha.Dispose();
+								alpha = null;
 							}
 						}
-						item.BmpType = batch.Format;
-						item.DirName = "FiSH";
-						
-						FSHImageWrapper fsh = new FSHImageWrapper();
-						fsh.Bitmaps.Add(item);
-							
-						batch.MainImage = fsh;
 					}
-
+					item.BmpType = batch.Format;
+					item.DirName = "FiSH";
+						
+					FSHImageWrapper fsh = new FSHImageWrapper();
+					fsh.Bitmaps.Add(item);
+							
+					batch.MainImage = fsh;
 				}
-				batchProcessed = true;
+
 			}
-			catch (ArgumentOutOfRangeException ag)
-			{
-				MessageBox.Show(this, ag.Message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
-			catch (Exception)
-			{
-				batchProcessed = false;
-				throw;
-			}
+			batchProcessed = true;
 		}
 
 		private static string GetFilePath(string filePath, string addToPath, string outDir)
@@ -760,12 +740,29 @@ namespace PngtoFshBatchtxt
 
 		private void SetProgressBarValue(int value, string statusTextFormat)
 		{
-			this.toolStripProgressBar1.PerformStep();
-			this.toolStripProgressStatus.Text = string.Format(CultureInfo.CurrentCulture, statusTextFormat, (value + 1), this.batchListView.Items.Count);
-
-			if (this.manager != null)
+			if (InvokeRequired)
 			{
-				this.manager.SetProgressValue(this.toolStripProgressBar1.Value, this.toolStripProgressBar1.Maximum, this.Handle);
+				Invoke(new Action(delegate()
+					{
+						this.toolStripProgressBar1.PerformStep();
+						this.toolStripProgressStatus.Text = string.Format(CultureInfo.CurrentCulture, statusTextFormat, (value + 1), this.batchListView.Items.Count);
+
+						if (this.manager != null)
+						{
+							this.manager.SetProgressValue(this.toolStripProgressBar1.Value, this.toolStripProgressBar1.Maximum, this.Handle);
+						}
+					}));
+				
+			}
+			else
+			{
+				this.toolStripProgressBar1.PerformStep();
+				this.toolStripProgressStatus.Text = string.Format(CultureInfo.CurrentCulture, statusTextFormat, (value + 1), this.batchListView.Items.Count);
+
+				if (this.manager != null)
+				{
+					this.manager.SetProgressValue(this.toolStripProgressBar1.Value, this.toolStripProgressBar1.Maximum, this.Handle);
+				}
 			}
 		}
 
@@ -775,7 +772,7 @@ namespace PngtoFshBatchtxt
 			{
 				if (displayProgress)
 				{
-					Invoke(new Action<int, string>(SetProgressBarValue), new object[] { i, Resources.SavingFshProgressTextFormat });
+					SetProgressBarValue(i, Resources.SavingFshProgressTextFormat);
 				}
 				BatchFshContainer batchFsh = batchFshList[i];
 				string fileName = batchFsh.FileName;
@@ -844,58 +841,40 @@ namespace PngtoFshBatchtxt
 				return;
 			}
 
-			try
-			{
-				SetProgressBarMaximum();
-				this.Cursor = Cursors.WaitCursor;
-				SetControlsEnabled(false);
+			SetProgressBarMaximum();
+			this.Cursor = Cursors.WaitCursor;
+			SetControlsEnabled(false);
 
-				if (!batchProcessed)
+			using (BackgroundWorker worker = new BackgroundWorker())
+			{
+				worker.DoWork += delegate(object s, DoWorkEventArgs args)
 				{
-					Application.DoEvents();
-					this.batchProcessThread = new Thread(new ThreadStart(ProcessBatch)) { Priority = ThreadPriority.AboveNormal, IsBackground = true };
-					this.batchProcessThread.Start();
-					while (batchProcessThread.IsAlive)
+					if (!this.batchProcessed)
 					{
-						Application.DoEvents();
+						ProcessBatch();
 					}
-					this.batchProcessThread.Join();
-				}
 
-				if (mipFormat == MipmapFormat.Normal)
-				{
-					this.mipProcessThread = new Thread(new ThreadStart(ProcessMips)) { Priority = ThreadPriority.AboveNormal, IsBackground = true };
-					this.mipProcessThread.Start();
-					while (mipProcessThread.IsAlive)
+					if (this.mipFormat == MipmapFormat.Normal)
 					{
-						Application.DoEvents();
+						ProcessMips();
 					}
-					this.mipProcessThread.Join();
-				}
-				this.batchSaveFilesThread = new Thread(new ThreadStart(ProcessBatchSaveFiles)) { Priority = ThreadPriority.AboveNormal, IsBackground = true };
-				this.batchSaveFilesThread.Start();
-				while (batchSaveFilesThread.IsAlive)
+
+					ProcessBatchSaveFiles();
+				};
+
+				worker.RunWorkerCompleted += delegate(object s, RunWorkerCompletedEventArgs args)
 				{
-					Application.DoEvents();
-				}
-				this.batchSaveFilesThread.Join();
-			}
-			catch (ArgumentOutOfRangeException ag)
-			{
-				MessageBox.Show(this, ag.Message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show(this, ex.Message + Environment.NewLine + ex.StackTrace, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
-			finally
-			{ 
-				if (this.Cursor != Cursors.Default)
-				{
+					if (args.Error != null)
+					{
+						ShowErrorMessage(args.Error.Message);
+					}
+					
+					ClearandReset();
+					SetControlsEnabled(true);
 					this.Cursor = Cursors.Default;
-				}
-				SetControlsEnabled(true);
-				ClearandReset();
+				};
+
+				worker.RunWorkerAsync();
 			}
 		}
 
@@ -913,7 +892,7 @@ namespace PngtoFshBatchtxt
 			{
 				if (!NativeMethods.IsProcessorFeaturePresent(NativeMethods.SSE))
 				{
-					MessageBox.Show(Resources.FshWriteSSERequiredError, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+					MessageBox.Show(this, Resources.FshWriteSSERequiredError, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1, 0);
 					fshWriteCompCb.Enabled = fshWriteCompCb.Checked = false;
 				}
 			}
@@ -1005,7 +984,7 @@ namespace PngtoFshBatchtxt
 							else
 							{
 								g = "1ABE787D";
-								MessageBox.Show(this, Resources.InvalidGroupID, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+								ShowErrorMessage(Resources.InvalidGroupID);
 							}
 							for (int i = 0; i < count; i++)
 							{
@@ -1353,19 +1332,19 @@ namespace PngtoFshBatchtxt
 			}
 			catch (FileNotFoundException fx)
 			{
-				MessageBox.Show(fx.Message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				ShowErrorMessage(fx.Message);
 			}
 			catch (FormatException ex)
 			{
-				MessageBox.Show(ex.Message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				ShowErrorMessage(ex.Message);
 			}
 			catch (IndexOutOfRangeException ex)
 			{
-				MessageBox.Show(ex.Message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				ShowErrorMessage(ex.Message);
 			}
 			catch (IOException ex)
 			{
-				MessageBox.Show(ex.Message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				ShowErrorMessage(ex.Message);
 			}
 
 		}
@@ -1660,10 +1639,7 @@ namespace PngtoFshBatchtxt
 		{
 			if (!File.Exists(path))
 			{
-				string fileName = Path.GetFileName(path);
-				string message = string.Format(CultureInfo.CurrentCulture, Resources.FileNotFoundFormat, fileName, path);
-
-				MessageBox.Show(this, message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				ShowErrorMessage(string.Format(CultureInfo.CurrentCulture, Resources.FileNotFoundFormat,  Path.GetFileName(path), path));
 			}
 		}
 
