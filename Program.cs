@@ -350,7 +350,6 @@ namespace PngtoFshBatchtxt
                         {
                             form1.batchFshList.Add(new BatchFshContainer(files[i]));
                         }
-
                     }
 
                     if (haveSwitches)
@@ -358,13 +357,8 @@ namespace PngtoFshBatchtxt
                         ProcessCommandLineSwitches(args, form1, fileCount, cmdLineOnly);
                     }
 
-
                     if (!cmdLineOnly)
                     {
-                        if (fileCount > 0)
-                        {
-                            form1.AddFilesToListView();
-                        }
                         Application.Run(form1);
                     }
                 }
