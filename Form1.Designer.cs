@@ -118,14 +118,14 @@ namespace PngtoFshBatchtxt
             this.instanceHeader.Text = "Instance";
             this.instanceHeader.Width = 96;
             // 
-            // compDatcb
+            // compDatCb
             // 
             this.compDatCb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.compDatCb.AutoSize = true;
             this.compDatCb.Checked = true;
             this.compDatCb.CheckState = System.Windows.Forms.CheckState.Checked;
             this.compDatCb.Location = new System.Drawing.Point(12, 173);
-            this.compDatCb.Name = "compDatcb";
+            this.compDatCb.Name = "compDatCb";
             this.compDatCb.Size = new System.Drawing.Size(90, 17);
             this.compDatCb.TabIndex = 3;
             this.compDatCb.Text = "Compress dat";
@@ -148,22 +148,24 @@ namespace PngtoFshBatchtxt
             // newDatbtn
             // 
             this.newDatbtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.newDatbtn.Enabled = false;
             this.newDatbtn.Location = new System.Drawing.Point(6, 15);
             this.newDatbtn.Name = "newDatbtn";
             this.newDatbtn.Size = new System.Drawing.Size(75, 23);
             this.newDatbtn.TabIndex = 12;
-            this.newDatbtn.Text = "New dat";
+            this.newDatbtn.Text = "New";
             this.newDatbtn.UseVisualStyleBackColor = true;
             this.newDatbtn.Click += new System.EventHandler(this.newDatbtn_Click);
             // 
             // saveDatBtn
             // 
             this.saveDatBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.saveDatBtn.Enabled = false;
             this.saveDatBtn.Location = new System.Drawing.Point(87, 15);
             this.saveDatBtn.Name = "saveDatBtn";
             this.saveDatBtn.Size = new System.Drawing.Size(75, 23);
             this.saveDatBtn.TabIndex = 15;
-            this.saveDatBtn.Text = "Save dat";
+            this.saveDatBtn.Text = "Save...";
             this.toolTip1.SetToolTip(this.saveDatBtn, global::PngtoFshBatchtxt.Properties.Resources.saveDatBtn_ToolTip);
             this.saveDatBtn.UseVisualStyleBackColor = true;
             this.saveDatBtn.Click += new System.EventHandler(this.saveDatbtn_Click);
@@ -171,6 +173,7 @@ namespace PngtoFshBatchtxt
             // processBatchBtn
             // 
             this.processBatchBtn.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.processBatchBtn.Enabled = false;
             this.processBatchBtn.Location = new System.Drawing.Point(399, 281);
             this.processBatchBtn.Name = "processBatchBtn";
             this.processBatchBtn.Size = new System.Drawing.Size(75, 23);
@@ -193,7 +196,7 @@ namespace PngtoFshBatchtxt
             this.outFolderBtn.Name = "outFolderBtn";
             this.outFolderBtn.Size = new System.Drawing.Size(93, 23);
             this.outFolderBtn.TabIndex = 11;
-            this.outFolderBtn.Text = "Output Folder";
+            this.outFolderBtn.Text = "Output Folder...";
             this.toolTip1.SetToolTip(this.outFolderBtn, global::PngtoFshBatchtxt.Properties.Resources.outFolderBtn_ToolTip);
             this.outFolderBtn.UseVisualStyleBackColor = true;
             this.outFolderBtn.Click += new System.EventHandler(this.outfolderbtn_Click);
@@ -262,6 +265,7 @@ namespace PngtoFshBatchtxt
             // remBtn
             // 
             this.remBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.remBtn.Enabled = false;
             this.remBtn.Location = new System.Drawing.Point(399, 226);
             this.remBtn.Name = "remBtn";
             this.remBtn.Size = new System.Drawing.Size(75, 23);
@@ -353,6 +357,7 @@ namespace PngtoFshBatchtxt
             // clearListBtn
             // 
             this.clearListBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.clearListBtn.Enabled = false;
             this.clearListBtn.Location = new System.Drawing.Point(399, 252);
             this.clearListBtn.Name = "clearListBtn";
             this.clearListBtn.Size = new System.Drawing.Size(75, 23);

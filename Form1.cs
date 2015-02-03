@@ -59,6 +59,7 @@ namespace PngtoFshBatchtxt
 			InitializeComponent();
 
 			this.displayProgress = true;
+			this.batchFshList = null;
 			if (Type.GetType("Mono.Runtime") == null) // skip the Windows 7 code if we are on mono 
 			{
 				if (TaskbarManager.IsPlatformSupported)
@@ -527,7 +528,6 @@ namespace PngtoFshBatchtxt
 								this.datRebuildThread.Join();
 							}
 
-							this.Cursor = Cursors.Default;
 							if (dat.Indexes.Count > 0)
 							{
 								dat.Save(saveDatDialog1.FileName);
@@ -538,12 +538,12 @@ namespace PngtoFshBatchtxt
 							throw;
 						}
 						finally
-						{                                    
+						{
 							dat.Close();
 							dat = null;
-							SetControlsEnabled(true);
-
 							ClearandReset();
+							SetControlsEnabled(true);
+							this.Cursor = Cursors.Default;
 						}
 					}
 				}
@@ -833,6 +833,11 @@ namespace PngtoFshBatchtxt
 
 		private void processbatchbtn_Click(object sender, EventArgs e)
 		{
+			if (this.batchListView.Items.Count == 0)
+			{
+				return;
+			}
+
 			try
 			{
 				SetProgressBarMaximum();
@@ -1327,6 +1332,7 @@ namespace PngtoFshBatchtxt
 					item.SubItems.Add(batch.InstanceId);
 					batchListView.Items.Insert(i, item);					
 				}
+				SetProcessingControlsEnabled(true);
 			}
 			catch (FileNotFoundException fx)
 			{
@@ -1559,22 +1565,22 @@ namespace PngtoFshBatchtxt
 
 		private void ClearandReset()
 		{
-			batchListView.Items.Clear();
-			
+			this.batchListView.Items.Clear();
+			SetProcessingControlsEnabled(false);
+
 			if (batchFshList != null)
 			{
-				batchFshList.Dispose();
-				batchFshList = null;
+				this.batchFshList.Dispose();
+				this.batchFshList = null;
 			}
 			
-			outputFolder = null;
-			
-			mipsBuilt = false;
-			batchProcessed = false;
-			datRebuilt = false;
-			tgiGroupTxt.Text = null;
-			tgiInstanceTxt.Text = null;
-			fshTypeBox.SelectedIndex = 2;
+			this.outputFolder = null;
+			this.mipsBuilt = false;
+			this.batchProcessed = false;
+			this.datRebuilt = false;
+			this.tgiGroupTxt.Text = null;
+			this.tgiInstanceTxt.Text = null;
+			this.fshTypeBox.SelectedIndex = 2;
 
 			this.toolStripProgressBar1.Value = 0;
 
@@ -1688,6 +1694,15 @@ namespace PngtoFshBatchtxt
 			this.remBtn.Enabled = enabled;
 			this.clearListBtn.Enabled = enabled;
 			this.outFolderBtn.Enabled = enabled;
+			this.processBatchBtn.Enabled = enabled;
+		}
+
+		private void SetProcessingControlsEnabled(bool enabled)
+		{
+			this.newDatbtn.Enabled = enabled;
+			this.saveDatBtn.Enabled = enabled;
+			this.remBtn.Enabled = enabled;
+			this.clearListBtn.Enabled = enabled;
 			this.processBatchBtn.Enabled = enabled;
 		}
 	}
