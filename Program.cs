@@ -24,6 +24,11 @@ namespace PngtoFshBatchtxt
             internal const string ProcessFiles = "/proc";
         }
 
+        private static DialogResult ShowErrorMessage(string message)
+        {
+            return MessageBox.Show(message, ProgramName, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, 0);
+        }
+
         private static bool ValidateArgumentPaths(string[] args)
         {
             for (int i = 0; i < args.Length; i++)
@@ -34,7 +39,7 @@ namespace PngtoFshBatchtxt
                     bool processDat = arg.StartsWith(CommandLineSwitches.ProcessDat, StringComparison.OrdinalIgnoreCase);
                     int strlen = processDat ? 5 : 8;
 
-                    string path = arg.Substring(strlen, arg.Length - strlen);
+                    string path = arg.Substring(strlen, arg.Length - strlen).Trim();
 
                     if (!string.IsNullOrEmpty(path))
                     {
@@ -46,7 +51,7 @@ namespace PngtoFshBatchtxt
                         if (!Directory.Exists(path))
                         {
                             string message = string.Format(CultureInfo.CurrentCulture, Resources.ArgumentDirectoryNotFound, path);
-                            if (MessageBox.Show(message, ProgramName, MessageBoxButtons.OK, MessageBoxIcon.Error) == DialogResult.OK)
+                            if (ShowErrorMessage(message) == DialogResult.OK)
                             {
                                 return false;
                             }
@@ -56,7 +61,7 @@ namespace PngtoFshBatchtxt
                     {
                         string name = processDat ? CommandLineSwitches.ProcessDat : CommandLineSwitches.OutputDirectory;
                         string message = string.Format(CultureInfo.CurrentCulture, Resources.ArgumentPathEmpty, name);
-                        if (MessageBox.Show(message, ProgramName, MessageBoxButtons.OK, MessageBoxIcon.Error) == DialogResult.OK)
+                        if (ShowErrorMessage(message) == DialogResult.OK)
                         {
                             return false;
                         }
@@ -94,7 +99,7 @@ namespace PngtoFshBatchtxt
 
                     if (arg.StartsWith(CommandLineSwitches.OutputDirectory, StringComparison.OrdinalIgnoreCase))
                     {
-                        string dir = arg.Substring(8, arg.Length - 8);
+                        string dir = arg.Substring(8, arg.Length - 8).Trim();
 
                         if (!string.IsNullOrEmpty(dir))
                         {
@@ -106,7 +111,7 @@ namespace PngtoFshBatchtxt
                     }
                     else if (arg.StartsWith(CommandLineSwitches.GroupID, StringComparison.OrdinalIgnoreCase))
                     {
-                        string group = arg.Substring(7, arg.Length - 7);
+                        string group = arg.Substring(7, arg.Length - 7).Trim();
                         string groupid = null;
 
                         if (!string.IsNullOrEmpty(group))
@@ -148,7 +153,7 @@ namespace PngtoFshBatchtxt
                                     }
                                 }
 
-                                MessageBox.Show(Resources.InvalidGroupIDArgument, form1.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                ShowErrorMessage(Resources.InvalidGroupIDArgument);
                             }
                         }
                     }
@@ -222,7 +227,7 @@ namespace PngtoFshBatchtxt
             }
             catch (FormatException ex)
             {
-                MessageBox.Show(ex.Message, ProgramName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ShowErrorMessage(ex.Message);
             }
         }
 
@@ -255,7 +260,7 @@ namespace PngtoFshBatchtxt
 
                         foreach (FileInfo item in files)
                         {
-                            if (!item.Name.Contains("_a"))
+                            if (!item.Name.Contains(Form1.AlphaMapSuffix, StringComparison.OrdinalIgnoreCase))
                             {
                                 filePaths.Add(item.FullName);
                             }
@@ -267,7 +272,7 @@ namespace PngtoFshBatchtxt
                         string ext = Path.GetExtension(fileName);
                         if (ext.Equals(".png", StringComparison.OrdinalIgnoreCase) || ext.Equals(".bmp", StringComparison.OrdinalIgnoreCase))
                         {
-                            if (!Path.GetFileName(fileName).Contains("_a"))
+                            if (!Path.GetFileName(fileName).Contains(Form1.AlphaMapSuffix, StringComparison.OrdinalIgnoreCase))
                             {
                                 filePaths.Add(fileName);
                             }
@@ -277,9 +282,17 @@ namespace PngtoFshBatchtxt
 
                 return filePaths.ToArray();
             }
-            catch (Exception ex)
+            catch (ArgumentException ex)
             {
-                MessageBox.Show(ex.Message, ProgramName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ShowErrorMessage(ex.Message);
+            }
+            catch (DirectoryNotFoundException ex)
+            {
+                ShowErrorMessage(ex.Message);
+            }
+            catch (IOException ex)
+            {
+                ShowErrorMessage(ex.Message);
             }
 
             return new string[0];
@@ -289,7 +302,7 @@ namespace PngtoFshBatchtxt
         /// The main entry point for the application.
         /// </summary>
         /// <param name="args">The arguments.</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope"), STAThread]
+        [STAThread]
         static void Main(string[] args)
         {
             Application.EnableVisualStyles();
@@ -300,15 +313,12 @@ namespace PngtoFshBatchtxt
                 bool cmdLineOnly = false;
                 using (Form1 form1 = new Form1())
                 {
-                    string loc = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-                    form1.groupPath = Path.Combine(loc, @"Groupid.txt");
-                    form1.rangePath = Path.Combine(loc, @"instRange.txt");
 
                     bool haveSwitches = false;
                     foreach (string arg in args)
                     {
                         if (arg.StartsWith(CommandLineSwitches.OutputDirectory, StringComparison.OrdinalIgnoreCase) ||
-                            arg.StartsWith(CommandLineSwitches.GroupID, StringComparison.InvariantCultureIgnoreCase) ||
+                            arg.StartsWith(CommandLineSwitches.GroupID, StringComparison.OrdinalIgnoreCase) ||
                             arg.Equals(CommandLineSwitches.NormalMipmaps, StringComparison.OrdinalIgnoreCase) ||
                             arg.Equals(CommandLineSwitches.EmbeddedMipmaps, StringComparison.OrdinalIgnoreCase) ||
                             arg.Equals(CommandLineSwitches.FshwriteCompression, StringComparison.OrdinalIgnoreCase) ||
@@ -364,10 +374,10 @@ namespace PngtoFshBatchtxt
                 Application.Run(new Form1());
             }
         }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "System.Windows.Forms.MessageBox.Show(System.String,System.String)")]
+
         static void ShowHelp()
         {
-            MessageBox.Show("Command line arguments:\n\n PngtoFshBatch images [/outdir:<directory>] [/group:<groupid>] [/mips] [/embed] [/fshwrite] [/dat:<filename>] [/proc] [/?] \n\n images a list or folder of images to process separated by spaces \n /outdir:<directory> Output the fsh files from /proc into directory.\n /group:<groupid> Assign the <groupid> to the files.\n /mips Generate mipmaps and save in separate files.\n /embed Generate mipmaps and save after the main image (used by most automata).\n  /fshwrite Compress the DXT1 and DXT3 images with FshWrite compression.\n /dat:<filename> Process images and save them into a new or existing dat.\n /proc Process images and save.\n /? Show this help. \n\n Paths containing spaces must be encased in quotes.", ProgramName);
+            MessageBox.Show("Command line arguments:\n\n PngtoFshBatch images [/outdir:<directory>] [/group:<groupid>] [/mips] [/embed] [/fshwrite] [/dat:<filename>] [/proc] [/?] \n\n images a list or folder of images to process separated by spaces \n /outdir:<directory> Output the fsh files from /proc into directory.\n /group:<groupid> Assign the <groupid> to the files.\n /mips Generate mipmaps and save in separate files.\n /embed Generate mipmaps and save after the main image (used by most automata).\n  /fshwrite Compress the DXT1 and DXT3 images with FshWrite compression.\n /dat:<filename> Process images and save them into a new or existing dat.\n /proc Process images and save.\n /? Show this help. \n\n Paths containing spaces must be encased in quotes.", ProgramName, MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1, 0);
         }
     }
 }
