@@ -17,18 +17,8 @@ namespace PngtoFshBatchtxt
                 InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
             internal interface IShellLinkW { }
 
-            internal struct SHARDAPPIDINFOLINK
-            {
-                public IShellLinkW isl;
-                [MarshalAs(UnmanagedType.LPWStr)]
-                public string pszAppID;
-            }
-
             [DllImport("shell32.dll")]
-            internal static extern void SHAddToRecentDocs(
-                ShellAddToRecentDocs flags,
-                SHARDAPPIDINFOLINK link);
-
+            internal static extern void SHAddToRecentDocs(ShellAddToRecentDocs flags, [MarshalAs(UnmanagedType.Interface)] IShellLinkW link);
         }
 
         internal enum ShellAddToRecentDocs
@@ -43,14 +33,12 @@ namespace PngtoFshBatchtxt
         }
 
         private static MethodInfo nativeShellLinkGetMethod;
-        public static void AddToRecent(JumpListLink link, string appID)
+        public static void AddToRecent(JumpListLink link)
         {
             if (nativeShellLinkGetMethod == null)
             {
                 //find the NativeShellLink property on the JumpListLink
-                Type jumpListLinkType = typeof(JumpListLink);
-                PropertyInfo nativeShellLinkProperty = jumpListLinkType.GetProperty("NativeShellLink",
-                        BindingFlags.Instance | BindingFlags.NonPublic);
+                PropertyInfo nativeShellLinkProperty = typeof(JumpListLink).GetProperty("NativeShellLink", BindingFlags.Instance | BindingFlags.NonPublic);
 
                 if (nativeShellLinkProperty == null)
                     throw new InvalidOperationException();
@@ -63,13 +51,8 @@ namespace PngtoFshBatchtxt
             //Cast this to our own implementation of IShellLinkW because it is using COM interop.
             NativeMethods.IShellLinkW nativeShellLink = (NativeMethods.IShellLinkW)nativeShellLinkGetMethod.Invoke(link, null);
 
-            NativeMethods.SHARDAPPIDINFOLINK appInfo = new NativeMethods.SHARDAPPIDINFOLINK();
-            appInfo.isl = nativeShellLink;
-            appInfo.pszAppID = appID;
-
             // Now make the call to Win32 to add the link to the recent items
-            NativeMethods.SHAddToRecentDocs(ShellAddToRecentDocs.AppIdInfoLink, appInfo);
-
+            NativeMethods.SHAddToRecentDocs(ShellAddToRecentDocs.Link, nativeShellLink);
         }
         
     }
