@@ -956,16 +956,16 @@ namespace PngtoFshBatchtxt
 
 				double rn = (upper * 1.0 - lower * 1.0) * random.NextDouble() + lower * 1.0;
 
-				return Convert.ToInt64(rn).ToString("X").Substring(0, 7);
+				return Convert.ToInt64(rn).ToString("X", CultureInfo.InvariantCulture).Substring(0, 7);
 			}
 
 			byte[] buffer = new byte[length / 2];
 			random.NextBytes(buffer);
-			string result = string.Concat(buffer.Select(x => x.ToString("X2")).ToArray());
+			string result = string.Concat(buffer.Select(x => x.ToString("X2", CultureInfo.InvariantCulture)).ToArray());
 			if ((length % 2) == 0)
 				return result;
 
-			return result + random.Next(16).ToString("X");
+			return result + random.Next(16).ToString("X", CultureInfo.InvariantCulture);
 		}
 
 		private void compDatcb_CheckedChanged(object sender, EventArgs e)
@@ -1055,11 +1055,11 @@ namespace PngtoFshBatchtxt
 
 					if (!ValidateHexString(inst0))
 					{
-						throw new FormatException(string.Format(Resources.InvalidInstanceIdFormat, inst0));
+						throw new FormatException(string.Format(CultureInfo.CurrentCulture, Resources.InvalidInstanceIdFormat, inst0));
 					}
 					if (!ValidateHexString(inst1))
 					{
-						throw new FormatException(string.Format(Resources.InvalidInstanceIdFormat, inst1));
+						throw new FormatException(string.Format(CultureInfo.CurrentCulture, Resources.InvalidInstanceIdFormat, inst1));
 					}
 
 					string lowerRange;
@@ -1252,7 +1252,7 @@ namespace PngtoFshBatchtxt
 					{
 						if (!ValidateHexString(fileName))
 						{
-							throw new FormatException(string.Format(Resources.InvalidInstanceFileNameFormat, fileName));
+							throw new FormatException(string.Format(CultureInfo.CurrentCulture, Resources.InvalidInstanceFileNameFormat, fileName));
 						}
 
 						batch.InstanceId = fileName.Substring(2, 8);
@@ -1300,7 +1300,7 @@ namespace PngtoFshBatchtxt
 						{
 							if (!ValidateHexString(fileName))
 							{
-								throw new FormatException(string.Format(Resources.InvalidInstanceFileNameFormat, fileName));
+								throw new FormatException(string.Format(CultureInfo.CurrentCulture, Resources.InvalidInstanceFileNameFormat, fileName));
 							}
 
 							batch.InstanceId = fileName.Substring(2, 8);
