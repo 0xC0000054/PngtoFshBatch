@@ -18,10 +18,19 @@ namespace PngtoFshBatchtxt
             {
                 components.Dispose();
             }
-            if (disposing && (dat != null))
+            if (disposing)
             {
-                dat.Dispose();
-                dat = null;
+                if (dat != null)
+                { 
+                    dat.Dispose();
+                    dat = null;
+                }
+
+                if (batchFshList != null)
+                {
+                    batchFshList.Dispose();
+                    batchFshList = null;
+                }
             }
             base.Dispose(disposing);
         }
@@ -452,8 +461,6 @@ namespace PngtoFshBatchtxt
             this.MinimumSize = new System.Drawing.Size(499, 342);
             this.Name = "Form1";
             this.Text = "Png to Fsh Batch";
-            this.Load += new System.EventHandler(this.Form1_Load);
-            this.Shown += new System.EventHandler(this.Form1_Shown);
             this.datFuncBox.ResumeLayout(false);
             this.InstendBox1.ResumeLayout(false);
             this.InstendBox1.PerformLayout();

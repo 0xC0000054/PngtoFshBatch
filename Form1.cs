@@ -40,10 +40,12 @@ namespace PngtoFshBatchtxt
 
 		internal BatchFshCollection batchFshList;
 		internal string outputFolder;
-		internal string groupPath;
-		internal string rangePath;
+		internal readonly string groupPath;
+		internal readonly string rangePath;
 		internal DatFile dat;
 		internal bool displayProgress;
+
+		internal const string AlphaMapSuffix = "_a";
 
 		private static class NativeMethods
 		{
@@ -60,6 +62,10 @@ namespace PngtoFshBatchtxt
 
 			this.displayProgress = true;
 			this.batchFshList = null;
+
+			this.groupPath = Path.Combine(Application.StartupPath, @"Groupid.txt");
+			this.rangePath = Path.Combine(Application.StartupPath, @"instRange.txt");
+
 			if (Type.GetType("Mono.Runtime") == null) // skip the Windows 7 code if we are on mono 
 			{
 				if (TaskbarManager.IsPlatformSupported)
@@ -291,7 +297,7 @@ namespace PngtoFshBatchtxt
 
 		private static string GetAlphaSourceString(string path)
 		{
-			string alname = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path) + "_a" + Path.GetExtension(path));
+			string alname = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path) + AlphaMapSuffix + Path.GetExtension(path));
 			if (File.Exists(alname))
 			{
 				return Path.GetFileName(alname);
@@ -630,7 +636,7 @@ namespace PngtoFshBatchtxt
 						BitmapEntry item = new BitmapEntry();
 
 						item.Bitmap = temp.Clone(new Rectangle(0, 0, temp.Width, temp.Height), PixelFormat.Format24bppRgb);
-						string alname = Path.Combine(Path.GetDirectoryName(fileName), Path.GetFileNameWithoutExtension(fileName) + "_a" + Path.GetExtension(fileName));
+						string alname = Path.Combine(Path.GetDirectoryName(fileName), Path.GetFileNameWithoutExtension(fileName) + AlphaMapSuffix + Path.GetExtension(fileName));
 						if (File.Exists(alname))
 						{
 							using (Bitmap alpha = new Bitmap(alname))
@@ -895,10 +901,10 @@ namespace PngtoFshBatchtxt
 
 		private void LoadSettings()
 		{
-			settings = new Settings(Path.Combine(Application.StartupPath, @"PngtoFshBatch.xml"));
-			compDatCb.Checked = bool.Parse(settings.GetSetting("compDatcb_checked", bool.TrueString));
-			mipFormatCbo.SelectedIndex = int.Parse(settings.GetSetting("MipFormat", "0"), CultureInfo.InvariantCulture);
-			fshWriteCompCb.Checked = bool.Parse(settings.GetSetting("fshwritecompcb_checked", bool.FalseString));
+			this.settings = new Settings(Path.Combine(Application.StartupPath, @"PngtoFshBatch.xml"));
+			this.compDatCb.Checked = bool.Parse(settings.GetSetting("compDatcb_checked", bool.TrueString));
+			this.mipFormatCbo.SelectedIndex = int.Parse(settings.GetSetting("MipFormat", "0"), CultureInfo.InvariantCulture);
+			this.fshWriteCompCb.Checked = bool.Parse(settings.GetSetting("fshwritecompcb_checked", bool.FalseString));
 		}
 
 		private void CheckForSSE()
@@ -913,13 +919,24 @@ namespace PngtoFshBatchtxt
 			}
 		}
 
-		private void Form1_Load(object sender, EventArgs e)
+		protected override void OnLoad(EventArgs e)
 		{
+			base.OnLoad(e);
+
 			LoadSettings();
-			CheckForSSE();
 			fshTypeBox.SelectedIndex = 2;
-			groupPath = Path.Combine(Application.StartupPath, @"Groupid.txt");
-			rangePath = Path.Combine(Application.StartupPath, @"instRange.txt");
+		}
+
+		protected override void OnShown(EventArgs e)
+		{
+			base.OnShown(e);
+
+			if (manager != null)
+			{
+				jumpList = JumpList.CreateJumpList();
+			}
+
+			CheckForSSE();
 			CheckRangeFilesExist(rangePath);
 			CheckRangeFilesExist(groupPath);
 		}
@@ -1111,7 +1128,7 @@ namespace PngtoFshBatchtxt
 					link.Arguments = "\"" + path + "\"";
 					link.IconReference = new Microsoft.WindowsAPICodePack.Shell.IconReference("shell32.dll", 3);
 
-					JumpListHelper.AddToRecent(link, manager.ApplicationId);
+					JumpListHelper.AddToRecent(link);
 				}
 
 				jumpList.Refresh();
@@ -1357,7 +1374,7 @@ namespace PngtoFshBatchtxt
 			if (PngopenDialog.ShowDialog() == DialogResult.OK)
 			{
 				// remove the alpha mask images from the file
-				string[] files = PngopenDialog.FileNames.Where(f => !Path.GetFileName(f).Contains("_a")).ToArray();
+				string[] files = PngopenDialog.FileNames.Where(f => !Path.GetFileName(f).Contains(AlphaMapSuffix, StringComparison.OrdinalIgnoreCase)).ToArray();
 
 				int fileCount = files.Length;
 				if (fileCount > 0)
@@ -1512,7 +1529,7 @@ namespace PngtoFshBatchtxt
 					{
 						FileInfo fi = infos[i];
 						
-						if (!fi.Name.Contains("_a"))
+						if (!fi.Name.Contains(AlphaMapSuffix, StringComparison.OrdinalIgnoreCase))
 						{
 							fileList.Add(fi.FullName);
 						}
@@ -1525,7 +1542,7 @@ namespace PngtoFshBatchtxt
 					string ext = Path.GetExtension(file);
 					if (ext.Equals(".png", StringComparison.OrdinalIgnoreCase) || ext.Equals(".bmp", StringComparison.OrdinalIgnoreCase))
 					{
-						if (!Path.GetFileName(file).Contains("_a"))
+						if (!Path.GetFileName(file).Contains(AlphaMapSuffix, StringComparison.OrdinalIgnoreCase))
 						{
 							fileList.Add(file);
 						}
@@ -1656,15 +1673,6 @@ namespace PngtoFshBatchtxt
 			{
 				settings.PutSetting("fshwritecompcb_checked", fshWriteCompCb.Checked.ToString());
 			}
-		}
-
-		private void Form1_Shown(object sender, EventArgs e)
-		{
-			if (manager != null)
-			{
-				jumpList = JumpList.CreateJumpList();
-			}
-
 		}
 
 		private void mipFormatCbo_SelectedIndexChanged(object sender, EventArgs e)
