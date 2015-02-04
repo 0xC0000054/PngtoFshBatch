@@ -72,133 +72,128 @@ namespace PngtoFshBatchtxt
             return true;
         }
 
+        private static bool ValidateArguments(string[] args, int fileCount)
+        {
+            if (!ValidateArgumentPaths(args))
+            {
+                return false;
+            }
+
+            for (int i = 0; i < args.Length; i++)
+            {
+                string arg = args[i];
+
+                if ((arg.StartsWith(CommandLineSwitches.ProcessDat, StringComparison.OrdinalIgnoreCase) ||
+                     arg.StartsWith(CommandLineSwitches.ProcessFiles, StringComparison.OrdinalIgnoreCase)) && fileCount == 0)
+                {
+                    return false;
+                }
+
+                if (arg.StartsWith(CommandLineSwitches.GroupID, StringComparison.OrdinalIgnoreCase))
+                {
+                    string group = arg.Substring(7, arg.Length - 7).Trim();
+
+                    if (!Form1.ValidateHexString(group))
+                    {
+                        if (ShowErrorMessage(Resources.InvalidGroupIDArgument) == DialogResult.OK)
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            return true;
+        }
+
         private static void ProcessCommandLineSwitches(string[] args, Form1 form1, int fileCount, bool cmdLineOnly)
         {
-
             if (args.Length == 1 && args[0] == "/?")
             {
                 ShowHelp();
                 return;
             }
 
-            if (!ValidateArgumentPaths(args) && cmdLineOnly)
+            if (ValidateArguments(args, fileCount))
             {
-                return;
-            }
-
-            if (cmdLineOnly)
-            {
-                form1.mipFormatCbo.SelectedIndex = (int)MipmapFormat.None;
-            }
-
-            try
-            {
-                for (int i = 0; i < args.Length; i++)
+                if (cmdLineOnly)
                 {
-                    string arg = args[i];
+                    form1.mipFormatCbo.SelectedIndex = (int)MipmapFormat.None;
+                }
 
-                    if (arg.StartsWith(CommandLineSwitches.OutputDirectory, StringComparison.OrdinalIgnoreCase))
+                try
+                {
+                    for (int i = 0; i < args.Length; i++)
                     {
-                        string dir = arg.Substring(8, arg.Length - 8).Trim();
+                        string arg = args[i];
 
-                        if (!string.IsNullOrEmpty(dir))
+                        if (arg.StartsWith(CommandLineSwitches.OutputDirectory, StringComparison.OrdinalIgnoreCase))
                         {
-                            if (Directory.Exists(dir))
-                            {
-                                form1.outputFolder = dir;
-                            }
+                            form1.outputFolder = arg.Substring(8, arg.Length - 8).Trim();
                         }
-                    }
-                    else if (arg.StartsWith(CommandLineSwitches.GroupID, StringComparison.OrdinalIgnoreCase))
-                    {
-                        string group = arg.Substring(7, arg.Length - 7).Trim();
-                        string groupid = null;
-
-                        if (!string.IsNullOrEmpty(group))
+                        else if (arg.StartsWith(CommandLineSwitches.GroupID, StringComparison.OrdinalIgnoreCase))
                         {
-                            if (group.Length == 10 && group.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+                            string group = arg.Substring(7, arg.Length - 7).Trim();
+                            string groupid;
+
+                            if (group.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
                             {
-                                groupid = group.ToUpperInvariant().Substring(2, 8);
+                                groupid = group.Substring(2, 8).ToUpperInvariant();
                             }
-                            else if (group.Length == 8)
+                            else
                             {
                                 groupid = group.ToUpperInvariant();
                             }
-                        }
 
-                        if (groupid != null)
-                        {
-                            if (Form1.ValidateHexString(groupid))
+                            if (fileCount > 0)
                             {
-                                if (fileCount > 0)
+                                for (int c = 0; c < form1.batchFshList.Count; c++)
                                 {
-                                    for (int c = 0; c < form1.batchFshList.Count; c++)
-                                    {
-                                        form1.batchFshList[c].GroupId = groupid;
-                                    }
-                                }
-                                else
-                                {
-                                    form1.tgiGroupTxt.Text = groupid;
+                                    form1.batchFshList[c].GroupId = groupid;
                                 }
                             }
                             else
                             {
-                                if (fileCount > 0)
-                                {
-                                    const string DefaultGroup = "1ABE787D";
-                                    for (int c = 0; c < form1.batchFshList.Count; c++)
-                                    {
-                                        form1.batchFshList[c].GroupId = DefaultGroup;
-                                    }
-                                }
-
-                                ShowErrorMessage(Resources.InvalidGroupIDArgument);
+                                form1.tgiGroupTxt.Text = groupid;
                             }
                         }
-                    }
-                    else if (arg.StartsWith(CommandLineSwitches.NormalMipmaps, StringComparison.OrdinalIgnoreCase))
-                    {
-                        form1.mipFormatCbo.SelectedIndex = (int)MipmapFormat.Normal;
-                    }
-                    else if (arg.StartsWith(CommandLineSwitches.EmbeddedMipmaps, StringComparison.OrdinalIgnoreCase))
-                    {
-                        form1.mipFormatCbo.SelectedIndex = (int)MipmapFormat.Embedded;
-                    }
-                    else if (arg.Equals(CommandLineSwitches.FshwriteCompression, StringComparison.OrdinalIgnoreCase))
-                    {
-                        form1.fshWriteCompCb.Checked = true;
-                    }
-                    else if (arg.StartsWith(CommandLineSwitches.ProcessDat, StringComparison.OrdinalIgnoreCase) && fileCount > 0)
-                    {
-
-                        string datFileName = arg.Substring(5, arg.Length - 5).Trim();
-
-                        if (!string.IsNullOrEmpty(datFileName))
+                        else if (arg.StartsWith(CommandLineSwitches.NormalMipmaps, StringComparison.OrdinalIgnoreCase))
                         {
+                            form1.mipFormatCbo.SelectedIndex = (int)MipmapFormat.Normal;
+                        }
+                        else if (arg.StartsWith(CommandLineSwitches.EmbeddedMipmaps, StringComparison.OrdinalIgnoreCase))
+                        {
+                            form1.mipFormatCbo.SelectedIndex = (int)MipmapFormat.Embedded;
+                        }
+                        else if (arg.Equals(CommandLineSwitches.FshwriteCompression, StringComparison.OrdinalIgnoreCase))
+                        {
+                            form1.fshWriteCompCb.Checked = true;
+                        }
+                        else if (arg.StartsWith(CommandLineSwitches.ProcessDat, StringComparison.OrdinalIgnoreCase) && fileCount > 0)
+                        {
+                            string datFileName = arg.Substring(5, arg.Length - 5).Trim();
 
-                            string path = Path.GetDirectoryName(datFileName);
-                            if (Directory.Exists(path))
+                            form1.displayProgress = false;
+
+                            if (File.Exists(datFileName))
                             {
-                                form1.displayProgress = false;
-
-                                if (File.Exists(datFileName))
+                                try
                                 {
-                                    try
-                                    {
-                                        form1.dat = new DatFile(datFileName);
-                                    }
-                                    catch (DatHeaderException)
-                                    {
-                                        form1.dat.Dispose();
-                                        form1.dat = new DatFile();
-                                    }
+                                    form1.dat = new DatFile(datFileName);
                                 }
-                                else if (form1.dat == null)
+                                catch (DatHeaderException)
                                 {
+                                    form1.dat.Dispose();
                                     form1.dat = new DatFile();
                                 }
+                            }
+                            else
+                            {
+                                form1.dat = new DatFile();
+                            }
 
+                            try
+                            {
                                 form1.SetGroupAndInstanceIds();
                                 form1.ProcessBatch();
 
@@ -210,24 +205,39 @@ namespace PngtoFshBatchtxt
                                 form1.RebuildDat(form1.dat);
 
                                 form1.dat.Save(datFileName);
+                            }
+                            catch (Exception)
+                            {
+                                throw;
+                            }
+                            finally
+                            {
                                 form1.dat.Close();
                                 form1.dat = null;
                             }
                         }
-                    }
-                    else if (arg.StartsWith(CommandLineSwitches.ProcessFiles, StringComparison.OrdinalIgnoreCase) && (fileCount > 0))
-                    {
-                        form1.displayProgress = false;
+                        else if (arg.StartsWith(CommandLineSwitches.ProcessFiles, StringComparison.OrdinalIgnoreCase) && fileCount > 0)
+                        {
+                            form1.displayProgress = false;
 
-                        form1.SetGroupAndInstanceIds();
-                        form1.ProcessBatch();
-                        form1.ProcessBatchSaveFiles();
+                            form1.SetGroupAndInstanceIds();
+                            form1.ProcessBatch();
+                            form1.ProcessBatchSaveFiles();
+                        }
                     }
                 }
-            }
-            catch (FormatException ex)
-            {
-                ShowErrorMessage(ex.Message);
+                catch (DirectoryNotFoundException ex)
+                {
+                    ShowErrorMessage(ex.Message);
+                }
+                catch (FormatException ex)
+                {
+                    ShowErrorMessage(ex.Message);
+                }
+                catch (IOException ex)
+                {
+                    ShowErrorMessage(ex.Message);
+                }
             }
         }
 
