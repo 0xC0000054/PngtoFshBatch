@@ -189,7 +189,7 @@ Dragging files or folders onto the list will create a new list</value>
     <value>Saving Fsh ({0} of {1})</value>
     <comment>processbatchbtn_Click</comment>
   </data>
-  <data name="StatusTextReset" xml:space="preserve">
+  <data name="StatusReadyText" xml:space="preserve">
     <value>Ready</value>
   </data>
   <data name="tgiGroupTxt_ToolTip" xml:space="preserve">
@@ -228,5 +228,17 @@ It must consist of the lower and upper texture range separated by a comma.</valu
   <data name="InvalidInstanceIdFormat" xml:space="preserve">
     <value>The instance id '{0}' in instRange.txt contains invalid characters.
 It must only contain numbers 0-9 and letters A-F.</value>
+  </data>
+  <data name="alphaHeader_Text" xml:space="preserve">
+    <value>Alpha</value>
+  </data>
+  <data name="bitmapHeader_Text" xml:space="preserve">
+    <value>Bitmap</value>
+  </data>
+  <data name="groupHeader_Text" xml:space="preserve">
+    <value>Group</value>
+  </data>
+  <data name="instanceHeader_Text" xml:space="preserve">
+    <value>Instance</value>
   </data>
 </root>

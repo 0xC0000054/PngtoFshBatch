@@ -79,6 +79,15 @@ namespace PngtoFshBatchtxt.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Alpha.
+        /// </summary>
+        internal static string alphaHeader_Text {
+            get {
+                return ResourceManager.GetString("alphaHeader_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to From Transparency.
         /// </summary>
         internal static string AlphaTransString {
@@ -121,6 +130,15 @@ namespace PngtoFshBatchtxt.Properties {
         internal static string batchListView_ToolTip {
             get {
                 return ResourceManager.GetString("batchListView_ToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bitmap.
+        /// </summary>
+        internal static string bitmapHeader_Text {
+            get {
+                return ResourceManager.GetString("bitmapHeader_Text", resourceCulture);
             }
         }
         
@@ -188,11 +206,29 @@ namespace PngtoFshBatchtxt.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Group.
+        /// </summary>
+        internal static string groupHeader_Text {
+            get {
+                return ResourceManager.GetString("groupHeader_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Bitmap files (*.png;*.bmp)|*.png;*.bmp|All files (*.*)|*.*.
         /// </summary>
         internal static string ImageFiles_Filter {
             get {
                 return ResourceManager.GetString("ImageFiles_Filter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Instance.
+        /// </summary>
+        internal static string instanceHeader_Text {
+            get {
+                return ResourceManager.GetString("instanceHeader_Text", resourceCulture);
             }
         }
         
@@ -347,9 +383,9 @@ namespace PngtoFshBatchtxt.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Ready.
         /// </summary>
-        internal static string StatusTextReset {
+        internal static string StatusReadyText {
             get {
-                return ResourceManager.GetString("StatusTextReset", resourceCulture);
+                return ResourceManager.GetString("StatusReadyText", resourceCulture);
             }
         }
         
