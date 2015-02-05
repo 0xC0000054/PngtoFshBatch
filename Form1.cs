@@ -7,7 +7,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using FshDatIO;
@@ -33,24 +32,16 @@ namespace PngtoFshBatchtxt
 		private Nullable<long> lowerInstRange;
 		private Nullable<long> upperInstRange;
 		private MipmapFormat mipFormat;
+		
+		private readonly string groupPath;
+		private readonly string rangePath;
 
 		internal BatchFshCollection batchFshList;
 		internal string outputFolder;
-		internal readonly string groupPath;
-		internal readonly string rangePath;
 		internal DatFile dat;
 		internal bool displayProgress;
 
 		internal const string AlphaMapSuffix = "_a";
-
-		private static class NativeMethods
-		{
-			internal const uint SSE = 6;
-
-			[DllImport("kernel32.dll", ExactSpelling = true)]
-			[return: MarshalAs(UnmanagedType.Bool)]
-			internal static extern bool IsProcessorFeaturePresent(uint ProcessorFeature);
-		} 
 
 		public Form1()
 		{
@@ -62,7 +53,7 @@ namespace PngtoFshBatchtxt
 			this.groupPath = Path.Combine(Application.StartupPath, @"Groupid.txt");
 			this.rangePath = Path.Combine(Application.StartupPath, @"instRange.txt");
 
-			if (Type.GetType("Mono.Runtime") == null) // skip the Windows 7 code if we are on mono 
+			if (OS.IsMicrosoftWindows)
 			{
 				if (TaskbarManager.IsPlatformSupported)
 				{
@@ -509,26 +500,35 @@ namespace PngtoFshBatchtxt
 
 							worker.RunWorkerCompleted += delegate(object s, RunWorkerCompletedEventArgs args)
 							{
-								if (args.Error != null)
+								try
 								{
-									ShowErrorMessage(args.Error.Message);
-								}
-								else
-								{
-									this.toolStripProgressStatus.Text = Resources.SavingDatStatusText;
-									this.statusStrip1.Refresh();
-
-									if (dat.Indexes.Count > 0)
+									if (args.Error != null)
 									{
-										dat.Save(saveDatDialog1.FileName);
+										ShowErrorMessage(args.Error.Message);
+									}
+									else
+									{
+										this.toolStripProgressStatus.Text = Resources.SavingDatStatusText;
+										this.statusStrip1.Refresh();
+
+										if (dat.Indexes.Count > 0)
+										{
+											dat.Save(saveDatDialog1.FileName);
+										}
 									}
 								}
-
-								dat.Close();
-								dat = null;
-								ClearandReset();
-								SetControlsEnabled(true);
-								this.Cursor = Cursors.Default;
+								catch (Exception)
+								{
+									throw;
+								}
+								finally
+								{
+									dat.Close();
+									dat = null;
+									ClearandReset();
+									SetControlsEnabled(true);
+									this.Cursor = Cursors.Default;
+								}
 							};
 
 							worker.RunWorkerAsync();
@@ -623,70 +623,69 @@ namespace PngtoFshBatchtxt
 				string fileName = batch.FileName;
 				using (Bitmap temp = new Bitmap(fileName))
 				{
-					BitmapEntry item = new BitmapEntry();
-
-					item.Bitmap = temp.Clone(new Rectangle(0, 0, temp.Width, temp.Height), PixelFormat.Format24bppRgb);
-					string alname = Path.Combine(Path.GetDirectoryName(fileName), Path.GetFileNameWithoutExtension(fileName) + AlphaMapSuffix + Path.GetExtension(fileName));
-					if (File.Exists(alname))
+					using (BitmapEntry item = new BitmapEntry())
 					{
-						using (Bitmap alpha = new Bitmap(alname))
+						item.Bitmap = temp.Clone(new Rectangle(0, 0, temp.Width, temp.Height), PixelFormat.Format24bppRgb);
+						string alname = Path.Combine(Path.GetDirectoryName(fileName), Path.GetFileNameWithoutExtension(fileName) + AlphaMapSuffix + Path.GetExtension(fileName));
+						if (File.Exists(alname))
 						{
-							item.Alpha = alpha.Clone(new Rectangle(0, 0, alpha.Width, alpha.Height), PixelFormat.Format24bppRgb);
+							using (Bitmap alpha = new Bitmap(alname))
+							{
+								item.Alpha = alpha.Clone(new Rectangle(0, 0, alpha.Width, alpha.Height), PixelFormat.Format24bppRgb);
+							}
+
 						}
-
-					}
-					else if (Path.GetExtension(fileName).Equals(".png", StringComparison.OrdinalIgnoreCase) && temp.PixelFormat == PixelFormat.Format32bppArgb)
-					{
-						item.Alpha = GetAlphaFromTransparency(temp);
-					}
-					else
-					{
-						Bitmap alpha = new Bitmap(temp.Width, temp.Height, PixelFormat.Format24bppRgb);
-						try
+						else if (Path.GetExtension(fileName).Equals(".png", StringComparison.OrdinalIgnoreCase) && temp.PixelFormat == PixelFormat.Format32bppArgb)
 						{
-							BitmapData data = alpha.LockBits(new Rectangle(0, 0, alpha.Width, alpha.Height), ImageLockMode.WriteOnly, PixelFormat.Format24bppRgb);
-
+							item.Alpha = GetAlphaFromTransparency(temp);
+						}
+						else
+						{
+							Bitmap alpha = new Bitmap(temp.Width, temp.Height, PixelFormat.Format24bppRgb);
 							try
 							{
-								unsafe
+								BitmapData data = alpha.LockBits(new Rectangle(0, 0, alpha.Width, alpha.Height), ImageLockMode.WriteOnly, PixelFormat.Format24bppRgb);
+
+								try
 								{
-									byte* scan0 = (byte*)data.Scan0.ToPointer();
-									int stride = data.Stride;
-									for (int y = 0; y < data.Height; y++)
+									unsafe
 									{
-										byte* p = scan0 + (y * stride);
-										for (int x = 0; x < data.Width; x++)
+										byte* scan0 = (byte*)data.Scan0.ToPointer();
+										int stride = data.Stride;
+										for (int y = 0; y < data.Height; y++)
 										{
-											p[0] = p[1] = p[2] = 255;
-											p += 3;
+											byte* p = scan0 + (y * stride);
+											for (int x = 0; x < data.Width; x++)
+											{
+												p[0] = p[1] = p[2] = 255;
+												p += 3;
+											}
 										}
 									}
+
+								}
+								finally
+								{
+									alpha.UnlockBits(data);
 								}
 
+								item.Alpha = alpha.Clone(new Rectangle(0, 0, alpha.Width, alpha.Height), alpha.PixelFormat);
 							}
 							finally
 							{
-								alpha.UnlockBits(data);
+								if (alpha != null)
+								{
+									alpha.Dispose();
+									alpha = null;
+								}
 							}
+						}
+						item.BmpType = batch.Format;
+						item.DirName = "FiSH";
 
-							item.Alpha = alpha.Clone(new Rectangle(0, 0, alpha.Width, alpha.Height), alpha.PixelFormat);
-						}
-						finally
-						{
-							if (alpha != null)
-							{
-								alpha.Dispose();
-								alpha = null;
-							}
-						}
+						batch.MainImage = new FSHImageWrapper();
+						batch.MainImage.Bitmaps.Add(item.Clone());
 					}
-					item.BmpType = batch.Format;
-					item.DirName = "FiSH";
-						
-					FSHImageWrapper fsh = new FSHImageWrapper();
-					fsh.Bitmaps.Add(item);
-							
-					batch.MainImage = fsh;
 				}
 
 			}
@@ -704,6 +703,7 @@ namespace PngtoFshBatchtxt
 				return Path.Combine(Path.GetDirectoryName(filePath), Path.GetFileNameWithoutExtension(filePath) + addToPath + ".fsh");
 			}
 		}
+
 		/// <summary>
 		/// Saves a fsh using either FshWrite or FSHLib
 		/// </summary>
@@ -888,13 +888,10 @@ namespace PngtoFshBatchtxt
 
 		private void CheckForSSE()
 		{
-			if (Type.GetType("Mono.Runtime") == null)
+			if (OS.IsMicrosoftWindows && !OS.HaveSSE)
 			{
-				if (!NativeMethods.IsProcessorFeaturePresent(NativeMethods.SSE))
-				{
-					MessageBox.Show(this, Resources.FshWriteSSERequiredError, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1, 0);
-					fshWriteCompCb.Enabled = fshWriteCompCb.Checked = false;
-				}
+				MessageBox.Show(this, Resources.FshWriteSSERequiredError, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1, 0);
+				fshWriteCompCb.Enabled = fshWriteCompCb.Checked = false;
 			}
 		}
 
@@ -910,14 +907,19 @@ namespace PngtoFshBatchtxt
 		{
 			base.OnShown(e);
 
+			CheckForSSE();
+			CheckRangeFilesExist(rangePath);
+			CheckRangeFilesExist(groupPath);
+
 			if (manager != null)
 			{
 				jumpList = JumpList.CreateJumpList();
 			}
 
-			CheckForSSE();
-			CheckRangeFilesExist(rangePath);
-			CheckRangeFilesExist(groupPath);
+			if (batchFshList != null)
+			{
+				AddFilesToListView();
+			}
 		}
 
 		private string RandomHexString(int length)
@@ -1244,7 +1246,7 @@ namespace PngtoFshBatchtxt
 			}
 		}
 
-		internal void AddFilesToListView()
+		private void AddFilesToListView()
 		{
 			AddFilesToListView(0);
 		}
@@ -1580,7 +1582,7 @@ namespace PngtoFshBatchtxt
 
 			this.toolStripProgressBar1.Value = 0;
 
-			this.toolStripProgressStatus.Text = Resources.StatusTextReset;
+			this.toolStripProgressStatus.Text = Resources.StatusReadyText;
 			if (manager != null)
 			{
 				this.manager.SetProgressState(TaskbarProgressBarState.NoProgress, this.Handle);

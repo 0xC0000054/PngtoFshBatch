@@ -109,22 +109,22 @@ namespace PngtoFshBatchtxt
             // 
             // bitmapHeader
             // 
-            this.bitmapHeader.Text = "Bitmap";
+            this.bitmapHeader.Text = global::PngtoFshBatchtxt.Properties.Resources.bitmapHeader_Text;
             this.bitmapHeader.Width = 96;
             // 
             // alphaHeader
             // 
-            this.alphaHeader.Text = "Alpha";
+            this.alphaHeader.Text = global::PngtoFshBatchtxt.Properties.Resources.alphaHeader_Text;
             this.alphaHeader.Width = 115;
             // 
             // groupHeader
             // 
-            this.groupHeader.Text = "Group";
+            this.groupHeader.Text = global::PngtoFshBatchtxt.Properties.Resources.groupHeader_Text;
             this.groupHeader.Width = 96;
             // 
             // instanceHeader
             // 
-            this.instanceHeader.Text = "Instance";
+            this.instanceHeader.Text = global::PngtoFshBatchtxt.Properties.Resources.instanceHeader_Text;
             this.instanceHeader.Width = 96;
             // 
             // compDatCb
@@ -433,7 +433,7 @@ namespace PngtoFshBatchtxt
             // 
             this.toolStripProgressStatus.Name = "toolStripProgressStatus";
             this.toolStripProgressStatus.Size = new System.Drawing.Size(39, 17);
-            this.toolStripProgressStatus.Text = "Ready";
+            this.toolStripProgressStatus.Text = global::PngtoFshBatchtxt.Properties.Resources.StatusReadyText;
             // 
             // Form1
             // 
