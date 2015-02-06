@@ -331,7 +331,7 @@ namespace PngtoFshBatchtxt
             // 
             this.tgiGrouplbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.tgiGrouplbl.AutoSize = true;
-            this.tgiGrouplbl.Location = new System.Drawing.Point(25, 232);
+            this.tgiGrouplbl.Location = new System.Drawing.Point(25, 229);
             this.tgiGrouplbl.Name = "tgiGrouplbl";
             this.tgiGrouplbl.Size = new System.Drawing.Size(36, 13);
             this.tgiGrouplbl.TabIndex = 104;
@@ -348,7 +348,7 @@ namespace PngtoFshBatchtxt
             this.tgiInstanceTxt.TabIndex = 5;
             this.toolTip1.SetToolTip(this.tgiInstanceTxt, global::PngtoFshBatchtxt.Properties.Resources.tgiInstanceTxt_ToolTip);
             this.tgiInstanceTxt.TextChanged += new System.EventHandler(this.tgiInstanceTxt_TextChanged);
-            this.tgiInstanceTxt.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tgiGroupTxt_KeyDown);
+            this.tgiInstanceTxt.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tgiInstanceTxt_KeyDown);
             // 
             // tgiGroupTxt
             // 

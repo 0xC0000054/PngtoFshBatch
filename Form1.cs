@@ -1,4 +1,7 @@
-﻿using System;
+﻿using FshDatIO;
+using Microsoft.WindowsAPICodePack.Taskbar;
+using PngtoFshBatchtxt.Properties;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -7,11 +10,9 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using FshDatIO;
-using Microsoft.WindowsAPICodePack.Taskbar;
-using PngtoFshBatchtxt.Properties;
 
 namespace PngtoFshBatchtxt
 {
@@ -53,7 +54,7 @@ namespace PngtoFshBatchtxt
 			this.groupPath = Path.Combine(Application.StartupPath, @"Groupid.txt");
 			this.rangePath = Path.Combine(Application.StartupPath, @"instRange.txt");
 
-			if (OS.IsMicrosoftWindows)
+			if (Environment.OSVersion.Platform == PlatformID.Win32NT)
 			{
 				if (TaskbarManager.IsPlatformSupported)
 				{
@@ -544,6 +545,10 @@ namespace PngtoFshBatchtxt
 				{
 					ShowErrorMessage(ex.Message);
 				}
+				catch (SecurityException ex)
+				{
+					ShowErrorMessage(ex.Message);
+				}
 				catch (UnauthorizedAccessException ex)
 				{
 					ShowErrorMessage(ex.Message);
@@ -899,13 +904,33 @@ namespace PngtoFshBatchtxt
 		{
 			base.OnLoad(e);
 
-			LoadSettings();
 			fshTypeBox.SelectedIndex = 2;
 		}
 
 		protected override void OnShown(EventArgs e)
 		{
 			base.OnShown(e);
+
+			try
+			{
+				LoadSettings();
+			}
+			catch (FileNotFoundException fnfex)
+			{
+				ShowErrorMessage(fnfex.Message);
+			}
+			catch (IOException ex)
+			{
+				ShowErrorMessage(ex.Message);
+			}
+			catch (SecurityException ex)
+			{
+				ShowErrorMessage(ex.Message);
+			}
+			catch (UnauthorizedAccessException ex)
+			{
+				ShowErrorMessage(ex.Message);
+			}
 
 			CheckForSSE();
 			CheckRangeFilesExist(rangePath);
@@ -1393,20 +1418,45 @@ namespace PngtoFshBatchtxt
 					}
 
 					AddFilesToListView(startIndex);
-
 				}
 			}
 
 		}
 
+		/// <summary>
+		/// Determines whether the specified key is a hexadecimal character.
+		/// </summary>
+		/// <param name="key">The key.</param>
+		/// <param name="shiftPressed">Set to <c>true</c> when the shift key is pressed.</param>
+		/// <returns><c>true</c> if the specified key is a valid hexadecimal character; otherwise <c>false</c></returns>
+		private static bool IsHexadecimalChar(Keys key, bool shiftPressed)
+		{
+			bool result = false;
+			if (!shiftPressed && (key >= Keys.D0 && key <= Keys.D9 || key >= Keys.NumPad0 && key <= Keys.NumPad9))
+			{
+				result = true;
+			}
+			else
+			{
+				switch (key)
+				{
+					case Keys.A:
+					case Keys.B:
+					case Keys.C:
+					case Keys.D:
+					case Keys.E:
+					case Keys.F:
+						result = true;
+						break;
+				}
+			}
+
+			return result;
+		}
+
 		private void tgiGroupTxt_KeyDown(object sender, KeyEventArgs e)
 		{
-			if ((e.KeyCode >= Keys.D0 && e.KeyCode <= Keys.D9) || (e.KeyCode >= Keys.NumPad0 && e.KeyCode <= Keys.NumPad9) && ModifierKeys != Keys.Shift)
-			{
-				e.Handled = true;
-				e.SuppressKeyPress = false;
-			}
-			else if (e.KeyCode == Keys.A || e.KeyCode == Keys.B || e.KeyCode == Keys.C || e.KeyCode == Keys.D || e.KeyCode == Keys.E || e.KeyCode == Keys.F || e.KeyCode == Keys.Delete || e.KeyCode == Keys.Back || e.KeyCode == Keys.Left || e.KeyCode == Keys.Right)
+			if (IsHexadecimalChar(e.KeyCode, e.Shift) || e.KeyCode == Keys.Delete || e.KeyCode == Keys.Back || e.KeyCode == Keys.Left || e.KeyCode == Keys.Right)
 			{
 				e.Handled = true;
 				e.SuppressKeyPress = false;
@@ -1422,9 +1472,10 @@ namespace PngtoFshBatchtxt
 		{
 			if (batchListView.SelectedItems.Count > 0)
 			{
-				int index = batchListView.SelectedItems[0].Index;
 				if (tgiGroupTxt.Text.Length == 8)
-				{
+				{				
+					int index = batchListView.SelectedItems[0].Index;
+
 					string group = tgiGroupTxt.Text;
 					if (!group.Equals(batchFshList[index].GroupId, StringComparison.OrdinalIgnoreCase))
 					{
@@ -1435,15 +1486,29 @@ namespace PngtoFshBatchtxt
 			}
 		}
 
+		private void tgiInstanceTxt_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (IsHexadecimalChar(e.KeyCode, e.Shift) || e.KeyCode == Keys.Delete || e.KeyCode == Keys.Back || e.KeyCode == Keys.Left || e.KeyCode == Keys.Right)
+			{
+				e.Handled = true;
+				e.SuppressKeyPress = false;
+			}
+			else
+			{
+				e.Handled = false;
+				e.SuppressKeyPress = true;
+			}
+		}
+
 		private void tgiInstanceTxt_TextChanged(object sender, EventArgs e)
 		{
 			if (batchListView.SelectedItems.Count > 0)
 			{
-				int index = batchListView.SelectedItems[0].Index;
 				if (tgiInstanceTxt.Text.Length == 8)
-				{
-					string instance = tgiInstanceTxt.Text;
+				{				
+					int index = batchListView.SelectedItems[0].Index;
 
+					string instance = tgiInstanceTxt.Text;
 					if (!instance.Equals(batchFshList[index].InstanceId, StringComparison.OrdinalIgnoreCase))
 					{
 						batchFshList[index].InstanceId = instance;
@@ -1691,5 +1756,6 @@ namespace PngtoFshBatchtxt
 			this.clearListBtn.Enabled = enabled;
 			this.processBatchBtn.Enabled = enabled;
 		}
+
 	}
 }
