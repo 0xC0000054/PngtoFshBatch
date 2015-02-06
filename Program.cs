@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections;
+﻿using FshDatIO;
+using PngtoFshBatchtxt.Properties;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Security;
 using System.Windows.Forms;
-using FshDatIO;
-using PngtoFshBatchtxt.Properties;
 
 namespace PngtoFshBatchtxt
 {
@@ -238,6 +238,14 @@ namespace PngtoFshBatchtxt
                 {
                     ShowErrorMessage(ex.Message);
                 }
+                catch (SecurityException ex)
+                {
+                    ShowErrorMessage(ex.Message);
+                }
+                catch (UnauthorizedAccessException ex)
+                {
+                    ShowErrorMessage(ex.Message);
+                }
             }
         }
 
@@ -301,6 +309,10 @@ namespace PngtoFshBatchtxt
                 ShowErrorMessage(ex.Message);
             }
             catch (IOException ex)
+            {
+                ShowErrorMessage(ex.Message);
+            }
+            catch (SecurityException ex)
             {
                 ShowErrorMessage(ex.Message);
             }
