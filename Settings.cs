@@ -1,43 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml;
-using System.IO;
-using System.Reflection;
+﻿using System.Xml;
+
 namespace PngtoFshBatchtxt
 {
     internal class Settings
     {
-        XmlDocument xmlDocument = new XmlDocument();
-                
-        string documentPath = null;
+        XmlDocument xmlDocument;
+        string documentPath;
 
         public Settings(string path)
         {
-            try 
-            {
-                documentPath = path;
-                xmlDocument.Load(documentPath);
-            }
-            catch { xmlDocument.LoadXml("<settings></settings>"); }
+            documentPath = path;
+            xmlDocument = new XmlDocument();
+            xmlDocument.Load(documentPath);
         }
 
         public string GetSetting(string xPath, string defaultValue)
         {
             XmlNode xmlNode = xmlDocument.SelectSingleNode("settings/" + xPath);
-            if (xmlNode != null) { return xmlNode.InnerText; }
-            else { return defaultValue; }
+            if (xmlNode != null) 
+            {
+                return xmlNode.InnerText; 
+            }
+            else
+            {
+                return defaultValue;
+            }
         }
 
         public void PutSetting(string xPath, string value)
         {
             XmlNode xmlNode = xmlDocument.SelectSingleNode("settings/" + xPath);
-            if (xmlNode == null) { xmlNode = createMissingNode("settings/" + xPath); }
+            if (xmlNode == null) 
+            { 
+                xmlNode = CreateMissingNode("settings/" + xPath); 
+            }
             xmlNode.InnerText = value;
             xmlDocument.Save(documentPath);
         }
 
-        private XmlNode createMissingNode(string xPath)
+        private XmlNode CreateMissingNode(string xPath)
         {
             string[] xPathSections = xPath.Split('/');
             string currentXPath = "";
@@ -47,7 +48,10 @@ namespace PngtoFshBatchtxt
             {
                 currentXPath += xPathSection;
                 testNode = xmlDocument.SelectSingleNode(currentXPath);
-                if (testNode == null) { currentNode.InnerXml += "<" + xPathSection + "></" + xPathSection + ">"; }
+                if (testNode == null)
+                {
+                    currentNode.InnerXml += "<" + xPathSection + "></" + xPathSection + ">";
+                }
                 currentNode = xmlDocument.SelectSingleNode(currentXPath);
                 currentXPath += "/";
             }
