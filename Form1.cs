@@ -497,40 +497,33 @@ namespace PngtoFshBatchtxt
 								{
 									RebuildDat(this.dat);
 								}
+
+								Invoke(new Action(delegate()
+								{
+									this.toolStripProgressStatus.Text = Resources.SavingDatStatusText;
+									this.statusStrip1.Refresh();
+								}));
+
+								if (dat.Indexes.Count > 0)
+								{
+									dat.Save(saveDatDialog1.FileName);
+								}
 							};
 
 							worker.RunWorkerCompleted += delegate(object s, RunWorkerCompletedEventArgs args)
 							{
-								try
+								if (args.Error != null)
 								{
-									if (args.Error != null)
-									{
-										ShowErrorMessage(args.Error.Message);
-									}
-									else
-									{
-										this.toolStripProgressStatus.Text = Resources.SavingDatStatusText;
-										this.statusStrip1.Refresh();
-
-										if (dat.Indexes.Count > 0)
-										{
-											dat.Save(saveDatDialog1.FileName);
-										}
-									}
+									ShowErrorMessage(args.Error.Message);
 								}
-								catch (Exception)
-								{
-									throw;
-								}
-								finally
-								{
-									dat.Close();
-									dat = null;
-									ClearandReset();
-									SetControlsEnabled(true);
-									this.Cursor = Cursors.Default;
-								}
+										
+								dat.Close();
+								dat = null;
+								ClearandReset();
+								SetControlsEnabled(true);
+								this.Cursor = Cursors.Default;
 							};
+							
 
 							worker.RunWorkerAsync();
 						}
