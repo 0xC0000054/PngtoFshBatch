@@ -33,6 +33,7 @@ namespace PngtoFshBatchtxt
 		private Nullable<long> lowerInstRange;
 		private Nullable<long> upperInstRange;
 		private MipmapFormat mipFormat;
+		private bool listControlsEnabled;
 
 		private readonly string groupPath;
 		private readonly string rangePath;
@@ -294,8 +295,25 @@ namespace PngtoFshBatchtxt
 
 		private void batchListView1_SelectedIndexChanged(object sender, EventArgs e)
 		{
+			// As current item in the ListView is deselected before selecting the new item, we use a timer to ensure that the only deselection event we receive is from the user.
+			this.listIndexChangedTimer.Start();
+		}
+
+		private void listIndexChangedTimer_Tick(object sender, EventArgs e)
+		{
+			this.listIndexChangedTimer.Stop();
+			BatchListSelectedIndexChanged();
+		}
+
+		private void BatchListSelectedIndexChanged()
+		{
 			if (batchListView.SelectedItems.Count > 0)
 			{
+				if (!listControlsEnabled)
+				{
+					EnableListControls();
+				}
+
 				int index = batchListView.SelectedItems[0].Index;
 				BatchFshContainer batch = batchFshList[index];
 
@@ -329,6 +347,13 @@ namespace PngtoFshBatchtxt
 					case FshImageFormat.DXT3:
 						fshTypeBox.SelectedIndex = 3;
 						break;
+				}
+			}
+			else
+			{
+				if (listControlsEnabled)
+				{
+					DisableListControls();
 				}
 			}
 		}
@@ -873,13 +898,6 @@ namespace PngtoFshBatchtxt
 			}
 		}
 
-		protected override void OnLoad(EventArgs e)
-		{
-			base.OnLoad(e);
-
-			fshTypeBox.SelectedIndex = 2;
-		}
-
 		protected override void OnShown(EventArgs e)
 		{
 			base.OnShown(e);
@@ -1102,7 +1120,7 @@ namespace PngtoFshBatchtxt
 				using (JumpListLink link = new JumpListLink(Assembly.GetExecutingAssembly().Location, Path.GetFileName(path)))
 				{
 					link.Arguments = "\"" + path + "\"";
-					link.IconReference = new Microsoft.WindowsAPICodePack.Shell.IconReference("shell32.dll", 3);
+					link.IconReference = OS.FolderIconReference;
 
 					JumpListHelper.AddToRecent(link);
 				}
@@ -1178,12 +1196,6 @@ namespace PngtoFshBatchtxt
 			{
 				FormatRefresh(batchListView.SelectedItems[0].Index);
 			}
-			else
-			{
-				Inst5_9rdo.Checked = false;
-				InstA_Erdo.Checked = false;
-				Inst0_4rdo.Checked = true;
-			}
 		}
 
 		private void remBtn_Click(object sender, EventArgs e)
@@ -1203,7 +1215,6 @@ namespace PngtoFshBatchtxt
 			{
 				ClearandReset();
 			}
-
 		}
 
 		/// <summary>
@@ -1254,12 +1265,10 @@ namespace PngtoFshBatchtxt
 			{
 				int count = batchFshList.Count;
 
-
 				for (int i = 0; i < count; i++)
 				{
 					batchFshList[i].GroupId = this.groupId;
 				}
-
 
 				for (int n = startIndex; n < count; n++)
 				{
@@ -1601,6 +1610,7 @@ namespace PngtoFshBatchtxt
 		{
 			this.batchListView.Items.Clear();
 			SetProcessingControlsEnabled(false);
+			DisableListControls();
 
 			if (batchFshList != null)
 			{
@@ -1612,12 +1622,8 @@ namespace PngtoFshBatchtxt
 			this.mipsBuilt = false;
 			this.batchProcessed = false;
 			this.datRebuilt = false;
-			this.tgiGroupTxt.Text = this.groupId;
-			this.tgiInstanceTxt.Text = null;
-			this.fshTypeBox.SelectedIndex = 2;
-
+			
 			this.toolStripProgressBar1.Value = 0;
-
 			this.toolStripProgressStatus.Text = Resources.StatusReadyText;
 			if (manager != null)
 			{
@@ -1728,5 +1734,33 @@ namespace PngtoFshBatchtxt
 			this.processBatchBtn.Enabled = enabled;
 		}
 
+		private void EnableListControls()
+		{
+			this.tgiInstanceTxt.Enabled = true;
+			this.fshTypeBox.Enabled = true;
+			this.Inst0_4rdo.Enabled = true;
+			this.Inst5_9rdo.Enabled = true;
+			this.InstA_Erdo.Enabled = true;
+
+			this.listControlsEnabled = true;
+		}
+
+		private void DisableListControls()
+		{
+			this.tgiGroupTxt.Text = this.groupId;
+			this.tgiInstanceTxt.Text = string.Empty;
+			this.fshTypeBox.SelectedIndex = -1;
+			this.Inst0_4rdo.Checked = false;
+			this.Inst5_9rdo.Checked = false;
+			this.InstA_Erdo.Checked = false;
+
+			this.tgiInstanceTxt.Enabled = false;
+			this.fshTypeBox.Enabled = false;
+			this.Inst0_4rdo.Enabled = false;
+			this.Inst5_9rdo.Enabled = false;
+			this.InstA_Erdo.Enabled = false;
+
+			this.listControlsEnabled = false;
+		}
 	}
 }

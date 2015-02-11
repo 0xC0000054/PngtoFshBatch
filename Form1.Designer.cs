@@ -76,6 +76,7 @@ namespace PngtoFshBatchtxt
             this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripProgressStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.listIndexChangedTimer = new System.Windows.Forms.Timer(this.components);
             this.datFuncBox.SuspendLayout();
             this.InstendBox1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -232,11 +233,11 @@ namespace PngtoFshBatchtxt
             // 
             this.InstA_Erdo.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.InstA_Erdo.AutoSize = true;
+            this.InstA_Erdo.Enabled = false;
             this.InstA_Erdo.Location = new System.Drawing.Point(6, 55);
             this.InstA_Erdo.Name = "InstA_Erdo";
             this.InstA_Erdo.Size = new System.Drawing.Size(42, 17);
             this.InstA_Erdo.TabIndex = 9;
-            this.InstA_Erdo.TabStop = true;
             this.InstA_Erdo.Text = "A-E";
             this.toolTip1.SetToolTip(this.InstA_Erdo, global::PngtoFshBatchtxt.Properties.Resources.InstanceIDRadioButtons_ToolTip);
             this.InstA_Erdo.UseVisualStyleBackColor = true;
@@ -246,11 +247,11 @@ namespace PngtoFshBatchtxt
             // 
             this.Inst5_9rdo.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.Inst5_9rdo.AutoSize = true;
+            this.Inst5_9rdo.Enabled = false;
             this.Inst5_9rdo.Location = new System.Drawing.Point(6, 36);
             this.Inst5_9rdo.Name = "Inst5_9rdo";
             this.Inst5_9rdo.Size = new System.Drawing.Size(40, 17);
             this.Inst5_9rdo.TabIndex = 8;
-            this.Inst5_9rdo.TabStop = true;
             this.Inst5_9rdo.Text = "5-9";
             this.toolTip1.SetToolTip(this.Inst5_9rdo, global::PngtoFshBatchtxt.Properties.Resources.InstanceIDRadioButtons_ToolTip);
             this.Inst5_9rdo.UseVisualStyleBackColor = true;
@@ -260,12 +261,11 @@ namespace PngtoFshBatchtxt
             // 
             this.Inst0_4rdo.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.Inst0_4rdo.AutoSize = true;
-            this.Inst0_4rdo.Checked = true;
+            this.Inst0_4rdo.Enabled = false;
             this.Inst0_4rdo.Location = new System.Drawing.Point(6, 19);
             this.Inst0_4rdo.Name = "Inst0_4rdo";
             this.Inst0_4rdo.Size = new System.Drawing.Size(40, 17);
             this.Inst0_4rdo.TabIndex = 7;
-            this.Inst0_4rdo.TabStop = true;
             this.Inst0_4rdo.Text = "0-4";
             this.toolTip1.SetToolTip(this.Inst0_4rdo, global::PngtoFshBatchtxt.Properties.Resources.InstanceIDRadioButtons_ToolTip);
             this.Inst0_4rdo.UseVisualStyleBackColor = true;
@@ -303,6 +303,7 @@ namespace PngtoFshBatchtxt
             // 
             this.fshTypeBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.fshTypeBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.fshTypeBox.Enabled = false;
             this.fshTypeBox.FormattingEnabled = true;
             this.fshTypeBox.Items.AddRange(new object[] {
             "24 Bit RGB (0:8:8:8)",
@@ -341,6 +342,7 @@ namespace PngtoFshBatchtxt
             // 
             this.tgiInstanceTxt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.tgiInstanceTxt.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+            this.tgiInstanceTxt.Enabled = false;
             this.tgiInstanceTxt.Location = new System.Drawing.Point(67, 252);
             this.tgiInstanceTxt.MaxLength = 8;
             this.tgiInstanceTxt.Name = "tgiInstanceTxt";
@@ -435,6 +437,11 @@ namespace PngtoFshBatchtxt
             this.toolStripProgressStatus.Size = new System.Drawing.Size(39, 17);
             this.toolStripProgressStatus.Text = global::PngtoFshBatchtxt.Properties.Resources.StatusReadyText;
             // 
+            // listIndexChangedTimer
+            // 
+            this.listIndexChangedTimer.Interval = 10;
+            this.listIndexChangedTimer.Tick += new System.EventHandler(this.listIndexChangedTimer_Tick);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -505,6 +512,7 @@ namespace PngtoFshBatchtxt
         internal System.Windows.Forms.CheckBox fshWriteCompCb;
         internal System.Windows.Forms.ComboBox mipFormatCbo;
         private System.Windows.Forms.TextBox tgiGroupTxt;
+        private System.Windows.Forms.Timer listIndexChangedTimer;
     }
 }
 
