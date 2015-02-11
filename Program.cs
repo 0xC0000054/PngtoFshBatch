@@ -154,7 +154,7 @@ namespace PngtoFshBatchtxt
                             }
                             else
                             {
-                                form1.tgiGroupTxt.Text = groupid;
+                                form1.groupId = groupid;
                             }
                         }
                         else if (arg.StartsWith(CommandLineSwitches.NormalMipmaps, StringComparison.OrdinalIgnoreCase))
