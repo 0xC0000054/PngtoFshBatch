@@ -496,7 +496,6 @@ namespace PngtoFshBatchtxt
         private System.Windows.Forms.Label tgiInstlbl;
         private System.Windows.Forms.Label tgiGrouplbl;
         private System.Windows.Forms.TextBox tgiInstanceTxt;
-        internal System.Windows.Forms.TextBox tgiGroupTxt;
         private System.Windows.Forms.Button clearListBtn;
         internal System.Windows.Forms.ListView batchListView;
         private System.Windows.Forms.ToolTip toolTip1;
@@ -505,6 +504,7 @@ namespace PngtoFshBatchtxt
         private System.Windows.Forms.ToolStripStatusLabel toolStripProgressStatus;
         internal System.Windows.Forms.CheckBox fshWriteCompCb;
         internal System.Windows.Forms.ComboBox mipFormatCbo;
+        private System.Windows.Forms.TextBox tgiGroupTxt;
     }
 }
 

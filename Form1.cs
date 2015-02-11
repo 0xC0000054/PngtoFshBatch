@@ -17,7 +17,7 @@ using System.Windows.Forms;
 namespace PngtoFshBatchtxt
 {
 	internal partial class Form1 : Form
-	{        
+	{
 		private TaskbarManager manager;
 		private JumpList jumpList;
 		private Settings settings;
@@ -33,14 +33,16 @@ namespace PngtoFshBatchtxt
 		private Nullable<long> lowerInstRange;
 		private Nullable<long> upperInstRange;
 		private MipmapFormat mipFormat;
-		
+
 		private readonly string groupPath;
 		private readonly string rangePath;
+		private const string DefaultGroupId = "1ABE787D";
 
 		internal BatchFshCollection batchFshList;
 		internal string outputFolder;
 		internal DatFile dat;
 		internal bool displayProgress;
+		internal string groupId;
 
 		internal const string AlphaMapSuffix = "_a";
 
@@ -50,6 +52,7 @@ namespace PngtoFshBatchtxt
 
 			this.displayProgress = true;
 			this.batchFshList = null;
+			this.groupId = null;
 
 			this.groupPath = Path.Combine(Application.StartupPath, @"Groupid.txt");
 			this.rangePath = Path.Combine(Application.StartupPath, @"instRange.txt");
@@ -88,7 +91,7 @@ namespace PngtoFshBatchtxt
 					batchFsh.Mip8Fsh = null;
 				}
 			}
-					
+
 			Bitmap[] bmps = new Bitmap[4];
 			Bitmap[] alphas = new Bitmap[4];
 
@@ -119,7 +122,7 @@ namespace PngtoFshBatchtxt
 						alphas[2] = GetBitmapThumbnail(alpha, 32, 32);
 						alphas[3] = GetBitmapThumbnail(alpha, 64, 64);
 					}
-					
+
 					string dirName = item.DirName;
 					FshImageFormat bmpType;
 					if (item.BmpType == FshImageFormat.DXT3 || item.BmpType == FshImageFormat.ThirtyTwoBit)
@@ -266,29 +269,6 @@ namespace PngtoFshBatchtxt
 
 		}
 
-#if false
-		private int CountBatchlines(string file)
-		{
-			int linecnt = 0;
-			using (StreamReader sr = new StreamReader(file))
-			{
-				string line;
-				while ((line = sr.ReadLine()) != null)
-				{
-					if (line != "")
-					{
-						if (line.Equals("%Fsh_batch%") || line.StartsWith("#"))
-						{
-							continue;
-						}
-						linecnt++;
-					}
-				}
-			}
-			return linecnt;
-		} 
-#endif
-
 		private static string GetAlphaSourceString(string path)
 		{
 			string alname = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path) + AlphaMapSuffix + Path.GetExtension(path));
@@ -315,7 +295,7 @@ namespace PngtoFshBatchtxt
 		private void batchListView1_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (batchListView.SelectedItems.Count > 0)
-			{				
+			{
 				int index = batchListView.SelectedItems[0].Index;
 				BatchFshContainer batch = batchFshList[index];
 
@@ -516,14 +496,14 @@ namespace PngtoFshBatchtxt
 								{
 									ShowErrorMessage(args.Error.Message);
 								}
-										
+
 								dat.Close();
 								dat = null;
 								ClearandReset();
 								SetControlsEnabled(true);
 								this.Cursor = Cursors.Default;
 							};
-							
+
 
 							worker.RunWorkerAsync();
 						}
@@ -750,7 +730,7 @@ namespace PngtoFshBatchtxt
 							this.manager.SetProgressValue(this.toolStripProgressBar1.Value, this.toolStripProgressBar1.Maximum, this.Handle);
 						}
 					}));
-				
+
 			}
 			else
 			{
@@ -866,7 +846,7 @@ namespace PngtoFshBatchtxt
 					{
 						ShowErrorMessage(args.Error.Message);
 					}
-					
+
 					ClearandReset();
 					SetControlsEnabled(true);
 					this.Cursor = Cursors.Default;
@@ -929,6 +909,12 @@ namespace PngtoFshBatchtxt
 			CheckRangeFilesExist(rangePath);
 			CheckRangeFilesExist(groupPath);
 
+			if (this.groupId == null)
+			{
+				ReadGroupTxt();
+			}
+			this.tgiGroupTxt.Text = this.groupId;
+
 			if (manager != null)
 			{
 				jumpList = JumpList.CreateJumpList();
@@ -945,7 +931,7 @@ namespace PngtoFshBatchtxt
 			if (random == null)
 			{
 				random = new Random();
-				ReadRangetxt(rangePath);
+				ReadRangeTxt();
 			}
 
 			if (lowerInstRange.HasValue && upperInstRange.HasValue)
@@ -983,52 +969,44 @@ namespace PngtoFshBatchtxt
 			}
 		}
 
-		internal void ReadGrouptxt(string path)
+		private void ReadGroupTxt()
 		{
-			int count = batchFshList.Count;
-
-			if (File.Exists(path))
+			if (File.Exists(this.groupPath))
 			{
-				using (StreamReader sr = new StreamReader(path))
+				using (StreamReader sr = new StreamReader(this.groupPath))
 				{
-					string line;
-					while ((line = sr.ReadLine()) != null)
+					string line = sr.ReadLine();
+
+					if (line != null)
 					{
-						if (!string.IsNullOrEmpty(line))
+						if (ValidateHexString(line))
 						{
-							string g = null;
-							if (ValidateHexString(line))
-							{
-								g = line;
-							}
-							else
-							{
-								g = "1ABE787D";
-								ShowErrorMessage(Resources.InvalidGroupID);
-							}
-							for (int i = 0; i < count; i++)
-							{
-								batchFshList[i].GroupId = g;
-							}
+							this.groupId = line;
 						}
+						else
+						{
+							this.groupId = DefaultGroupId;
+							ShowErrorMessage(Resources.InvalidGroupID);
+						}
+					}
+					else
+					{
+						this.groupId = DefaultGroupId;
 					}
 				}
 			}
 			else
 			{
-				for (int i = 0; i < count; i++)
-				{
-					batchFshList[i].GroupId = "1ABE787D";
-				}
+				this.groupId = DefaultGroupId;
 			}
 		}
 
-		private void ReadRangetxt(string path)
+		private void ReadRangeTxt()
 		{
-			if (File.Exists(path))
+			if (File.Exists(this.rangePath))
 			{
 				string[] instArray = null;
-				using (StreamReader sr = new StreamReader(path))
+				using (StreamReader sr = new StreamReader(this.rangePath))
 				{
 					string line;
 					char[] splitchar = new char[] { ',' };
@@ -1082,7 +1060,7 @@ namespace PngtoFshBatchtxt
 					}
 
 					long lower, upper;
-					
+
 					if (long.TryParse(lowerRange, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out lower) &&
 						long.TryParse(upperRange, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out upper))
 					{
@@ -1106,15 +1084,14 @@ namespace PngtoFshBatchtxt
 
 		internal static bool ValidateHexString(string str)
 		{
-			if (!string.IsNullOrEmpty(str))
+			if (str != null)
 			{
 				if (str.Length == 8 || str.Length == 10)
 				{
-					Regex r = new Regex(@"^(0x|0X)?[a-fA-F0-9]+$");
-					
-					return r.IsMatch(str);
+					return Regex.IsMatch(str, "^(0x|0X)?[a-fA-F0-9]+$", RegexOptions.CultureInvariant);
 				}
 			}
+
 			return false;
 		}
 
@@ -1214,12 +1191,12 @@ namespace PngtoFshBatchtxt
 			if (batchListView.SelectedItems.Count > 0 && batchListView.Items.Count > 1)
 			{
 				int index = batchListView.SelectedItems[0].Index;
-				
+
 				batchFshList.RemoveAt(index);
 
 				batchListView.Items.RemoveAt(index);
 				batchListView.Items[0].Selected = true;
-				
+
 				batchListView.Refresh();
 			}
 			else if (batchListView.SelectedItems.Count > 0 && batchListView.Items.Count == 1)
@@ -1235,14 +1212,16 @@ namespace PngtoFshBatchtxt
 		/// <exception cref="System.FormatException">The filename is not a valid instance id.</exception>
 		internal void SetGroupAndInstanceIds()
 		{
+			ReadGroupTxt();
+
 			for (int i = 0; i < batchFshList.Count; i++)
 			{
 				BatchFshContainer batch = batchFshList[i];
 				if (string.IsNullOrEmpty(batch.GroupId))
 				{
-					batch.GroupId = "1ABE787D";
+					batch.GroupId = this.groupId;
 				}
-				
+
 				if (string.IsNullOrEmpty(batch.InstanceId))
 				{
 					string fileName = Path.GetFileNameWithoutExtension(batch.FileName);
@@ -1275,17 +1254,12 @@ namespace PngtoFshBatchtxt
 			{
 				int count = batchFshList.Count;
 
-				if (tgiGroupTxt.Text.Length == 8)
+
+				for (int i = 0; i < count; i++)
 				{
-					for (int i = 0; i < count; i++)
-					{
-						batchFshList[i].GroupId = tgiGroupTxt.Text;
-					}
+					batchFshList[i].GroupId = this.groupId;
 				}
-				else
-				{
-					ReadGrouptxt(groupPath);
-				}
+
 
 				for (int n = startIndex; n < count; n++)
 				{
@@ -1346,7 +1320,7 @@ namespace PngtoFshBatchtxt
 					item.SubItems.Add(GetAlphaSourceString(path));
 					item.SubItems.Add(batch.GroupId);
 					item.SubItems.Add(batch.InstanceId);
-					batchListView.Items.Insert(i, item);					
+					batchListView.Items.Insert(i, item);
 				}
 				SetProcessingControlsEnabled(true);
 			}
@@ -1402,7 +1376,7 @@ namespace PngtoFshBatchtxt
 					{
 						batchFshList.Add(new BatchFshContainer(item));
 					}
-					
+
 
 					int startIndex = 0;
 					if (existingFileCount != 0)
@@ -1463,10 +1437,10 @@ namespace PngtoFshBatchtxt
 
 		private void tgiGroupTxt_TextChanged(object sender, EventArgs e)
 		{
-			if (batchListView.SelectedItems.Count > 0)
+			if (tgiGroupTxt.Text.Length == 8)
 			{
-				if (tgiGroupTxt.Text.Length == 8)
-				{				
+				if (batchListView.SelectedItems.Count > 0)
+				{
 					int index = batchListView.SelectedItems[0].Index;
 
 					string group = tgiGroupTxt.Text;
@@ -1475,6 +1449,10 @@ namespace PngtoFshBatchtxt
 						batchFshList[index].GroupId = group;
 						batchListView.SelectedItems[0].SubItems[2].Text = group;
 					}
+				}
+				else
+				{
+					this.groupId = tgiGroupTxt.Text;
 				}
 			}
 		}
@@ -1498,7 +1476,7 @@ namespace PngtoFshBatchtxt
 			if (batchListView.SelectedItems.Count > 0)
 			{
 				if (tgiInstanceTxt.Text.Length == 8)
-				{				
+				{
 					int index = batchListView.SelectedItems[0].Index;
 
 					string instance = tgiInstanceTxt.Text;
@@ -1530,8 +1508,8 @@ namespace PngtoFshBatchtxt
 					case 3:
 						selectedFormat = FshImageFormat.DXT3;
 						break;
-				}				
-				
+				}
+
 				int index = batchListView.SelectedItems[0].Index;
 
 				if (batchFshList[index].Format != selectedFormat)
@@ -1562,12 +1540,12 @@ namespace PngtoFshBatchtxt
 
 					infos.AddRange(di.GetFiles("*.png", SearchOption.TopDirectoryOnly));
 					infos.AddRange(di.GetFiles("*.bmp", SearchOption.TopDirectoryOnly));
-					
+
 					int count = infos.Count;
 					for (int i = 0; i < count; i++)
 					{
 						FileInfo fi = infos[i];
-						
+
 						if (!fi.Name.Contains(AlphaMapSuffix, StringComparison.OrdinalIgnoreCase))
 						{
 							fileList.Add(fi.FullName);
@@ -1629,12 +1607,12 @@ namespace PngtoFshBatchtxt
 				this.batchFshList.Dispose();
 				this.batchFshList = null;
 			}
-			
+
 			this.outputFolder = null;
 			this.mipsBuilt = false;
 			this.batchProcessed = false;
 			this.datRebuilt = false;
-			this.tgiGroupTxt.Text = null;
+			this.tgiGroupTxt.Text = this.groupId;
 			this.tgiInstanceTxt.Text = null;
 			this.fshTypeBox.SelectedIndex = 2;
 
@@ -1669,7 +1647,7 @@ namespace PngtoFshBatchtxt
 				totalCount = fileCount;
 			}
 
-			
+
 			batchFshList.SetCapacity(totalCount);
 
 			foreach (var file in files)
@@ -1699,7 +1677,7 @@ namespace PngtoFshBatchtxt
 		{
 			if (!File.Exists(path))
 			{
-				ShowErrorMessage(string.Format(CultureInfo.CurrentCulture, Resources.FileNotFoundFormat,  Path.GetFileName(path), path));
+				ShowErrorMessage(string.Format(CultureInfo.CurrentCulture, Resources.FileNotFoundFormat, Path.GetFileName(path), path));
 			}
 		}
 
