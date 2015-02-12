@@ -21,7 +21,7 @@ namespace PngtoFshBatchtxt
             internal static extern void SHAddToRecentDocs(ShellAddToRecentDocs flags, [MarshalAs(UnmanagedType.Interface)] IShellLinkW link);
         }
 
-        internal enum ShellAddToRecentDocs
+        internal enum ShellAddToRecentDocs : uint
         {
             Pidl = 0x1,
             PathA = 0x2,
