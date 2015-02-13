@@ -145,16 +145,13 @@ namespace PngtoFshBatchtxt
                                 groupid = group.ToUpperInvariant();
                             }
 
+                            form1.groupId = groupid;
                             if (fileCount > 0)
                             {
                                 for (int c = 0; c < form1.batchFshList.Count; c++)
                                 {
                                     form1.batchFshList[c].GroupId = groupid;
                                 }
-                            }
-                            else
-                            {
-                                form1.groupId = groupid;
                             }
                         }
                         else if (arg.StartsWith(CommandLineSwitches.NormalMipmaps, StringComparison.OrdinalIgnoreCase))
