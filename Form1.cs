@@ -38,6 +38,7 @@ namespace PngtoFshBatchtxt
 		private readonly string groupPath;
 		private readonly string rangePath;
 		private const string DefaultGroupId = "1ABE787D";
+		private static Regex hexadecimalRegex;
 
 		internal BatchFshCollection batchFshList;
 		internal string outputFolder;
@@ -1106,7 +1107,12 @@ namespace PngtoFshBatchtxt
 			{
 				if (str.Length == 8 || str.Length == 10)
 				{
-					return Regex.IsMatch(str, "^(0x|0X)?[a-fA-F0-9]+$", RegexOptions.None);
+					if (hexadecimalRegex == null)
+					{
+						hexadecimalRegex = new Regex("^(0x|0X)?[a-fA-F0-9]+$", RegexOptions.CultureInvariant);
+					}
+
+					return hexadecimalRegex.IsMatch(str);
 				}
 			}
 
