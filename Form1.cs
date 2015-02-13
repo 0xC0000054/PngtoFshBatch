@@ -1550,8 +1550,7 @@ namespace PngtoFshBatchtxt
 					infos.AddRange(di.GetFiles("*.png", SearchOption.TopDirectoryOnly));
 					infos.AddRange(di.GetFiles("*.bmp", SearchOption.TopDirectoryOnly));
 
-					int count = infos.Count;
-					for (int i = 0; i < count; i++)
+					for (int i = 0; i < infos.Count; i++)
 					{
 						FileInfo fi = infos[i];
 
@@ -1561,7 +1560,10 @@ namespace PngtoFshBatchtxt
 						}
 					}
 
-					AddRecentFolder(di.FullName);
+					if (fileList.Count > 0)
+					{
+						AddRecentFolder(di.FullName);
+					}
 				}
 				else
 				{
@@ -1575,27 +1577,33 @@ namespace PngtoFshBatchtxt
 					}
 				}
 			}
+
 			return fileList.ToArray();
 		}
 
 		private void batchListView1_DragDrop(object sender, DragEventArgs e)
 		{
 			string[] files = GetFilesfromDirectory(e.Data.GetData(DataFormats.FileDrop) as string[]);
+			
 			if (batchListView.Items.Count > 0)
 			{
 				ClearandReset();
 			}
 			int fileCount = files.Length;
-			batchFshList = new BatchFshCollection(fileCount);
 
-			foreach (var file in files)
+			if (fileCount > 0)
 			{
-				if (File.Exists(file))
+				batchFshList = new BatchFshCollection(fileCount);
+
+				foreach (var file in files)
 				{
-					batchFshList.Add(new BatchFshContainer(file));
+					if (File.Exists(file))
+					{
+						batchFshList.Add(new BatchFshContainer(file));
+					}
 				}
+				AddFilesToListView(); 
 			}
-			AddFilesToListView();
 		}
 
 		private void addBtn_DragEnter(object sender, DragEventArgs e)
@@ -1635,43 +1643,46 @@ namespace PngtoFshBatchtxt
 		{
 			string[] files = GetFilesfromDirectory(e.Data.GetData(DataFormats.FileDrop) as string[]);
 			int fileCount = files.Length;
-			int totalCount, existingFileCount;
 
-			if (batchFshList == null)
+			if (fileCount > 0)
 			{
-				batchFshList = new BatchFshCollection(fileCount);
-			}
+				int totalCount, existingFileCount;
 
-			if (batchFshList.Count > 0)
-			{
-				existingFileCount = batchFshList.Count;
-				totalCount = fileCount + existingFileCount;
-			}
-			else
-			{
-				existingFileCount = 0;
-				totalCount = fileCount;
-			}
-
-
-			batchFshList.SetCapacity(totalCount);
-
-			foreach (var file in files)
-			{
-				if (File.Exists(file))
+				if (batchFshList == null)
 				{
-					batchFshList.Add(new BatchFshContainer(file));
+					batchFshList = new BatchFshCollection(fileCount);
 				}
+
+				if (batchFshList.Count > 0)
+				{
+					existingFileCount = batchFshList.Count;
+					totalCount = fileCount + existingFileCount;
+				}
+				else
+				{
+					existingFileCount = 0;
+					totalCount = fileCount;
+				}
+
+
+				batchFshList.SetCapacity(totalCount);
+
+				foreach (var file in files)
+				{
+					if (File.Exists(file))
+					{
+						batchFshList.Add(new BatchFshContainer(file));
+					}
+				}
+
+				int startIndex = 0;
+				if (existingFileCount != 0)
+				{
+					startIndex = totalCount - fileCount;
+				}
+
+				AddFilesToListView(startIndex);
 			}
-
-			int startIndex = 0;
-			if (existingFileCount != 0)
-			{
-				startIndex = totalCount - fileCount;
-			}
-
-			AddFilesToListView(startIndex);
-
 		}
 
 		private void clearlistbtn_Click(object sender, EventArgs e)
