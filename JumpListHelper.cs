@@ -17,7 +17,7 @@ namespace PngtoFshBatchtxt
                 InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
             internal interface IShellLinkW { }
 
-            [DllImport("shell32.dll")]
+            [DllImport("shell32.dll", ExactSpelling = true)]
             internal static extern void SHAddToRecentDocs(ShellAddToRecentDocs flags, [MarshalAs(UnmanagedType.Interface)] IShellLinkW link);
         }
 
