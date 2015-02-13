@@ -1106,7 +1106,7 @@ namespace PngtoFshBatchtxt
 			{
 				if (str.Length == 8 || str.Length == 10)
 				{
-					return Regex.IsMatch(str, "^(0x|0X)?[a-fA-F0-9]+$", RegexOptions.CultureInvariant);
+					return Regex.IsMatch(str, "^(0x|0X)?[a-fA-F0-9]+$", RegexOptions.None);
 				}
 			}
 
