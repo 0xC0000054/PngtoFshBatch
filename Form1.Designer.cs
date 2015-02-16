@@ -292,7 +292,7 @@ namespace PngtoFshBatchtxt
             this.addBtn.Name = "addBtn";
             this.addBtn.Size = new System.Drawing.Size(75, 23);
             this.addBtn.TabIndex = 13;
-            this.addBtn.Text = "Add";
+            this.addBtn.Text = "Add...";
             this.toolTip1.SetToolTip(this.addBtn, global::PngtoFshBatchtxt.Properties.Resources.addBtn_ToolTip);
             this.addBtn.UseVisualStyleBackColor = true;
             this.addBtn.Click += new System.EventHandler(this.addBtn_Click);
