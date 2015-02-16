@@ -1,4 +1,5 @@
-﻿using System.Xml;
+﻿using System.Globalization;
+using System.Xml;
 
 namespace PngtoFshBatchtxt
 {
@@ -21,10 +22,23 @@ namespace PngtoFshBatchtxt
             {
                 return xmlNode.InnerText; 
             }
-            else
+                
+            return defaultValue;
+        }
+
+        public int GetSetting(string xPath, int defaultValue)
+        {
+            XmlNode xmlNode = xmlDocument.SelectSingleNode("settings/" + xPath);
+            if (xmlNode != null)
             {
-                return defaultValue;
+                int value;
+                if (int.TryParse(xmlNode.InnerText, NumberStyles.Integer, NumberFormatInfo.InvariantInfo, out value))
+                {
+                    return value;
+                }
             }
+
+            return defaultValue;
         }
 
         public void PutSetting(string xPath, string value)
@@ -35,6 +49,17 @@ namespace PngtoFshBatchtxt
                 xmlNode = CreateMissingNode("settings/" + xPath); 
             }
             xmlNode.InnerText = value;
+            xmlDocument.Save(documentPath);
+        }
+
+        public void PutSetting(string xPath, int value)
+        {
+            XmlNode xmlNode = xmlDocument.SelectSingleNode("settings/" + xPath);
+            if (xmlNode == null)
+            {
+                xmlNode = CreateMissingNode("settings/" + xPath);
+            }
+            xmlNode.InnerText = value.ToString(NumberFormatInfo.InvariantInfo);
             xmlDocument.Save(documentPath);
         }
 
