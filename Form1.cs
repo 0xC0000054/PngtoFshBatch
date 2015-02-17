@@ -449,12 +449,9 @@ namespace PngtoFshBatchtxt
             for (int i = 0; i < count; i++)
             {
                 DatIndex index = checkdat.Indexes[i];
-                if (index.Type == 0x7ab50e44U && index.Group == group && index.IndexState == DatIndexState.None)
+                if (index.Type == 0x7ab50e44U && index.Group == group && index.Instance == instance && index.IndexState == DatIndexState.None)
                 {
-                    if (index.Instance == instance)
-                    {
-                        checkdat.Remove(group, instance);
-                    }
+                    checkdat.Remove(group, instance);
                 }
             }
         }
@@ -933,14 +930,32 @@ namespace PngtoFshBatchtxt
             }
 
             CheckForSSE();
-            CheckRangeFilesExist(rangePath);
-            CheckRangeFilesExist(groupPath);
-
+            
             if (this.groupId == null)
             {
-                ReadGroupTxt();
+                try
+                { 
+                    ReadGroupTxt();
+                }
+                catch (FileNotFoundException fnfex)
+                {
+                    ShowErrorMessage(fnfex.Message);
+                }
+                catch (IOException ex)
+                {
+                    ShowErrorMessage(ex.Message);
+                }
+                catch (SecurityException ex)
+                {
+                    ShowErrorMessage(ex.Message);
+                }
+                catch (UnauthorizedAccessException ex)
+                {
+                    ShowErrorMessage(ex.Message);
+                }
             }
-            this.tgiGroupTxt.Text = this.groupId;
+            
+            this.tgiGroupTxt.Text = this.groupId ?? DefaultGroupId;
 
             if (manager != null)
             {
@@ -998,33 +1013,26 @@ namespace PngtoFshBatchtxt
 
         private void ReadGroupTxt()
         {
-            if (File.Exists(this.groupPath))
+            using (StreamReader sr = new StreamReader(this.groupPath))
             {
-                using (StreamReader sr = new StreamReader(this.groupPath))
-                {
-                    string line = sr.ReadLine();
+                string line = sr.ReadLine();
 
-                    if (line != null)
+                if (line != null)
+                {
+                    if (ValidateHexString(line))
                     {
-                        if (ValidateHexString(line))
-                        {
-                            this.groupId = line;
-                        }
-                        else
-                        {
-                            this.groupId = DefaultGroupId;
-                            ShowErrorMessage(Resources.InvalidGroupID);
-                        }
+                        this.groupId = line;
                     }
                     else
                     {
                         this.groupId = DefaultGroupId;
+                        ShowErrorMessage(Resources.InvalidGroupID);
                     }
                 }
-            }
-            else
-            {
-                this.groupId = DefaultGroupId;
+                else
+                {
+                    this.groupId = DefaultGroupId;
+                }
             }
         }
 
@@ -1363,8 +1371,16 @@ namespace PngtoFshBatchtxt
             {
                 ShowErrorMessage(ex.Message);
             }
-
+            catch (SecurityException ex)
+            {
+                ShowErrorMessage(ex.Message);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                ShowErrorMessage(ex.Message);
+            }
         }
+
         private void addBtn_Click(object sender, EventArgs e)
         {
             if (PngopenDialog.ShowDialog() == DialogResult.OK)
@@ -1706,14 +1722,6 @@ namespace PngtoFshBatchtxt
         private void clearlistbtn_Click(object sender, EventArgs e)
         {
             ClearandReset();
-        }
-
-        private void CheckRangeFilesExist(string path)
-        {
-            if (!File.Exists(path))
-            {
-                ShowErrorMessage(string.Format(CultureInfo.CurrentCulture, Resources.FileNotFoundFormat, Path.GetFileName(path), path));
-            }
         }
 
         private void fshwritecompcb_CheckedChanged(object sender, EventArgs e)
