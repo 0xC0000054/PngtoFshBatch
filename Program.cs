@@ -199,7 +199,7 @@ namespace PngtoFshBatchtxt
                                     form1.ProcessMips();
                                 }
 
-                                form1.RebuildDat(form1.dat);
+                                form1.RebuildDat();
 
                                 form1.dat.Save(datFileName);
                             }
