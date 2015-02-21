@@ -72,7 +72,7 @@ namespace PngtoFshBatchtxt
 
         private void ShowErrorMessage(string message)
         {
-            MessageBox.Show(this, message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, 0);
+            UIUtil.ShowErrorMessage(this, message, this.Text);
         }
 
         internal void ProcessMips()
@@ -889,7 +889,7 @@ namespace PngtoFshBatchtxt
         {
             if (OS.IsMicrosoftWindows && !OS.HaveSSE)
             {
-                MessageBox.Show(this, Resources.FshWriteSSERequiredError, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1, 0);
+                UIUtil.ShowWarningMessage(this, Resources.FshWriteSSERequiredError, this.Text);
                 fshWriteCompCb.Enabled = fshWriteCompCb.Checked = false;
             }
         }
