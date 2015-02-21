@@ -34,6 +34,7 @@ namespace PngtoFshBatchtxt
         private Nullable<long> upperInstRange;
         private MipmapFormat mipFormat;
         private bool listControlsEnabled;
+        private bool existingDat;
 
         private readonly string groupPath;
         private readonly string rangePath;
@@ -359,7 +360,7 @@ namespace PngtoFshBatchtxt
             }
         }
 
-        internal void RebuildDat(DatFile inputdat)
+        internal void RebuildDat()
         {
             if (mipsBuilt)
             {
@@ -398,9 +399,12 @@ namespace PngtoFshBatchtxt
                     {
                         if (fshimg[j] != null)
                         {
-                            CheckInstance(inputdat, group, instanceid[j]);
+                            if (this.existingDat)
+                            {
+                                this.dat.RemoveExistingFile(group, instanceid[j]);
+                            }
 
-                            inputdat.Add(new FshFileItem(fshimg[j], useFshWrite), group, instanceid[j], compress);
+                            this.dat.Add(new FshFileItem(fshimg[j], useFshWrite), group, instanceid[j], compress);
                         }
                     }
                 }
@@ -427,33 +431,17 @@ namespace PngtoFshBatchtxt
                             mainImage.Bitmaps[0].CalculateMipmapCount();
                         }
 
-                        CheckInstance(inputdat, group, instanceID);
+                        if (this.existingDat)
+                        {
+                            this.dat.RemoveExistingFile(group, instanceID);
+                        }
 
-                        inputdat.Add(new FshFileItem(mainImage, this.fshWriteCompCb.Checked), group, instanceID, this.compDatCb.Checked);
+                        this.dat.Add(new FshFileItem(mainImage, this.fshWriteCompCb.Checked), group, instanceID, this.compDatCb.Checked);
                     }
                 }
             }
 
             datRebuilt = true;
-        }
-
-        /// <summary>
-        /// Checks the dat for files with the same TGI id
-        /// </summary>
-        /// <param name="checkdat">The Dat to check</param>
-        /// <param name="group">The group id to check</param>
-        /// <param name="instance">The instance id to check</param>
-        private static void CheckInstance(DatFile checkdat, uint group, uint instance)
-        {
-            int count = checkdat.Indexes.Count;
-            for (int i = 0; i < count; i++)
-            {
-                DatIndex index = checkdat.Indexes[i];
-                if (index.Type == 0x7ab50e44U && index.Group == group && index.Instance == instance && index.IndexState == DatIndexState.None)
-                {
-                    checkdat.Remove(group, instance);
-                }
-            }
         }
 
         private void saveDatbtn_Click(object sender, EventArgs e)
@@ -464,19 +452,21 @@ namespace PngtoFshBatchtxt
                 {
                     if (saveDatDialog1.ShowDialog(this) == DialogResult.OK)
                     {
+                        this.existingDat = false;
                         if (File.Exists(saveDatDialog1.FileName))
                         {
-                            if (dat != null)
+                            if (this.dat != null)
                             {
-                                dat.Dispose();
-                                dat = null;
+                                this.dat.Dispose();
+                                this.dat = null;
                             }
 
-                            dat = new DatFile(saveDatDialog1.FileName);
+                            this.dat = new DatFile(this.saveDatDialog1.FileName);
+                            this.existingDat = true;
                         }
-                        else if (dat == null)
+                        else if (this.dat == null)
                         {
-                            dat = new DatFile();
+                            this.dat = new DatFile();
                         }
                         DisableControlsForProcessing();
 
@@ -496,7 +486,7 @@ namespace PngtoFshBatchtxt
 
                                 if (!this.datRebuilt)
                                 {
-                                    RebuildDat(this.dat);
+                                    RebuildDat();
                                 }
 
                                 Invoke(new Action(delegate()
