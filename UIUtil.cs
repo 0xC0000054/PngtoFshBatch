@@ -29,6 +29,7 @@ namespace PngtoFshBatchtxt
             using (TaskDialog dialog = new TaskDialog())
             {
                 dialog.Opened += new EventHandler(dialog_Opened);
+                dialog.Cancelable = true;
 
                 if (owner != null)
                 {
@@ -41,10 +42,9 @@ namespace PngtoFshBatchtxt
                 dialog.InstructionText = message;
                 dialog.Caption = caption;
 
-                if (dialog.Show() == TaskDialogResult.Ok)
-                {
-                    result = DialogResult.OK;
-                }
+                dialog.Show();
+
+                result = DialogResult.OK;
             }
 
             return result;
