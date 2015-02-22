@@ -20,6 +20,7 @@ namespace PngtoFshBatchtxt
             // The TaskDialog wrapper API has a bug, so we must reset the icon in the Opened event for it to be shown.
             TaskDialog taskDialog = (TaskDialog)sender;
             taskDialog.Icon = taskDialog.Icon;
+            taskDialog.InstructionText = taskDialog.InstructionText;
         }
 
         private static DialogResult ErrorTaskDialog(IWin32Window owner, string message, string caption, TaskDialogStandardIcon icon)
