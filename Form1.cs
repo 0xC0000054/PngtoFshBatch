@@ -1251,7 +1251,15 @@ namespace PngtoFshBatchtxt
 
                     if (fileName.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
                     {
-                        if (!ValidateHexString(fileName))
+                        string trimmed = null;
+
+                        // If the filename is longer than a normal instance file name we only check the first 10 characters, as there may be a suffix (e.g. _blend). 
+                        if (fileName.Length > 10)
+                        {
+                            trimmed = fileName.Substring(0, 10);
+                        }
+
+                        if (!ValidateHexString(trimmed ?? fileName))
                         {
                             throw new FormatException(string.Format(CultureInfo.CurrentCulture, Resources.InvalidInstanceFileNameFormat, fileName));
                         }
@@ -1292,7 +1300,15 @@ namespace PngtoFshBatchtxt
 
                         if (fileName.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
                         {
-                            if (!ValidateHexString(fileName))
+                            string trimmed = null;
+
+                            // If the filename is longer than a normal instance file name we only check the first 10 characters, as there may be a suffix (e.g. _blend). 
+                            if (fileName.Length > 10)
+                            {
+                                trimmed = fileName.Substring(0, 10);
+                            }
+
+                            if (!ValidateHexString(trimmed ?? fileName))
                             {
                                 throw new FormatException(string.Format(CultureInfo.CurrentCulture, Resources.InvalidInstanceFileNameFormat, fileName));
                             }
@@ -1756,7 +1772,6 @@ namespace PngtoFshBatchtxt
         {
             this.newDatbtn.Enabled = enabled;
             this.saveDatBtn.Enabled = enabled;
-            this.remBtn.Enabled = enabled;
             this.clearListBtn.Enabled = enabled;
             this.processBatchBtn.Enabled = enabled;
         }
@@ -1768,6 +1783,7 @@ namespace PngtoFshBatchtxt
             this.Inst0_4rdo.Enabled = true;
             this.Inst5_9rdo.Enabled = true;
             this.InstA_Erdo.Enabled = true;
+            this.remBtn.Enabled = true;
 
             this.listControlsEnabled = true;
         }
@@ -1786,6 +1802,7 @@ namespace PngtoFshBatchtxt
             this.Inst0_4rdo.Enabled = false;
             this.Inst5_9rdo.Enabled = false;
             this.InstA_Erdo.Enabled = false;
+            this.remBtn.Enabled = false;
 
             this.listControlsEnabled = false;
         }
