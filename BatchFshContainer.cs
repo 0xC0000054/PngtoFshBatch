@@ -1,5 +1,6 @@
-﻿using System;
-using FshDatIO;
+﻿using FshDatIO;
+using System;
+using System.Drawing;
 
 namespace PngtoFshBatchtxt
 {
@@ -15,6 +16,7 @@ namespace PngtoFshBatchtxt
         private FSHImageWrapper mip16Fsh;
         private FSHImageWrapper mip8Fsh;
         private bool disposed;
+        private Size mainImageSize;
 
         /// <summary>
         /// Creates a new BatchFshContainer
@@ -32,6 +34,7 @@ namespace PngtoFshBatchtxt
             this.mip16Fsh = null;
             this.mip8Fsh = null;
             this.disposed = false;
+            this.mainImageSize = Size.Empty;
         }
 
         public string FileName
@@ -156,6 +159,18 @@ namespace PngtoFshBatchtxt
                     throw new ArgumentNullException("value", "value is null.");
 
                 mip8Fsh = value;
+            }
+        }
+
+        public Size MainImageSize
+        {
+            get
+            {
+                return mainImageSize;
+            }
+            set
+            {
+                mainImageSize = value;
             }
         }
 
