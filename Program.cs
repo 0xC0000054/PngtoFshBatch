@@ -166,7 +166,7 @@ namespace PngtoFshBatchtxt
                         {
                             form1.fshWriteCompCb.Checked = true;
                         }
-                        else if (arg.StartsWith(CommandLineSwitches.ProcessDat, StringComparison.OrdinalIgnoreCase) && fileCount > 0)
+                        else if (arg.StartsWith(CommandLineSwitches.ProcessDat, StringComparison.OrdinalIgnoreCase))
                         {
                             string datFileName = arg.Substring(5, arg.Length - 5).Trim();
 
@@ -174,15 +174,7 @@ namespace PngtoFshBatchtxt
 
                             if (File.Exists(datFileName))
                             {
-                                try
-                                {
-                                    form1.dat = new DatFile(datFileName);
-                                }
-                                catch (DatHeaderException)
-                                {
-                                    form1.dat.Dispose();
-                                    form1.dat = new DatFile();
-                                }
+                                form1.dat = new DatFile(datFileName);
                             }
                             else
                             {
@@ -213,7 +205,7 @@ namespace PngtoFshBatchtxt
                                 form1.dat = null;
                             }
                         }
-                        else if (arg.StartsWith(CommandLineSwitches.ProcessFiles, StringComparison.OrdinalIgnoreCase) && fileCount > 0)
+                        else if (arg.StartsWith(CommandLineSwitches.ProcessFiles, StringComparison.OrdinalIgnoreCase))
                         {
                             form1.displayProgress = false;
 
@@ -222,6 +214,10 @@ namespace PngtoFshBatchtxt
                             form1.ProcessBatchSaveFiles();
                         }
                     }
+                }
+                catch (DatFileException ex)
+                {
+                    ShowErrorMessage(ex.Message);
                 }
                 catch (DirectoryNotFoundException ex)
                 {
