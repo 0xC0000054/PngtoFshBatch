@@ -57,7 +57,7 @@ namespace PngtoFshBatchtxt
             this.saveDatDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.outFolderBtn = new System.Windows.Forms.Button();
             this.OutputBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
-            this.PngopenDialog = new System.Windows.Forms.OpenFileDialog();
+            this.addFilesDialog = new System.Windows.Forms.OpenFileDialog();
             this.InstendBox1 = new System.Windows.Forms.GroupBox();
             this.InstA_Erdo = new System.Windows.Forms.RadioButton();
             this.Inst5_9rdo = new System.Windows.Forms.RadioButton();
@@ -211,10 +211,10 @@ namespace PngtoFshBatchtxt
             this.outFolderBtn.UseVisualStyleBackColor = true;
             this.outFolderBtn.Click += new System.EventHandler(this.outfolderbtn_Click);
             // 
-            // PngopenDialog
+            // addFilesDialog
             // 
-            this.PngopenDialog.Filter = "Bitmap files (*.png;*.bmp)|*.png;*.bmp";
-            this.PngopenDialog.Multiselect = true;
+            this.addFilesDialog.Filter = "Bitmap files (*.png;*.bmp)|*.png;*.bmp";
+            this.addFilesDialog.Multiselect = true;
             // 
             // InstendBox1
             // 
@@ -492,7 +492,7 @@ namespace PngtoFshBatchtxt
         private System.Windows.Forms.ColumnHeader instanceHeader;
         private System.Windows.Forms.Button outFolderBtn;
         private System.Windows.Forms.FolderBrowserDialog OutputBrowserDialog1;
-        private System.Windows.Forms.OpenFileDialog PngopenDialog;
+        private System.Windows.Forms.OpenFileDialog addFilesDialog;
         private System.Windows.Forms.GroupBox InstendBox1;
         private System.Windows.Forms.RadioButton InstA_Erdo;
         private System.Windows.Forms.RadioButton Inst5_9rdo;

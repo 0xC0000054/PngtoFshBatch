@@ -1417,10 +1417,10 @@ namespace PngtoFshBatchtxt
 
         private void addBtn_Click(object sender, EventArgs e)
         {
-            if (PngopenDialog.ShowDialog() == DialogResult.OK)
+            if (addFilesDialog.ShowDialog() == DialogResult.OK)
             {
                 // remove the alpha mask images from the file
-                string[] files = PngopenDialog.FileNames.Where(f => !Path.GetFileName(f).Contains(AlphaMapSuffix, StringComparison.OrdinalIgnoreCase)).ToArray();
+                string[] files = addFilesDialog.FileNames.Where(f => !Path.GetFileName(f).Contains(AlphaMapSuffix, StringComparison.OrdinalIgnoreCase)).ToArray();
 
                 int fileCount = files.Length;
                 if (fileCount > 0)
