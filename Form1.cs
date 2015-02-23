@@ -1450,7 +1450,6 @@ namespace PngtoFshBatchtxt
                         batchFshList.Add(new BatchFshContainer(item));
                     }
 
-
                     int startIndex = 0;
                     if (existingFileCount != 0)
                     {
@@ -1678,36 +1677,6 @@ namespace PngtoFshBatchtxt
             }
         }
 
-        private void ClearandReset()
-        {
-            this.batchListView.Items.Clear();
-            SetProcessingControlsEnabled(false);
-            DisableListControls();
-
-            if (batchFshList != null)
-            {
-                this.batchFshList.Dispose();
-                this.batchFshList = null;
-            }
-
-            this.outputFolder = null;
-            this.mipsBuilt = false;
-            this.batchProcessed = false;
-            this.datRebuilt = false;
-            this.mipFormatCbo.Enabled = true;
-            this.compDatCb.Enabled = true;
-            this.fshWriteCompCb.Enabled = true;
-            this.tgiGroupTxt.Enabled = true;
-            this.addBtn.Enabled = true;
-
-            this.toolStripProgressBar1.Value = 0;
-            this.toolStripProgressStatus.Text = Resources.StatusReadyText;
-            if (manager != null)
-            {
-                this.manager.SetProgressState(TaskbarProgressBarState.NoProgress, this.Handle);
-            }
-        }
-
         private void addBtn_DragDrop(object sender, DragEventArgs e)
         {
             string[] files = GetFilesfromDirectory(e.Data.GetData(DataFormats.FileDrop) as string[]);
@@ -1737,10 +1706,7 @@ namespace PngtoFshBatchtxt
 
                 foreach (var file in files)
                 {
-                    if (File.Exists(file))
-                    {
-                        batchFshList.Add(new BatchFshContainer(file));
-                    }
+                    batchFshList.Add(new BatchFshContainer(file));
                 }
 
                 int startIndex = 0;
@@ -1750,6 +1716,36 @@ namespace PngtoFshBatchtxt
                 }
 
                 AddFilesToListView(startIndex);
+            }
+        }
+
+        private void ClearandReset()
+        {
+            this.batchListView.Items.Clear();
+            SetProcessingControlsEnabled(false);
+            DisableListControls();
+
+            if (batchFshList != null)
+            {
+                this.batchFshList.Dispose();
+                this.batchFshList = null;
+            }
+
+            this.outputFolder = null;
+            this.mipsBuilt = false;
+            this.batchProcessed = false;
+            this.datRebuilt = false;
+            this.mipFormatCbo.Enabled = true;
+            this.compDatCb.Enabled = true;
+            this.fshWriteCompCb.Enabled = true;
+            this.tgiGroupTxt.Enabled = true;
+            this.addBtn.Enabled = true;
+
+            this.toolStripProgressBar1.Value = 0;
+            this.toolStripProgressStatus.Text = Resources.StatusReadyText;
+            if (manager != null)
+            {
+                this.manager.SetProgressState(TaskbarProgressBarState.NoProgress, this.Handle);
             }
         }
 
