@@ -49,6 +49,13 @@ namespace PngtoFshBatchtxt
 
         internal const string AlphaMapSuffix = "_a";
 
+        private static class SettingNames
+        {
+            internal const string MipmapFormat = "MipFormat";
+            internal const string CompressDat = "compDatcb_checked";
+            internal const string FshWriteCompression = "fshwritecompcb_checked";
+        }
+
         public Form1()
         {
             InitializeComponent();
@@ -895,16 +902,16 @@ namespace PngtoFshBatchtxt
             this.settings = new Settings(Path.Combine(Application.StartupPath, @"PngtoFshBatch.xml"));
 
             bool value;
-            if (bool.TryParse(settings.GetSetting("compDatcb_checked", bool.TrueString), out value))
+            if (bool.TryParse(settings.GetSetting(SettingNames.CompressDat, bool.TrueString), out value))
             {
                 this.compDatCb.Checked = value;
             }
 
-            if (bool.TryParse(settings.GetSetting("fshwritecompcb_checked", bool.FalseString), out value))
+            if (bool.TryParse(settings.GetSetting(SettingNames.FshWriteCompression, bool.FalseString), out value))
             {
                 this.fshWriteCompCb.Checked = value;
             }
-            this.mipFormatCbo.SelectedIndex = settings.GetSetting("MipFormat", 0);
+            this.mipFormatCbo.SelectedIndex = settings.GetSetting(SettingNames.MipmapFormat, 0);
         }
 
         private void CheckForSSE()
@@ -1011,7 +1018,7 @@ namespace PngtoFshBatchtxt
         {
             if (settings != null)
             {
-                settings.PutSetting("compDatcb_checked", compDatCb.Checked.ToString());
+                settings.PutSetting(SettingNames.CompressDat, compDatCb.Checked.ToString());
             }
         }
 
@@ -1709,7 +1716,7 @@ namespace PngtoFshBatchtxt
         {
             if (settings != null)
             {
-                settings.PutSetting("fshwritecompcb_checked", fshWriteCompCb.Checked.ToString());
+                settings.PutSetting(SettingNames.FshWriteCompression, fshWriteCompCb.Checked.ToString());
             }
         }
 
@@ -1719,7 +1726,7 @@ namespace PngtoFshBatchtxt
 
             if (settings != null)
             {
-                settings.PutSetting("MipFormat", mipFormatCbo.SelectedIndex);
+                settings.PutSetting(SettingNames.MipmapFormat, mipFormatCbo.SelectedIndex);
             }
         }
 
