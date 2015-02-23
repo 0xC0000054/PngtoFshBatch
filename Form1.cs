@@ -110,7 +110,7 @@ namespace PngtoFshBatchtxt
 
                 // Only items that end with 4, 9 or E can have mipmaps in separate files. 
                 if (endChar == '4' || endChar == '9' || endChar == 'E')
-                {                
+                {
                     BitmapEntry item = batchFsh.MainImage.Bitmaps[0];
 
                     if (item.Bitmap.Width >= 128 && item.Bitmap.Height >= 128)
@@ -244,7 +244,7 @@ namespace PngtoFshBatchtxt
 
                     if (zoom != 4)
                     {
-                        SetInstanceEndChars(instance); 
+                        SetInstanceEndChars(instance);
                     }
 
                     switch (zoom)
@@ -416,7 +416,7 @@ namespace PngtoFshBatchtxt
 
                     fshimg[4] = batchFsh.MainImage;
 
- 
+
                     bool useFshWrite = this.fshWriteCompCb.Checked;
                     bool compress = this.compDatCb.Checked;
                     for (int j = 4; j >= 0; j--)
@@ -942,11 +942,11 @@ namespace PngtoFshBatchtxt
             }
 
             CheckForSSE();
-            
+
             if (this.groupId == null)
             {
                 try
-                { 
+                {
                     ReadGroupTxt();
                 }
                 catch (FileNotFoundException fnfex)
@@ -966,7 +966,7 @@ namespace PngtoFshBatchtxt
                     ShowErrorMessage(ex.Message);
                 }
             }
-            
+
             this.tgiGroupTxt.Text = this.groupId ?? DefaultGroupId;
 
             if (manager != null)
@@ -1050,82 +1050,69 @@ namespace PngtoFshBatchtxt
 
         private void ReadRangeTxt()
         {
-            if (File.Exists(this.rangePath))
+            string[] instArray = null;
+            using (StreamReader sr = new StreamReader(this.rangePath))
             {
-                string[] instArray = null;
-                using (StreamReader sr = new StreamReader(this.rangePath))
-                {
-                    string line;
-                    char[] splitchar = new char[] { ',' };
-                    while ((line = sr.ReadLine()) != null)
-                    {
-                        if (!string.IsNullOrEmpty(line))
-                        {
-                            instArray = line.Split(splitchar, StringSplitOptions.RemoveEmptyEntries);
-                        }
+                string line = sr.ReadLine();
 
-                    }
+                if (!string.IsNullOrEmpty(line))
+                {
+                    instArray = line.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                }
+            }
+
+            if (instArray != null)
+            {
+                if (instArray.Length != 2)
+                {
+                    throw new FormatException(Resources.InvalidInstanceRange);
                 }
 
-                if (instArray != null)
+                string inst0 = instArray[0].Trim();
+                string inst1 = instArray[1].Trim();
+
+                if (!ValidateHexString(inst0))
                 {
-                    if (instArray.Length != 2)
+                    throw new FormatException(string.Format(CultureInfo.CurrentCulture, Resources.InvalidInstanceIdFormat, inst0));
+                }
+                if (!ValidateHexString(inst1))
+                {
+                    throw new FormatException(string.Format(CultureInfo.CurrentCulture, Resources.InvalidInstanceIdFormat, inst1));
+                }
+
+                string lowerRange;
+                string upperRange;
+                if (inst0.Length == 10 && inst0.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+                {
+                    lowerRange = inst0.Substring(2, 8);
+                }
+                else
+                {
+                    lowerRange = inst0;
+                }
+
+                if (inst1.Length == 10 && inst1.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+                {
+                    upperRange = inst1.Substring(2, 8);
+                }
+                else
+                {
+                    upperRange = inst1;
+                }
+
+                long lower, upper;
+
+                if (long.TryParse(lowerRange, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out lower) &&
+                    long.TryParse(upperRange, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out upper))
+                {
+                    if (lower >= upper)
                     {
                         throw new FormatException(Resources.InvalidInstanceRange);
                     }
 
-                    string inst0 = instArray[0].Trim();
-                    string inst1 = instArray[1].Trim();
-
-                    if (!ValidateHexString(inst0))
-                    {
-                        throw new FormatException(string.Format(CultureInfo.CurrentCulture, Resources.InvalidInstanceIdFormat, inst0));
-                    }
-                    if (!ValidateHexString(inst1))
-                    {
-                        throw new FormatException(string.Format(CultureInfo.CurrentCulture, Resources.InvalidInstanceIdFormat, inst1));
-                    }
-
-                    string lowerRange;
-                    string upperRange;
-                    if (inst0.Length == 10 && inst0.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
-                    {
-                        lowerRange = inst0.Substring(2, 8);
-                    }
-                    else
-                    {
-                        lowerRange = inst0;
-                    }
-
-                    if (inst1.Length == 10 && inst1.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
-                    {
-                        upperRange = inst1.Substring(2, 8);
-                    }
-                    else
-                    {
-                        upperRange = inst1;
-                    }
-
-                    long lower, upper;
-
-                    if (long.TryParse(lowerRange, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out lower) &&
-                        long.TryParse(upperRange, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out upper))
-                    {
-                        if (lower >= upper)
-                        {
-                            throw new FormatException(Resources.InvalidInstanceRange);
-                        }
-
-                        lowerInstRange = lower;
-                        upperInstRange = upper;
-                    }
+                    lowerInstRange = lower;
+                    upperInstRange = upper;
                 }
-
-            }
-            else
-            {
-                lowerInstRange = null;
-                upperInstRange = null;
             }
         }
 
@@ -1214,7 +1201,7 @@ namespace PngtoFshBatchtxt
         }
 
         private void FormatRefresh(int index, bool formatRadiosChanged)
-        {            
+        {
             BatchFshContainer batchFsh = batchFshList[index];
             string instance = batchFsh.InstanceId;
             char endChar = instance[7];
@@ -1224,7 +1211,7 @@ namespace PngtoFshBatchtxt
             {
                 SetEndFormat(mainImageSize, index);
             }
-           
+
             batchListView.SelectedItems[0].SubItems[3].Text = instance;
             tgiInstanceTxt.Text = instance;
         }
@@ -1461,7 +1448,7 @@ namespace PngtoFshBatchtxt
             {
                 // remove the alpha mask images from the list of files
                 string[] files = addFilesDialog.FileNames.Where(f => !Path.GetFileName(f).Contains(AlphaMapSuffix, StringComparison.OrdinalIgnoreCase)).ToArray();
-                AddBtnProcessFiles(files);                
+                AddBtnProcessFiles(files);
             }
         }
 
