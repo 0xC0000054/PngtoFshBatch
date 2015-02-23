@@ -9,7 +9,6 @@ using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Security;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -63,6 +62,8 @@ namespace PngtoFshBatchtxt
             this.displayProgress = true;
             this.batchFshList = null;
             this.groupId = null;
+            this.lowerInstRange = null;
+            this.upperInstRange = null;
 
             this.groupPath = Path.Combine(Application.StartupPath, @"Groupid.txt");
             this.rangePath = Path.Combine(Application.StartupPath, @"instRange.txt");
@@ -452,7 +453,7 @@ namespace PngtoFshBatchtxt
                     uint group = uint.Parse(batchFsh.GroupId, NumberStyles.HexNumber, NumberFormatInfo.InvariantInfo);
                     uint instanceID = uint.Parse(batchFsh.InstanceId, NumberStyles.HexNumber, NumberFormatInfo.InvariantInfo);
 
-                    FSHImageWrapper mainImage = batchFshList[i].MainImage;
+                    FSHImageWrapper mainImage = batchFsh.MainImage;
                     if (mainImage != null)
                     {
                         if (mipFormat == MipmapFormat.Embedded)
@@ -754,7 +755,7 @@ namespace PngtoFshBatchtxt
 
             if (manager != null)
             {
-                manager.SetProgressState(TaskbarProgressBarState.Normal);
+                manager.SetProgressState(TaskbarProgressBarState.Normal, this.Handle);
             }
         }
 
@@ -1109,16 +1110,16 @@ namespace PngtoFshBatchtxt
 
                 long lower, upper;
 
-                if (long.TryParse(lowerRange, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out lower) &&
-                    long.TryParse(upperRange, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out upper))
+                if (long.TryParse(lowerRange, NumberStyles.HexNumber, NumberFormatInfo.InvariantInfo, out lower) &&
+                    long.TryParse(upperRange, NumberStyles.HexNumber, NumberFormatInfo.InvariantInfo, out upper))
                 {
                     if (lower >= upper)
                     {
                         throw new FormatException(Resources.InvalidInstanceRange);
                     }
 
-                    lowerInstRange = lower;
-                    upperInstRange = upper;
+                    this.lowerInstRange = lower;
+                    this.upperInstRange = upper;
                 }
             }
         }
@@ -1145,7 +1146,7 @@ namespace PngtoFshBatchtxt
         {
             if (jumpList != null)
             {
-                using (JumpListLink link = new JumpListLink(Assembly.GetExecutingAssembly().Location, Path.GetFileName(path)))
+                using (JumpListLink link = new JumpListLink(System.Reflection.Assembly.GetExecutingAssembly().Location, Path.GetFileName(path)))
                 {
                     link.Arguments = "\"" + path + "\"";
                     link.IconReference = OS.FolderIconReference;
