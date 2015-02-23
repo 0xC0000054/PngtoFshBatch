@@ -1415,51 +1415,54 @@ namespace PngtoFshBatchtxt
             }
         }
 
+        private void AddBtnProcessFiles(string[] files)
+        {
+            int fileCount = files.Length;
+            if (fileCount > 0)
+            {
+                int totalCount, existingFileCount;
+
+                if (batchFshList == null)
+                {
+                    batchFshList = new BatchFshCollection(fileCount);
+                }
+
+                if (batchFshList.Count > 0)
+                {
+                    existingFileCount = batchFshList.Count;
+                    totalCount = fileCount + existingFileCount;
+                }
+                else
+                {
+                    existingFileCount = 0;
+                    totalCount = fileCount;
+                }
+
+                batchFshList.SetCapacity(totalCount);
+
+                foreach (var item in files)
+                {
+                    batchFshList.Add(new BatchFshContainer(item));
+                }
+
+                int startIndex = 0;
+                if (existingFileCount != 0)
+                {
+                    startIndex = totalCount - fileCount;
+                }
+
+                AddFilesToListView(startIndex);
+            }
+        }
+
         private void addBtn_Click(object sender, EventArgs e)
         {
             if (addFilesDialog.ShowDialog() == DialogResult.OK)
             {
-                // remove the alpha mask images from the file
+                // remove the alpha mask images from the list of files
                 string[] files = addFilesDialog.FileNames.Where(f => !Path.GetFileName(f).Contains(AlphaMapSuffix, StringComparison.OrdinalIgnoreCase)).ToArray();
-
-                int fileCount = files.Length;
-                if (fileCount > 0)
-                {
-                    int totalCount, existingFileCount;
-
-                    if (batchFshList == null)
-                    {
-                        batchFshList = new BatchFshCollection(fileCount);
-                    }
-
-                    if (batchFshList.Count > 0)
-                    {
-                        existingFileCount = batchFshList.Count;
-                        totalCount = fileCount + existingFileCount;
-                    }
-                    else
-                    {
-                        existingFileCount = 0;
-                        totalCount = fileCount;
-                    }
-
-                    batchFshList.SetCapacity(totalCount);
-
-                    foreach (var item in files)
-                    {
-                        batchFshList.Add(new BatchFshContainer(item));
-                    }
-
-                    int startIndex = 0;
-                    if (existingFileCount != 0)
-                    {
-                        startIndex = totalCount - fileCount;
-                    }
-
-                    AddFilesToListView(startIndex);
-                }
+                AddBtnProcessFiles(files);                
             }
-
         }
 
         /// <summary>
@@ -1646,7 +1649,7 @@ namespace PngtoFshBatchtxt
 
         private void batchListView1_DragDrop(object sender, DragEventArgs e)
         {
-            string[] files = GetFilesfromDirectory(e.Data.GetData(DataFormats.FileDrop) as string[]);
+            string[] files = GetFilesfromDirectory(e.Data.GetData(DataFormats.FileDrop, false) as string[]);
 
             if (batchListView.Items.Count > 0)
             {
@@ -1656,14 +1659,11 @@ namespace PngtoFshBatchtxt
 
             if (fileCount > 0)
             {
-                batchFshList = new BatchFshCollection(fileCount);
+                this.batchFshList = new BatchFshCollection(fileCount);
 
                 foreach (var file in files)
                 {
-                    if (File.Exists(file))
-                    {
-                        batchFshList.Add(new BatchFshContainer(file));
-                    }
+                    this.batchFshList.Add(new BatchFshContainer(file));
                 }
                 AddFilesToListView();
             }
@@ -1679,44 +1679,8 @@ namespace PngtoFshBatchtxt
 
         private void addBtn_DragDrop(object sender, DragEventArgs e)
         {
-            string[] files = GetFilesfromDirectory(e.Data.GetData(DataFormats.FileDrop) as string[]);
-            int fileCount = files.Length;
-
-            if (fileCount > 0)
-            {
-                int totalCount, existingFileCount;
-
-                if (batchFshList == null)
-                {
-                    batchFshList = new BatchFshCollection(fileCount);
-                }
-
-                if (batchFshList.Count > 0)
-                {
-                    existingFileCount = batchFshList.Count;
-                    totalCount = fileCount + existingFileCount;
-                }
-                else
-                {
-                    existingFileCount = 0;
-                    totalCount = fileCount;
-                }
-
-                batchFshList.SetCapacity(totalCount);
-
-                foreach (var file in files)
-                {
-                    batchFshList.Add(new BatchFshContainer(file));
-                }
-
-                int startIndex = 0;
-                if (existingFileCount != 0)
-                {
-                    startIndex = totalCount - fileCount;
-                }
-
-                AddFilesToListView(startIndex);
-            }
+            string[] files = GetFilesfromDirectory(e.Data.GetData(DataFormats.FileDrop, false) as string[]);
+            AddBtnProcessFiles(files);
         }
 
         private void ClearandReset()
