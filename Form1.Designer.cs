@@ -439,7 +439,7 @@ namespace PngtoFshBatchtxt
             // 
             // listIndexChangedTimer
             // 
-            this.listIndexChangedTimer.Interval = 10;
+            this.listIndexChangedTimer.Interval = 50;
             this.listIndexChangedTimer.Tick += new System.EventHandler(this.listIndexChangedTimer_Tick);
             // 
             // Form1
