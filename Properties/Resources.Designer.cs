@@ -318,6 +318,15 @@ namespace PngtoFshBatchtxt.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to There are no images for the {0} command to process..
+        /// </summary>
+        internal static string ProcessCommandNoFiles {
+            get {
+                return ResourceManager.GetString("ProcessCommandNoFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Processing Mipmaps ({0} of {1}).
         /// </summary>
         internal static string ProcessingMipsStatusTextFormat {
@@ -332,15 +341,6 @@ namespace PngtoFshBatchtxt.Properties {
         internal static string ProcessingStatusTextFormat {
             get {
                 return ResourceManager.GetString("ProcessingStatusTextFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Png to Fsh Batch.
-        /// </summary>
-        internal static string ProgramName {
-            get {
-                return ResourceManager.GetString("ProgramName", resourceCulture);
             }
         }
         
