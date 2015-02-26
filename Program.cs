@@ -29,65 +29,36 @@ namespace PngtoFshBatchtxt
             return MessageBox.Show(message, ProgramName, MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1, 0);
         }
 
-        private static bool ValidateArgumentPaths(string[] args)
+        private static bool ValidateArgumentPath(string path, string argumentName)
         {
-            for (int i = 0; i < args.Length; i++)
+            if (!string.IsNullOrEmpty(path))
             {
-                string arg = args[i];
-                if (arg.StartsWith(CommandLineSwitches.ProcessDat, StringComparison.OrdinalIgnoreCase) || arg.StartsWith(CommandLineSwitches.OutputDirectory, StringComparison.OrdinalIgnoreCase))
+                if (!Directory.Exists(path))
                 {
-                    bool processDat = arg.StartsWith(CommandLineSwitches.ProcessDat, StringComparison.OrdinalIgnoreCase);
-                    int strlen = processDat ? 5 : 8;
-
-                    string path = arg.Substring(strlen, arg.Length - strlen).Trim();
-
-                    if (!string.IsNullOrEmpty(path))
+                    string message = string.Format(CultureInfo.CurrentCulture, Resources.ArgumentDirectoryNotFound, path);
+                    if (ShowErrorMessage(message) == DialogResult.OK)
                     {
-                        if (processDat)
-                        {
-                            path = Path.GetDirectoryName(path);
-                        }
-
-                        if (!Directory.Exists(path))
-                        {
-                            string message = string.Format(CultureInfo.CurrentCulture, Resources.ArgumentDirectoryNotFound, path);
-                            if (ShowErrorMessage(message) == DialogResult.OK)
-                            {
-                                return false;
-                            }
-                        }
+                        return false;
                     }
-                    else
-                    {
-                        string name = processDat ? CommandLineSwitches.ProcessDat : CommandLineSwitches.OutputDirectory;
-                        string message = string.Format(CultureInfo.CurrentCulture, Resources.ArgumentPathEmpty, name);
-                        if (ShowErrorMessage(message) == DialogResult.OK)
-                        {
-                            return false;
-                        }
-                    }
+                }
+            }
+            else
+            {
+                string message = string.Format(CultureInfo.CurrentCulture, Resources.ArgumentPathEmpty, argumentName);
+                if (ShowErrorMessage(message) == DialogResult.OK)
+                {
+                    return false;
                 }
             }
 
             return true;
         }
-
-        private static bool ValidateArguments(string[] args, int fileCount)
+      
+        private static bool ValidateArguments(string[] args, int firstCommandLineSwitch, int fileCount)
         {
-            if (!ValidateArgumentPaths(args))
-            {
-                return false;
-            }
-
-            for (int i = 0; i < args.Length; i++)
+            for (int i = firstCommandLineSwitch; i < args.Length; i++)
             {
                 string arg = args[i];
-
-                if ((arg.StartsWith(CommandLineSwitches.ProcessDat, StringComparison.OrdinalIgnoreCase) ||
-                     arg.StartsWith(CommandLineSwitches.ProcessFiles, StringComparison.OrdinalIgnoreCase)) && fileCount == 0)
-                {
-                    return false;
-                }
 
                 if (arg.StartsWith(CommandLineSwitches.GroupID, StringComparison.OrdinalIgnoreCase))
                 {
@@ -101,20 +72,50 @@ namespace PngtoFshBatchtxt
                         }
                     }
                 }
+                else if (arg.StartsWith(CommandLineSwitches.OutputDirectory, StringComparison.OrdinalIgnoreCase))
+                {
+                    string path = arg.Substring(8, arg.Length - 8).Trim();
+
+                    if (!ValidateArgumentPath(path, CommandLineSwitches.OutputDirectory))
+                    {
+                        return false;
+                    }
+                }
+                else if (arg.StartsWith(CommandLineSwitches.ProcessDat, StringComparison.OrdinalIgnoreCase))
+                {
+                    if (fileCount > 0)
+                    {
+                        string path = arg.Substring(5, arg.Length - 5).Trim();
+
+                        if (!ValidateArgumentPath(path, CommandLineSwitches.ProcessDat))
+                        {
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        if (ShowErrorMessage(string.Format(CultureInfo.InvariantCulture, Resources.ProcessCommandNoFiles, CommandLineSwitches.ProcessDat)) == DialogResult.OK)
+                        {
+                            return false;
+                        }
+                    }
+                }
+                else if (arg.StartsWith(CommandLineSwitches.ProcessFiles, StringComparison.OrdinalIgnoreCase) && fileCount == 0)
+                {
+                    if (ShowErrorMessage(string.Format(CultureInfo.InvariantCulture, Resources.ProcessCommandNoFiles, CommandLineSwitches.ProcessFiles)) == DialogResult.OK)
+                    {
+                        return false;
+                    }
+                }
+                
             }
 
             return true;
         }
 
-        private static void ProcessCommandLineSwitches(string[] args, Form1 form1, int fileCount, bool cmdLineOnly)
+        private static void ProcessCommandLineSwitches(string[] args, int firstCommandLineSwitch, Form1 form1, int fileCount, bool cmdLineOnly)
         {
-            if (args.Length == 1 && args[0] == "/?")
-            {
-                ShowHelp();
-                return;
-            }
-
-            if (ValidateArguments(args, fileCount))
+            if (ValidateArguments(args, firstCommandLineSwitch, fileCount))
             {
                 if (cmdLineOnly)
                 {
@@ -123,7 +124,7 @@ namespace PngtoFshBatchtxt
 
                 try
                 {
-                    for (int i = 0; i < args.Length; i++)
+                    for (int i = firstCommandLineSwitch; i < args.Length; i++)
                     {
                         string arg = args[i];
 
@@ -242,72 +243,65 @@ namespace PngtoFshBatchtxt
             }
         }
 
-        private static string[] GetImagePaths(string[] fileNames)
+        private static string[] GetImagePaths(string[] args, int firstCommandLineSwitch)
         {
-            try
+            if (firstCommandLineSwitch > 0)
             {
-                List<string> filePaths = new List<string>();
-                foreach (var fileName in fileNames)
+                try
                 {
-                    if (fileName.StartsWith(CommandLineSwitches.ProcessFiles, StringComparison.OrdinalIgnoreCase) ||
-                        fileName.StartsWith(CommandLineSwitches.NormalMipmaps, StringComparison.OrdinalIgnoreCase) ||
-                        fileName.StartsWith(CommandLineSwitches.EmbeddedMipmaps, StringComparison.OrdinalIgnoreCase) ||
-                        fileName.StartsWith(CommandLineSwitches.ProcessDat, StringComparison.OrdinalIgnoreCase) ||
-                        fileName.StartsWith(CommandLineSwitches.OutputDirectory, StringComparison.OrdinalIgnoreCase) ||
-                        fileName.StartsWith(CommandLineSwitches.GroupID, StringComparison.OrdinalIgnoreCase) ||
-                        fileName.StartsWith("/?", StringComparison.Ordinal))
+                    List<string> filePaths = new List<string>();
+                    for (int i = 0; i < firstCommandLineSwitch; i++)
                     {
-                        continue; // skip the command line switches
-                    }
-
-                    if ((File.GetAttributes(fileName) & FileAttributes.Directory) == FileAttributes.Directory)
-                    {
-                        DirectoryInfo di = new DirectoryInfo(fileName);
-                        List<FileInfo> files = new List<FileInfo>();
-
-                        files.AddRange(di.GetFiles("*.png", SearchOption.TopDirectoryOnly));
-                        files.AddRange(di.GetFiles("*.bmp", SearchOption.TopDirectoryOnly));
-
-
-                        foreach (FileInfo item in files)
+                        string fileName = args[i];
+                        if ((File.GetAttributes(fileName) & FileAttributes.Directory) == FileAttributes.Directory)
                         {
-                            if (!item.Name.Contains(Form1.AlphaMapSuffix, StringComparison.OrdinalIgnoreCase))
+                            DirectoryInfo di = new DirectoryInfo(fileName);
+                            List<FileInfo> files = new List<FileInfo>();
+
+                            files.AddRange(di.GetFiles("*.png", SearchOption.TopDirectoryOnly));
+                            files.AddRange(di.GetFiles("*.bmp", SearchOption.TopDirectoryOnly));
+
+
+                            foreach (FileInfo item in files)
                             {
-                                filePaths.Add(item.FullName);
+                                if (!item.Name.Contains(Form1.AlphaMapSuffix, StringComparison.OrdinalIgnoreCase))
+                                {
+                                    filePaths.Add(item.FullName);
+                                }
                             }
-                        }
 
-                    }
-                    else
-                    {
-                        string ext = Path.GetExtension(fileName);
-                        if (ext.Equals(".png", StringComparison.OrdinalIgnoreCase) || ext.Equals(".bmp", StringComparison.OrdinalIgnoreCase))
+                        }
+                        else
                         {
-                            if (!Path.GetFileName(fileName).Contains(Form1.AlphaMapSuffix, StringComparison.OrdinalIgnoreCase))
+                            string ext = Path.GetExtension(fileName);
+                            if (ext.Equals(".png", StringComparison.OrdinalIgnoreCase) || ext.Equals(".bmp", StringComparison.OrdinalIgnoreCase))
                             {
-                                filePaths.Add(fileName);
+                                if (!Path.GetFileName(fileName).Contains(Form1.AlphaMapSuffix, StringComparison.OrdinalIgnoreCase))
+                                {
+                                    filePaths.Add(fileName);
+                                }
                             }
                         }
                     }
+
+                    return filePaths.ToArray();
                 }
-
-                return filePaths.ToArray();
-            }
-            catch (ArgumentException ex)
-            {
-                ShowErrorMessage(ex.Message);
-            }
-            catch (DirectoryNotFoundException ex)
-            {
-                ShowErrorMessage(ex.Message);
-            }
-            catch (IOException ex)
-            {
-                ShowErrorMessage(ex.Message);
-            }
-            catch (SecurityException ex)
-            {
-                ShowErrorMessage(ex.Message);
+                catch (ArgumentException ex)
+                {
+                    ShowErrorMessage(ex.Message);
+                }
+                catch (DirectoryNotFoundException ex)
+                {
+                    ShowErrorMessage(ex.Message);
+                }
+                catch (IOException ex)
+                {
+                    ShowErrorMessage(ex.Message);
+                }
+                catch (SecurityException ex)
+                {
+                    ShowErrorMessage(ex.Message);
+                }
             }
 
             return new string[0];
@@ -325,30 +319,38 @@ namespace PngtoFshBatchtxt
 
             if (args.Length > 0)
             {
-                bool cmdLineOnly = false;
+                if (args.Length == 1 && args[0] == "/?")
+                {
+                    ShowHelp();
+                    return;
+                }
+
                 using (Form1 form1 = new Form1())
                 {
-
                     bool haveSwitches = false;
-                    foreach (string arg in args)
+                    bool cmdLineOnly = false;
+                    int firstCommandLineSwitch = args.Length;
+
+                    for (int i = 0; i < args.Length; i++)
                     {
+                        string arg = args[i];
+
                         if (arg.StartsWith(CommandLineSwitches.OutputDirectory, StringComparison.OrdinalIgnoreCase) ||
                             arg.StartsWith(CommandLineSwitches.GroupID, StringComparison.OrdinalIgnoreCase) ||
                             arg.Equals(CommandLineSwitches.NormalMipmaps, StringComparison.OrdinalIgnoreCase) ||
                             arg.Equals(CommandLineSwitches.EmbeddedMipmaps, StringComparison.OrdinalIgnoreCase) ||
                             arg.Equals(CommandLineSwitches.FshwriteCompression, StringComparison.OrdinalIgnoreCase) ||
                             arg.StartsWith(CommandLineSwitches.ProcessDat, StringComparison.OrdinalIgnoreCase) ||
-                            arg.Equals(CommandLineSwitches.ProcessFiles, StringComparison.OrdinalIgnoreCase) ||
-                            arg.Equals("/?", StringComparison.Ordinal))
+                            arg.Equals(CommandLineSwitches.ProcessFiles, StringComparison.OrdinalIgnoreCase))
                         {
                             if (!haveSwitches)
                             {
                                 haveSwitches = true;
+                                firstCommandLineSwitch = i;
                             }
 
                             if (arg.Equals(CommandLineSwitches.ProcessFiles, StringComparison.OrdinalIgnoreCase) ||
-                                arg.StartsWith(CommandLineSwitches.ProcessDat, StringComparison.OrdinalIgnoreCase) ||
-                                arg.Equals("/?", StringComparison.Ordinal))
+                                arg.StartsWith(CommandLineSwitches.ProcessDat, StringComparison.OrdinalIgnoreCase))
                             {
                                 cmdLineOnly = true;
                             }
@@ -356,7 +358,7 @@ namespace PngtoFshBatchtxt
 
                     }
 
-                    string[] files = GetImagePaths(args);
+                    string[] files = GetImagePaths(args, firstCommandLineSwitch);
                     int fileCount = files.Length;
                     if (fileCount > 0)
                     {
@@ -369,7 +371,7 @@ namespace PngtoFshBatchtxt
 
                     if (haveSwitches)
                     {
-                        ProcessCommandLineSwitches(args, form1, fileCount, cmdLineOnly);
+                        ProcessCommandLineSwitches(args, firstCommandLineSwitch, form1, fileCount, cmdLineOnly);
                     }
 
                     if (!cmdLineOnly)
