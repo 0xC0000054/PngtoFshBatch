@@ -1001,7 +1001,7 @@ namespace PngtoFshBatchtxt
                 long lower = lowerInstRange.Value;
                 long upper = upperInstRange.Value;
 
-                double rn = (upper * 1.0 - lower * 1.0) * random.NextDouble() + lower * 1.0;
+                double rn = (upper - lower + 1L) * random.NextDouble() + lower;
 
                 return Convert.ToInt64(rn).ToString("X", CultureInfo.InvariantCulture).Substring(0, 7);
             }
