@@ -241,4 +241,7 @@ It must only contain numbers 0-9 and letters A-F.</value>
   <data name="ProcessCommandNoFiles" xml:space="preserve">
     <value>There are no images for the {0} command to process.</value>
   </data>
+  <data name="OutputFolderDialogDescription" xml:space="preserve">
+    <value>Select a destination folder for the processed files.</value>
+  </data>
 </root>

@@ -309,6 +309,15 @@ namespace PngtoFshBatchtxt.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select a destination folder for the processed files..
+        /// </summary>
+        internal static string OutputFolderDialogDescription {
+            get {
+                return ResourceManager.GetString("OutputFolderDialogDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Process the items in the list.
         /// </summary>
         internal static string processBatchBtn_ToolTip {
