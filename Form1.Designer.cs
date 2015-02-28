@@ -56,7 +56,7 @@ namespace PngtoFshBatchtxt
             this.processBatchBtn = new System.Windows.Forms.Button();
             this.saveDatDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.outFolderBtn = new System.Windows.Forms.Button();
-            this.OutputBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
+            this.outputBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.addFilesDialog = new System.Windows.Forms.OpenFileDialog();
             this.InstendBox1 = new System.Windows.Forms.GroupBox();
             this.InstA_Erdo = new System.Windows.Forms.RadioButton();
@@ -491,7 +491,7 @@ namespace PngtoFshBatchtxt
         private System.Windows.Forms.ColumnHeader groupHeader;
         private System.Windows.Forms.ColumnHeader instanceHeader;
         private System.Windows.Forms.Button outFolderBtn;
-        private System.Windows.Forms.FolderBrowserDialog OutputBrowserDialog1;
+        private System.Windows.Forms.FolderBrowserDialog outputBrowserDialog;
         private System.Windows.Forms.OpenFileDialog addFilesDialog;
         private System.Windows.Forms.GroupBox InstendBox1;
         private System.Windows.Forms.RadioButton InstA_Erdo;
