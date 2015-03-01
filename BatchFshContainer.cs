@@ -1,12 +1,13 @@
 ﻿using FshDatIO;
 using System;
+using System.ComponentModel;
 using System.Drawing;
 
 namespace PngtoFshBatchtxt
 {
     internal sealed class BatchFshContainer : IDisposable
     {
-        private string fileName;
+        private readonly string fileName;
         private string groupId;
         private string instanceId;
         private FshImageFormat format;
@@ -17,6 +18,7 @@ namespace PngtoFshBatchtxt
         private FSHImageWrapper mip8Fsh;
         private bool disposed;
         private Size mainImageSize;
+        private AlphaSource alphaSource;
 
         /// <summary>
         /// Creates a new BatchFshContainer
@@ -35,6 +37,7 @@ namespace PngtoFshBatchtxt
             this.mip8Fsh = null;
             this.disposed = false;
             this.mainImageSize = Size.Empty;
+            this.alphaSource = AlphaSource.File;
         }
 
         public string FileName
@@ -171,6 +174,23 @@ namespace PngtoFshBatchtxt
             set
             {
                 mainImageSize = value;
+            }
+        }
+
+        public AlphaSource AlphaSource
+        {
+            get
+            {
+                return alphaSource;
+            }
+            set
+            {
+                if (value < AlphaSource.File || value > AlphaSource.Generated)
+                {
+                    throw new InvalidEnumArgumentException("value", (int)value, typeof(AlphaSource));
+                }
+
+                alphaSource = value;
             }
         }
 
