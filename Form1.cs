@@ -290,29 +290,6 @@ namespace PngtoFshBatchtxt
 
 		}
 
-		private static string GetAlphaSourceString(string path)
-		{
-			string alname = Path.Combine(Path.GetDirectoryName(path), Path.GetFileNameWithoutExtension(path) + AlphaMapSuffix + Path.GetExtension(path));
-			if (File.Exists(alname))
-			{
-				return Path.GetFileName(alname);
-			}
-			else
-			{
-				using (Bitmap bmp = new Bitmap(path))
-				{
-					if (Path.GetExtension(path).Equals(".png", StringComparison.OrdinalIgnoreCase) && bmp.PixelFormat == PixelFormat.Format32bppArgb)
-					{
-						return Resources.AlphaTransString;
-					}
-					else
-					{
-						return Resources.AlphaGenString;
-					}
-				}
-			}
-		}
-
 		private void batchListView1_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			// As current item in the ListView is deselected before selecting the new item, we use a timer to ensure that the only deselection event we receive is from the user.
@@ -1053,7 +1030,7 @@ namespace PngtoFshBatchtxt
 		private void outfolderbtn_Click(object sender, EventArgs e)
 		{
 			this.outputBrowserDialog.SelectedPath = GetFileDialogStartingDirectory(SettingNames.OutputFolderDialogDirectory);
-			if (this.outputBrowserDialog.Description == string.Empty)
+			if (string.IsNullOrEmpty(this.outputBrowserDialog.Description))
 			{
 				this.outputBrowserDialog.Description = Resources.OutputFolderDialogDescription;
 			}
@@ -1383,8 +1360,9 @@ namespace PngtoFshBatchtxt
 						batch.MainImageSize = temp.Size;
 
 						string ext = Path.GetExtension(path);
-						string alphaName = Path.Combine(Path.GetDirectoryName(path), fileName + AlphaMapSuffix + ext);
-						if (File.Exists(alphaName) || ext.Equals(".png", StringComparison.OrdinalIgnoreCase) && temp.PixelFormat == PixelFormat.Format32bppArgb)
+						bool alphaMapExists = File.Exists(Path.Combine(Path.GetDirectoryName(path), fileName + AlphaMapSuffix + ext));
+
+						if (alphaMapExists || ext.Equals(".png", StringComparison.OrdinalIgnoreCase) && temp.PixelFormat == PixelFormat.Format32bppArgb)
 						{
 							if (fileName.StartsWith("hd", StringComparison.OrdinalIgnoreCase))
 							{
@@ -1394,6 +1372,7 @@ namespace PngtoFshBatchtxt
 							{
 								batch.Format = FshImageFormat.DXT3;
 							}
+							batch.AlphaSource = alphaMapExists ? AlphaSource.File : AlphaSource.Transparency;
 						}
 						else
 						{
@@ -1405,6 +1384,7 @@ namespace PngtoFshBatchtxt
 							{
 								batch.Format = FshImageFormat.DXT1;
 							}
+							batch.AlphaSource = AlphaSource.Generated;
 						}
 					}
 				}
@@ -1415,7 +1395,24 @@ namespace PngtoFshBatchtxt
 					string path = batch.FileName;
 
 					ListViewItem item = new ListViewItem(Path.GetFileName(path));
-					item.SubItems.Add(GetAlphaSourceString(path));
+					string alphaMapSource;
+
+					switch (batch.AlphaSource)
+					{
+						case AlphaSource.File:
+							alphaMapSource = Path.GetFileNameWithoutExtension(path) + AlphaMapSuffix + Path.GetExtension(path);
+							break;
+						case AlphaSource.Transparency:
+							alphaMapSource = Resources.AlphaTransString;
+							break;
+						case AlphaSource.Generated:
+							alphaMapSource = Resources.AlphaGenString;
+							break;
+						default:
+							throw new InvalidEnumArgumentException("Invalid AlphaSource enum value.");
+					}
+
+					item.SubItems.Add(alphaMapSource);
 					item.SubItems.Add(batch.GroupId);
 					item.SubItems.Add(batch.InstanceId);
 					batchListView.Items.Insert(i, item);
