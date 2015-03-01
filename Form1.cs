@@ -1389,33 +1389,42 @@ namespace PngtoFshBatchtxt
 					}
 				}
 
-				for (int i = startIndex; i < count; i++)
+				this.batchListView.BeginUpdate();
+
+				try
 				{
-					BatchFshContainer batch = batchFshList[i];
-					string path = batch.FileName;
-
-					ListViewItem item = new ListViewItem(Path.GetFileName(path));
-					string alphaMapSource;
-
-					switch (batch.AlphaSource)
+					for (int i = startIndex; i < count; i++)
 					{
-						case AlphaSource.File:
-							alphaMapSource = Path.GetFileNameWithoutExtension(path) + AlphaMapSuffix + Path.GetExtension(path);
-							break;
-						case AlphaSource.Transparency:
-							alphaMapSource = Resources.AlphaTransString;
-							break;
-						case AlphaSource.Generated:
-							alphaMapSource = Resources.AlphaGenString;
-							break;
-						default:
-							throw new InvalidEnumArgumentException("Invalid AlphaSource enum value.");
-					}
+						BatchFshContainer batch = batchFshList[i];
+						string path = batch.FileName;
 
-					item.SubItems.Add(alphaMapSource);
-					item.SubItems.Add(batch.GroupId);
-					item.SubItems.Add(batch.InstanceId);
-					batchListView.Items.Insert(i, item);
+						ListViewItem item = new ListViewItem(Path.GetFileName(path));
+						string alphaMapSource;
+
+						switch (batch.AlphaSource)
+						{
+							case AlphaSource.File:
+								alphaMapSource = Path.GetFileNameWithoutExtension(path) + AlphaMapSuffix + Path.GetExtension(path);
+								break;
+							case AlphaSource.Transparency:
+								alphaMapSource = Resources.AlphaTransString;
+								break;
+							case AlphaSource.Generated:
+								alphaMapSource = Resources.AlphaGenString;
+								break;
+							default:
+								throw new InvalidEnumArgumentException("Invalid AlphaSource enum value.");
+						}
+
+						item.SubItems.Add(alphaMapSource);
+						item.SubItems.Add(batch.GroupId);
+						item.SubItems.Add(batch.InstanceId);
+						batchListView.Items.Insert(i, item);
+					}
+				}
+				finally
+				{
+					this.batchListView.EndUpdate();
 				}
 				SetProcessingControlsEnabled(true);
 			}
