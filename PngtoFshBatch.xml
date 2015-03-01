@@ -2,7 +2,7 @@
 <settings>
   <MipFormat>Normal</MipFormat> <!-- The format of the mipmaps. Normal, Embedded or None -->
   <CompressDat>True</CompressDat> <!-- Compress the items when inserting into a dat -->
-  <FshWriteCompresssion>False</FshWriteCompresssion> <!-- Use FshWrite compression when saving DXT1 nad DXT3 images -->
+  <FshWriteCompresssion>False</FshWriteCompresssion> <!-- Use FshWrite compression when saving DXT1 and DXT3 images -->
   <FileDialogDirectories>
     <Add></Add> <!-- The last directory used by the Add dialog -->
     <OutputFolder></OutputFolder> <!-- The last directory used by the Output Folder dialog -->
