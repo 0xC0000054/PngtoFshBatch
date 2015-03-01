@@ -332,6 +332,7 @@ namespace PngtoFshBatchtxt
 				if (!listControlsEnabled)
 				{
 					EnableListControls();
+					this.batchListView.HideSelection = false;
 				}
 
 				int index = batchListView.SelectedIndices[0];
@@ -385,6 +386,7 @@ namespace PngtoFshBatchtxt
 				if (listControlsEnabled)
 				{
 					DisableListControls();
+					this.batchListView.HideSelection = true;
 				}
 			}
 		}
