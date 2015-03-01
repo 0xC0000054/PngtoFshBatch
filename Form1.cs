@@ -327,14 +327,14 @@ namespace PngtoFshBatchtxt
 
 		private void BatchListSelectedIndexChanged()
 		{
-			if (batchListView.SelectedItems.Count > 0)
+			if (batchListView.SelectedIndices.Count > 0)
 			{
 				if (!listControlsEnabled)
 				{
 					EnableListControls();
 				}
 
-				int index = batchListView.SelectedItems[0].Index;
+				int index = batchListView.SelectedIndices[0];
 				BatchFshContainer batch = batchFshList[index];
 
 				string inst = batch.InstanceId;
@@ -1258,29 +1258,33 @@ namespace PngtoFshBatchtxt
 
 		private void Format_radios_changed(object sender, EventArgs e)
 		{
-			if (batchListView.SelectedItems.Count > 0)
+			if (batchListView.SelectedIndices.Count > 0)
 			{
-				FormatRefresh(batchListView.SelectedItems[0].Index, true);
+				FormatRefresh(batchListView.SelectedIndices[0], true);
 			}
 		}
 
 		private void remBtn_Click(object sender, EventArgs e)
 		{
-			if (batchListView.SelectedItems.Count > 0 && batchListView.Items.Count > 1)
+			if (this.batchListView.SelectedIndices.Count > 0)
 			{
-				int index = batchListView.SelectedItems[0].Index;
+				if (this.batchListView.Items.Count > 1)
+				{
+					int index = this.batchListView.SelectedIndices[0];
 
-				batchFshList.RemoveAt(index);
+					this.batchFshList.RemoveAt(index);
 
-				batchListView.Items.RemoveAt(index);
-				batchListView.Items[0].Selected = true;
+					this.batchListView.Items.RemoveAt(index);
+					this.batchListView.Items[0].Selected = true;
 
-				batchListView.Refresh();
+					this.batchListView.Refresh(); 
+				}
+				else
+				{
+					ClearandReset();
+				}
 			}
-			else if (batchListView.SelectedItems.Count > 0 && batchListView.Items.Count == 1)
-			{
-				ClearandReset();
-			}
+			
 		}
 
 		/// <summary>
@@ -1543,15 +1547,15 @@ namespace PngtoFshBatchtxt
 		{
 			if (tgiGroupTxt.Text.Length == 8)
 			{
-				if (batchListView.SelectedItems.Count > 0)
+				if (batchListView.SelectedIndices.Count > 0)
 				{
-					int index = batchListView.SelectedItems[0].Index;
+					int index = batchListView.SelectedIndices[0];
 
 					string group = tgiGroupTxt.Text;
 					if (!group.Equals(batchFshList[index].GroupId, StringComparison.Ordinal))
 					{
 						batchFshList[index].GroupId = group;
-						batchListView.SelectedItems[0].SubItems[2].Text = group;
+						batchListView.Items[index].SubItems[2].Text = group;
 					}
 				}
 				else
@@ -1577,11 +1581,11 @@ namespace PngtoFshBatchtxt
 
 		private void tgiInstanceTxt_TextChanged(object sender, EventArgs e)
 		{
-			if (batchListView.SelectedItems.Count > 0)
+			if (batchListView.SelectedIndices.Count > 0)
 			{
 				if (tgiInstanceTxt.Text.Length == 8)
 				{
-					int index = batchListView.SelectedItems[0].Index;
+					int index = batchListView.SelectedIndices[0];
 
 					string instance = tgiInstanceTxt.Text;
 					if (!instance.Equals(batchFshList[index].InstanceId, StringComparison.Ordinal))
@@ -1595,7 +1599,7 @@ namespace PngtoFshBatchtxt
 
 		private void fshTypeBox_SelectionChangeCommitted(object sender, EventArgs e)
 		{
-			if (batchListView.SelectedItems.Count > 0)
+			if (batchListView.SelectedIndices.Count > 0)
 			{
 				FshImageFormat selectedFormat = FshImageFormat.DXT1;
 				switch (fshTypeBox.SelectedIndex)
@@ -1614,7 +1618,7 @@ namespace PngtoFshBatchtxt
 						break;
 				}
 
-				int index = batchListView.SelectedItems[0].Index;
+				int index = batchListView.SelectedIndices[0];
 
 				if (batchFshList[index].Format != selectedFormat)
 				{
