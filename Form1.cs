@@ -1324,12 +1324,9 @@ namespace PngtoFshBatchtxt
 
 				for (int i = startIndex; i < count; i++)
 				{
-					batchFshList[i].GroupId = this.groupId;
-				}
+					BatchFshContainer batch = batchFshList[i];
 
-				for (int n = startIndex; n < count; n++)
-				{
-					BatchFshContainer batch = batchFshList[n];
+					batch.GroupId = this.groupId;
 					string path = batch.FileName;
 					using (Bitmap temp = new Bitmap(path))
 					{
@@ -1355,7 +1352,7 @@ namespace PngtoFshBatchtxt
 						else
 						{
 							batch.InstanceId = RandomHexString(7);
-							SetEndFormat(temp.Size, n);
+							SetEndFormat(temp.Size, i);
 						}
 						batch.MainImageSize = temp.Size;
 
