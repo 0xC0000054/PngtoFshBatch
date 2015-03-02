@@ -94,7 +94,6 @@ namespace PngtoFshBatchtxt
             this.groupHeader,
             this.instanceHeader});
             this.batchListView.FullRowSelect = true;
-            this.batchListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.batchListView.HideSelection = false;
             this.batchListView.Location = new System.Drawing.Point(12, 12);
             this.batchListView.MultiSelect = false;
@@ -104,9 +103,12 @@ namespace PngtoFshBatchtxt
             this.toolTip1.SetToolTip(this.batchListView, global::PngtoFshBatchtxt.Properties.Resources.batchListView_ToolTip);
             this.batchListView.UseCompatibleStateImageBehavior = false;
             this.batchListView.View = System.Windows.Forms.View.Details;
-            this.batchListView.SelectedIndexChanged += new System.EventHandler(this.batchListView1_SelectedIndexChanged);
-            this.batchListView.DragDrop += new System.Windows.Forms.DragEventHandler(this.batchListView1_DragDrop);
-            this.batchListView.DragEnter += new System.Windows.Forms.DragEventHandler(this.batchListView1_DragEnter);
+            this.batchListView.VirtualMode = true;
+            this.batchListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.batchListView_ColumnClick);
+            this.batchListView.RetrieveVirtualItem += new System.Windows.Forms.RetrieveVirtualItemEventHandler(this.batchListView_RetrieveVirtualItem);
+            this.batchListView.SelectedIndexChanged += new System.EventHandler(this.batchListView_SelectedIndexChanged);
+            this.batchListView.DragDrop += new System.Windows.Forms.DragEventHandler(this.batchListView_DragDrop);
+            this.batchListView.DragEnter += new System.Windows.Forms.DragEventHandler(this.batchListView_DragEnter);
             // 
             // bitmapHeader
             // 
