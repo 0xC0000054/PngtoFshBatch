@@ -377,7 +377,7 @@ namespace PngtoFshBatchtxt
             this.clearListBtn.TabIndex = 106;
             this.clearListBtn.Text = "Clear List";
             this.clearListBtn.UseVisualStyleBackColor = true;
-            this.clearListBtn.Click += new System.EventHandler(this.clearlistbtn_Click);
+            this.clearListBtn.Click += new System.EventHandler(this.clearListBtn_Click);
             // 
             // toolTip1
             // 
@@ -396,7 +396,7 @@ namespace PngtoFshBatchtxt
             this.fshWriteCompCb.Text = "Fshwrite Compression";
             this.toolTip1.SetToolTip(this.fshWriteCompCb, global::PngtoFshBatchtxt.Properties.Resources.fshWriteCompCb_ToolTip);
             this.fshWriteCompCb.UseVisualStyleBackColor = true;
-            this.fshWriteCompCb.CheckedChanged += new System.EventHandler(this.fshwritecompcb_CheckedChanged);
+            this.fshWriteCompCb.CheckedChanged += new System.EventHandler(this.fshWriteCompCb_CheckedChanged);
             // 
             // mipFormatCbo
             // 

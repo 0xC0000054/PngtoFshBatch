@@ -1775,12 +1775,12 @@ namespace PngtoFshBatchtxt
             }
         }
 
-        private void clearlistbtn_Click(object sender, EventArgs e)
+        private void clearListBtn_Click(object sender, EventArgs e)
         {
             ClearandReset();
         }
 
-        private void fshwritecompcb_CheckedChanged(object sender, EventArgs e)
+        private void fshWriteCompCb_CheckedChanged(object sender, EventArgs e)
         {
             if (settings != null)
             {
