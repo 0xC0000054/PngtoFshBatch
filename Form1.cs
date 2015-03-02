@@ -1745,7 +1745,8 @@ namespace PngtoFshBatchtxt
         }
 
         private void ClearandReset()
-        {
+        {            
+            this.batchListView.VirtualListSize = 0;
             this.batchListItems = null;
             SetProcessingControlsEnabled(false);
             DisableListControls();
