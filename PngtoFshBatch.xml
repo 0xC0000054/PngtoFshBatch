@@ -1,11 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <settings>
-  <MipFormat>Normal</MipFormat> <!-- The format of the mipmaps. Normal, Embedded or None -->
-  <CompressDat>True</CompressDat> <!-- Compress the items when inserting into a dat -->
-  <FshWriteCompresssion>False</FshWriteCompresssion> <!-- Use FshWrite compression when saving DXT1 and DXT3 images -->
+  <!-- The format of the mipmaps. Normal, Embedded or None -->
+  <MipFormat>Normal</MipFormat>  
+  <!-- Compress the items when inserting into a dat -->
+  <CompressDat>True</CompressDat>
+  <!-- Use FshWrite compression when saving DXT1 and DXT3 images -->
+  <FshWriteCompresssion>False</FshWriteCompresssion> 
   <FileDialogDirectories>
-    <Add></Add> <!-- The last directory used by the Add dialog -->
-    <OutputFolder></OutputFolder> <!-- The last directory used by the Output Folder dialog -->
-    <SaveDat></SaveDat> <!-- The last directory used by the Save dat dialog -->
+    <!-- The last directory used by the Add dialog -->
+    <Add></Add>
+    <!-- The last directory used by the Output Folder dialog -->
+    <OutputFolder></OutputFolder> 
+    <!-- The last directory used by the Save dat dialog -->
+    <SaveDat></SaveDat> 
   </FileDialogDirectories>
 </settings> 
