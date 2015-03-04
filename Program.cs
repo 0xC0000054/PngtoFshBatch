@@ -87,7 +87,7 @@ namespace PngtoFshBatchtxt
                     {
                         string path = arg.Substring(5, arg.Length - 5).Trim();
 
-                        if (!ValidateArgumentPath(path, CommandLineSwitches.ProcessDat))
+                        if (!ValidateArgumentPath(Path.GetDirectoryName(path), CommandLineSwitches.ProcessDat))
                         {
                             return false;
                         }
