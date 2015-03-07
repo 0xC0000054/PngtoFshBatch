@@ -329,26 +329,97 @@ namespace PngtoFshBatchtxt
                 tgiInstanceTxt.Text = instance;
 
                 BatchListItemTag tag = (BatchListItemTag)item.Tag;
+                
+                this.Inst0_4rdo.Checked = false;
+                this.Inst5_9rdo.Checked = false;
+                this.InstA_Erdo.Checked = false;
 
                 Size mainImageSize = tag.MainImageSize;
-                if ((mainImageSize.Width >= 128 || mainImageSize.Height >= 128) && endChar == '0' || endChar == '5' || endChar == 'A')
+                // Only set the radio buttons if the image ends with the proper char for its size, as files without mipmaps may use the same end char.
+                if (mainImageSize.Width >= 128 || mainImageSize.Height >= 128)
                 {
-                    // If the main image is at least 128 pixels in width or height and the instance ends with 0, 5 or A do not change it by setting the radio buttons.
-                    this.Inst0_4rdo.Checked = false;
-                    this.Inst5_9rdo.Checked = false;
-                    this.InstA_Erdo.Checked = false;
+                    switch (endChar)
+                    {
+                        case '4':
+                            Inst0_4rdo.Checked = true;
+                            break;
+                        case '9':
+                            Inst5_9rdo.Checked = true;
+                            break;
+                        case 'E':
+                            InstA_Erdo.Checked = true;
+                            break;
+                        default:
+                            break;
+                    }
                 }
-                else if (endChar == '4' || endChar == '3' || endChar == '2' || endChar == '1' || endChar == '0')
+                else if (mainImageSize.Width == 64 && mainImageSize.Height == 64)
                 {
-                    Inst0_4rdo.Checked = true;
+                    switch (endChar)
+                    {
+                        case '3':
+                            Inst0_4rdo.Checked = true;
+                            break;
+                        case '8':
+                            Inst5_9rdo.Checked = true;
+                            break;
+                        case 'D':
+                            InstA_Erdo.Checked = true;
+                            break;
+                        default:
+                            break;
+                    }
                 }
-                else if (endChar == '9' || endChar == '8' || endChar == '7' || endChar == '6' || endChar == '5')
+                else if (mainImageSize.Width == 32 && mainImageSize.Height == 32)
                 {
-                    Inst5_9rdo.Checked = true;
+                    switch (endChar)
+                    {
+                        case '2':
+                            Inst0_4rdo.Checked = true;
+                            break;
+                        case '7':
+                            Inst5_9rdo.Checked = true;
+                            break;
+                        case 'C':
+                            InstA_Erdo.Checked = true;
+                            break;
+                        default:
+                            break;
+                    }
                 }
-                else if (endChar == 'E' || endChar == 'D' || endChar == 'C' || endChar == 'B' || endChar == 'A')
+                else if (mainImageSize.Width == 16 && mainImageSize.Height == 16)
                 {
-                    InstA_Erdo.Checked = true;
+                    switch (endChar)
+                    {
+                        case '1':
+                            Inst0_4rdo.Checked = true;
+                            break;
+                        case '6':
+                            Inst5_9rdo.Checked = true;
+                            break;
+                        case 'B':
+                            InstA_Erdo.Checked = true;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                else if (mainImageSize.Width == 8 && mainImageSize.Height == 8)
+                {
+                    switch (endChar)
+                    {
+                        case '0':
+                            Inst0_4rdo.Checked = true;
+                            break;
+                        case '5':
+                            Inst5_9rdo.Checked = true;
+                            break;
+                        case 'A':
+                            InstA_Erdo.Checked = true;
+                            break;
+                        default:
+                            break;
+                    }
                 }
 
                 switch (tag.Format)
