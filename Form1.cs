@@ -1267,13 +1267,18 @@ namespace PngtoFshBatchtxt
                 end16 = '6';
                 end8 = '5';
             }
-            else
+            else if (InstA_Erdo.Checked)
             {
                 endreg = 'E';
                 end64 = 'D';
                 end32 = 'C';
                 end16 = 'B';
                 end8 = 'A';
+            }
+            else
+            {
+                // If no radio button is checked we have nothing to update.
+                return;
             }
 
             string instSub = batchFshList[index].InstanceId.Substring(0, 7);
@@ -1299,17 +1304,13 @@ namespace PngtoFshBatchtxt
             }
         }
 
-        private void FormatRefresh(int index, bool formatRadiosChanged)
+        private void FormatRefresh(int index)
         {
             BatchFshContainer batchFsh = batchFshList[index];
             string instance = batchFsh.InstanceId;
             char endChar = instance[7];
 
-            Size mainImageSize = batchFsh.MainImageSize;
-            if (((mainImageSize.Width >= 128 && mainImageSize.Height >= 128) && endChar == '4' || endChar == '9' || endChar == 'E') || formatRadiosChanged)
-            {
-                SetEndFormat(mainImageSize, index);
-            }
+            SetEndFormat(batchFsh.MainImageSize, index);
 
             batchListItems[index].SubItems[3].Text = instance;
             this.batchListView.RedrawItems(index, index, false);
@@ -1320,7 +1321,7 @@ namespace PngtoFshBatchtxt
         {
             if (batchListView.SelectedIndices.Count > 0)
             {
-                FormatRefresh(batchListView.SelectedIndices[0], true);
+                FormatRefresh(batchListView.SelectedIndices[0]);
             }
         }
 
@@ -1688,7 +1689,7 @@ namespace PngtoFshBatchtxt
                     if (!instance.Equals(batchFshList[index].InstanceId, StringComparison.Ordinal))
                     {
                         batchFshList[index].InstanceId = instance;
-                        FormatRefresh(index, false);
+                        FormatRefresh(index);
                     }
                 }
             }
