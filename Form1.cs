@@ -1249,7 +1249,7 @@ namespace PngtoFshBatchtxt
             }
         }
 
-        private void SetEndFormat(Size mainImageSize, int index)
+        private void SetEndFormat(int index)
         {
             if (Inst0_4rdo.Checked)
             {
@@ -1281,36 +1281,37 @@ namespace PngtoFshBatchtxt
                 return;
             }
 
-            string instSub = batchFshList[index].InstanceId.Substring(0, 7);
+            BatchFshContainer batchFsh = batchFshList[index];
+            Size mainImageSize = batchFsh.MainImageSize;
+            string instSub = batchFsh.InstanceId.Substring(0, 7);
+
             if (mainImageSize.Width >= 128 && mainImageSize.Height >= 128)
             {
-                batchFshList[index].InstanceId = instSub + endreg;
+                batchFsh.InstanceId = instSub + endreg;
             }
             else if (mainImageSize.Width == 64 && mainImageSize.Height == 64)
             {
-                batchFshList[index].InstanceId = instSub + end64;
+                batchFsh.InstanceId = instSub + end64;
             }
             else if (mainImageSize.Width == 32 && mainImageSize.Height == 32)
             {
-                batchFshList[index].InstanceId = instSub + end32;
+                batchFsh.InstanceId = instSub + end32;
             }
             else if (mainImageSize.Width == 16 && mainImageSize.Height == 16)
             {
-                batchFshList[index].InstanceId = instSub + end16;
+                batchFsh.InstanceId = instSub + end16;
             }
             else if (mainImageSize.Width == 8 && mainImageSize.Height == 8)
             {
-                batchFshList[index].InstanceId = instSub + end8;
+                batchFsh.InstanceId = instSub + end8;
             }
         }
 
         private void FormatRefresh(int index)
-        {
-            BatchFshContainer batchFsh = batchFshList[index];
-            string instance = batchFsh.InstanceId;
-            char endChar = instance[7];
+        {           
+            SetEndFormat(index);
 
-            SetEndFormat(batchFsh.MainImageSize, index);
+            string instance = batchFshList[index].InstanceId;
 
             batchListItems[index].SubItems[3].Text = instance;
             this.batchListView.RedrawItems(index, index, false);
@@ -1414,6 +1415,7 @@ namespace PngtoFshBatchtxt
                     using (Bitmap temp = new Bitmap(path))
                     {
                         string fileName = Path.GetFileNameWithoutExtension(path);
+                        batch.MainImageSize = temp.Size;
 
                         if (fileName.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
                         {
@@ -1435,9 +1437,8 @@ namespace PngtoFshBatchtxt
                         else
                         {
                             batch.InstanceId = RandomHexString(7);
-                            SetEndFormat(temp.Size, i);
+                            SetEndFormat(i);
                         }
-                        batch.MainImageSize = temp.Size;
 
                         string ext = Path.GetExtension(path);
                         bool alphaMapExists = File.Exists(Path.Combine(Path.GetDirectoryName(path), fileName + AlphaMapSuffix + ext));
