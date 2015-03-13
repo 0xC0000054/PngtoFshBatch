@@ -1249,6 +1249,18 @@ namespace PngtoFshBatchtxt
             }
         }
 
+        private void SetRandomInstanceEndDigit(int index)
+        {
+            if (this.batchFshList[index].InstanceId.Length == 7)
+            {
+                if (!Inst0_4rdo.Checked && !Inst5_9rdo.Checked && !InstA_Erdo.Checked)
+                {
+                    Inst0_4rdo.Checked = true;
+                }
+                SetEndFormat(index);
+            }
+        }
+
         private void SetEndFormat(int index)
         {
             if (Inst0_4rdo.Checked)
@@ -1390,6 +1402,7 @@ namespace PngtoFshBatchtxt
                     else
                     {
                         batch.InstanceId = RandomHexString(7);
+                        SetRandomInstanceEndDigit(i);
                     }
                 }
             }
@@ -1437,7 +1450,7 @@ namespace PngtoFshBatchtxt
                         else
                         {
                             batch.InstanceId = RandomHexString(7);
-                            SetEndFormat(i);
+                            SetRandomInstanceEndDigit(i);
                         }
 
                         string ext = Path.GetExtension(path);
