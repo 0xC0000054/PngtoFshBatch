@@ -59,9 +59,9 @@ namespace PngtoFshBatchtxt
             this.outputBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.addFilesDialog = new System.Windows.Forms.OpenFileDialog();
             this.InstendBox1 = new System.Windows.Forms.GroupBox();
-            this.InstA_Erdo = new System.Windows.Forms.RadioButton();
-            this.Inst5_9rdo = new System.Windows.Forms.RadioButton();
-            this.Inst0_4rdo = new System.Windows.Forms.RadioButton();
+            this.instA_ERdo = new System.Windows.Forms.RadioButton();
+            this.inst5_9Rdo = new System.Windows.Forms.RadioButton();
+            this.inst0_4Rdo = new System.Windows.Forms.RadioButton();
             this.remBtn = new System.Windows.Forms.Button();
             this.addBtn = new System.Windows.Forms.Button();
             this.fshTypeBox = new System.Windows.Forms.ComboBox();
@@ -221,9 +221,9 @@ namespace PngtoFshBatchtxt
             // InstendBox1
             // 
             this.InstendBox1.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.InstendBox1.Controls.Add(this.InstA_Erdo);
-            this.InstendBox1.Controls.Add(this.Inst5_9rdo);
-            this.InstendBox1.Controls.Add(this.Inst0_4rdo);
+            this.InstendBox1.Controls.Add(this.instA_ERdo);
+            this.InstendBox1.Controls.Add(this.inst5_9Rdo);
+            this.InstendBox1.Controls.Add(this.inst0_4Rdo);
             this.InstendBox1.Location = new System.Drawing.Point(174, 150);
             this.InstendBox1.Name = "InstendBox1";
             this.InstendBox1.Size = new System.Drawing.Size(80, 78);
@@ -231,47 +231,47 @@ namespace PngtoFshBatchtxt
             this.InstendBox1.TabStop = false;
             this.InstendBox1.Text = "End format";
             // 
-            // InstA_Erdo
+            // instA_ERdo
             // 
-            this.InstA_Erdo.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.InstA_Erdo.AutoSize = true;
-            this.InstA_Erdo.Enabled = false;
-            this.InstA_Erdo.Location = new System.Drawing.Point(6, 55);
-            this.InstA_Erdo.Name = "InstA_Erdo";
-            this.InstA_Erdo.Size = new System.Drawing.Size(42, 17);
-            this.InstA_Erdo.TabIndex = 9;
-            this.InstA_Erdo.Text = "A-E";
-            this.toolTip1.SetToolTip(this.InstA_Erdo, global::PngtoFshBatchtxt.Properties.Resources.InstanceIDRadioButtons_ToolTip);
-            this.InstA_Erdo.UseVisualStyleBackColor = true;
-            this.InstA_Erdo.CheckedChanged += new System.EventHandler(this.Format_radios_changed);
+            this.instA_ERdo.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.instA_ERdo.AutoSize = true;
+            this.instA_ERdo.Enabled = false;
+            this.instA_ERdo.Location = new System.Drawing.Point(6, 55);
+            this.instA_ERdo.Name = "instA_ERdo";
+            this.instA_ERdo.Size = new System.Drawing.Size(42, 17);
+            this.instA_ERdo.TabIndex = 9;
+            this.instA_ERdo.Text = "A-E";
+            this.toolTip1.SetToolTip(this.instA_ERdo, global::PngtoFshBatchtxt.Properties.Resources.InstanceIDRadioButtons_ToolTip);
+            this.instA_ERdo.UseVisualStyleBackColor = true;
+            this.instA_ERdo.CheckedChanged += new System.EventHandler(this.Format_radios_changed);
             // 
-            // Inst5_9rdo
+            // inst5_9Rdo
             // 
-            this.Inst5_9rdo.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.Inst5_9rdo.AutoSize = true;
-            this.Inst5_9rdo.Enabled = false;
-            this.Inst5_9rdo.Location = new System.Drawing.Point(6, 36);
-            this.Inst5_9rdo.Name = "Inst5_9rdo";
-            this.Inst5_9rdo.Size = new System.Drawing.Size(40, 17);
-            this.Inst5_9rdo.TabIndex = 8;
-            this.Inst5_9rdo.Text = "5-9";
-            this.toolTip1.SetToolTip(this.Inst5_9rdo, global::PngtoFshBatchtxt.Properties.Resources.InstanceIDRadioButtons_ToolTip);
-            this.Inst5_9rdo.UseVisualStyleBackColor = true;
-            this.Inst5_9rdo.CheckedChanged += new System.EventHandler(this.Format_radios_changed);
+            this.inst5_9Rdo.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.inst5_9Rdo.AutoSize = true;
+            this.inst5_9Rdo.Enabled = false;
+            this.inst5_9Rdo.Location = new System.Drawing.Point(6, 36);
+            this.inst5_9Rdo.Name = "inst5_9Rdo";
+            this.inst5_9Rdo.Size = new System.Drawing.Size(40, 17);
+            this.inst5_9Rdo.TabIndex = 8;
+            this.inst5_9Rdo.Text = "5-9";
+            this.toolTip1.SetToolTip(this.inst5_9Rdo, global::PngtoFshBatchtxt.Properties.Resources.InstanceIDRadioButtons_ToolTip);
+            this.inst5_9Rdo.UseVisualStyleBackColor = true;
+            this.inst5_9Rdo.CheckedChanged += new System.EventHandler(this.Format_radios_changed);
             // 
-            // Inst0_4rdo
+            // inst0_4Rdo
             // 
-            this.Inst0_4rdo.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.Inst0_4rdo.AutoSize = true;
-            this.Inst0_4rdo.Enabled = false;
-            this.Inst0_4rdo.Location = new System.Drawing.Point(6, 19);
-            this.Inst0_4rdo.Name = "Inst0_4rdo";
-            this.Inst0_4rdo.Size = new System.Drawing.Size(40, 17);
-            this.Inst0_4rdo.TabIndex = 7;
-            this.Inst0_4rdo.Text = "0-4";
-            this.toolTip1.SetToolTip(this.Inst0_4rdo, global::PngtoFshBatchtxt.Properties.Resources.InstanceIDRadioButtons_ToolTip);
-            this.Inst0_4rdo.UseVisualStyleBackColor = true;
-            this.Inst0_4rdo.CheckedChanged += new System.EventHandler(this.Format_radios_changed);
+            this.inst0_4Rdo.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.inst0_4Rdo.AutoSize = true;
+            this.inst0_4Rdo.Enabled = false;
+            this.inst0_4Rdo.Location = new System.Drawing.Point(6, 19);
+            this.inst0_4Rdo.Name = "inst0_4Rdo";
+            this.inst0_4Rdo.Size = new System.Drawing.Size(40, 17);
+            this.inst0_4Rdo.TabIndex = 7;
+            this.inst0_4Rdo.Text = "0-4";
+            this.toolTip1.SetToolTip(this.inst0_4Rdo, global::PngtoFshBatchtxt.Properties.Resources.InstanceIDRadioButtons_ToolTip);
+            this.inst0_4Rdo.UseVisualStyleBackColor = true;
+            this.inst0_4Rdo.CheckedChanged += new System.EventHandler(this.Format_radios_changed);
             // 
             // remBtn
             // 
@@ -496,9 +496,9 @@ namespace PngtoFshBatchtxt
         private System.Windows.Forms.FolderBrowserDialog outputBrowserDialog;
         private System.Windows.Forms.OpenFileDialog addFilesDialog;
         private System.Windows.Forms.GroupBox InstendBox1;
-        private System.Windows.Forms.RadioButton InstA_Erdo;
-        private System.Windows.Forms.RadioButton Inst5_9rdo;
-        private System.Windows.Forms.RadioButton Inst0_4rdo;
+        private System.Windows.Forms.RadioButton instA_ERdo;
+        private System.Windows.Forms.RadioButton inst5_9Rdo;
+        private System.Windows.Forms.RadioButton inst0_4Rdo;
         private System.Windows.Forms.Button remBtn;
         private System.Windows.Forms.Button addBtn;
         private System.Windows.Forms.ComboBox fshTypeBox;

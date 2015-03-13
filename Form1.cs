@@ -330,9 +330,9 @@ namespace PngtoFshBatchtxt
 
                 BatchListItemTag tag = (BatchListItemTag)item.Tag;
                 
-                this.Inst0_4rdo.Checked = false;
-                this.Inst5_9rdo.Checked = false;
-                this.InstA_Erdo.Checked = false;
+                this.inst0_4Rdo.Checked = false;
+                this.inst5_9Rdo.Checked = false;
+                this.instA_ERdo.Checked = false;
 
                 Size mainImageSize = tag.MainImageSize;
                 // Only set the radio buttons if the image ends with the proper char for its size, as files without mipmaps may use the same end char.
@@ -341,13 +341,13 @@ namespace PngtoFshBatchtxt
                     switch (endChar)
                     {
                         case '4':
-                            Inst0_4rdo.Checked = true;
+                            inst0_4Rdo.Checked = true;
                             break;
                         case '9':
-                            Inst5_9rdo.Checked = true;
+                            inst5_9Rdo.Checked = true;
                             break;
                         case 'E':
-                            InstA_Erdo.Checked = true;
+                            instA_ERdo.Checked = true;
                             break;
                         default:
                             break;
@@ -358,13 +358,13 @@ namespace PngtoFshBatchtxt
                     switch (endChar)
                     {
                         case '3':
-                            Inst0_4rdo.Checked = true;
+                            inst0_4Rdo.Checked = true;
                             break;
                         case '8':
-                            Inst5_9rdo.Checked = true;
+                            inst5_9Rdo.Checked = true;
                             break;
                         case 'D':
-                            InstA_Erdo.Checked = true;
+                            instA_ERdo.Checked = true;
                             break;
                         default:
                             break;
@@ -375,13 +375,13 @@ namespace PngtoFshBatchtxt
                     switch (endChar)
                     {
                         case '2':
-                            Inst0_4rdo.Checked = true;
+                            inst0_4Rdo.Checked = true;
                             break;
                         case '7':
-                            Inst5_9rdo.Checked = true;
+                            inst5_9Rdo.Checked = true;
                             break;
                         case 'C':
-                            InstA_Erdo.Checked = true;
+                            instA_ERdo.Checked = true;
                             break;
                         default:
                             break;
@@ -392,13 +392,13 @@ namespace PngtoFshBatchtxt
                     switch (endChar)
                     {
                         case '1':
-                            Inst0_4rdo.Checked = true;
+                            inst0_4Rdo.Checked = true;
                             break;
                         case '6':
-                            Inst5_9rdo.Checked = true;
+                            inst5_9Rdo.Checked = true;
                             break;
                         case 'B':
-                            InstA_Erdo.Checked = true;
+                            instA_ERdo.Checked = true;
                             break;
                         default:
                             break;
@@ -409,13 +409,13 @@ namespace PngtoFshBatchtxt
                     switch (endChar)
                     {
                         case '0':
-                            Inst0_4rdo.Checked = true;
+                            inst0_4Rdo.Checked = true;
                             break;
                         case '5':
-                            Inst5_9rdo.Checked = true;
+                            inst5_9Rdo.Checked = true;
                             break;
                         case 'A':
-                            InstA_Erdo.Checked = true;
+                            instA_ERdo.Checked = true;
                             break;
                         default:
                             break;
@@ -1253,9 +1253,9 @@ namespace PngtoFshBatchtxt
         {
             if (this.batchFshList[index].InstanceId.Length == 7)
             {
-                if (!Inst0_4rdo.Checked && !Inst5_9rdo.Checked && !InstA_Erdo.Checked)
+                if (!inst0_4Rdo.Checked && !inst5_9Rdo.Checked && !instA_ERdo.Checked)
                 {
-                    Inst0_4rdo.Checked = true;
+                    inst0_4Rdo.Checked = true;
                 }
                 SetEndFormat(index);
             }
@@ -1263,7 +1263,7 @@ namespace PngtoFshBatchtxt
 
         private void SetEndFormat(int index)
         {
-            if (Inst0_4rdo.Checked)
+            if (inst0_4Rdo.Checked)
             {
                 endreg = '4';
                 end64 = '3';
@@ -1271,7 +1271,7 @@ namespace PngtoFshBatchtxt
                 end16 = '1';
                 end8 = '0';
             }
-            else if (Inst5_9rdo.Checked)
+            else if (inst5_9Rdo.Checked)
             {
                 endreg = '9';
                 end64 = '8';
@@ -1279,7 +1279,7 @@ namespace PngtoFshBatchtxt
                 end16 = '6';
                 end8 = '5';
             }
-            else if (InstA_Erdo.Checked)
+            else if (instA_ERdo.Checked)
             {
                 endreg = 'E';
                 end64 = 'D';
@@ -1892,9 +1892,9 @@ namespace PngtoFshBatchtxt
             this.tgiGroupTxt.Enabled = false;
             this.tgiInstanceTxt.Enabled = false;
             this.fshTypeBox.Enabled = false;
-            this.Inst0_4rdo.Enabled = false;
-            this.Inst5_9rdo.Enabled = false;
-            this.InstA_Erdo.Enabled = false;
+            this.inst0_4Rdo.Enabled = false;
+            this.inst5_9Rdo.Enabled = false;
+            this.instA_ERdo.Enabled = false;
             this.newDatbtn.Enabled = false;
             this.saveDatBtn.Enabled = false;
             this.addBtn.Enabled = false;
@@ -1916,9 +1916,9 @@ namespace PngtoFshBatchtxt
         {
             this.tgiInstanceTxt.Enabled = true;
             this.fshTypeBox.Enabled = true;
-            this.Inst0_4rdo.Enabled = true;
-            this.Inst5_9rdo.Enabled = true;
-            this.InstA_Erdo.Enabled = true;
+            this.inst0_4Rdo.Enabled = true;
+            this.inst5_9Rdo.Enabled = true;
+            this.instA_ERdo.Enabled = true;
             this.remBtn.Enabled = true;
 
             this.listControlsEnabled = true;
@@ -1929,15 +1929,15 @@ namespace PngtoFshBatchtxt
             this.tgiGroupTxt.Text = this.groupId;
             this.tgiInstanceTxt.Text = string.Empty;
             this.fshTypeBox.SelectedIndex = -1;
-            this.Inst0_4rdo.Checked = false;
-            this.Inst5_9rdo.Checked = false;
-            this.InstA_Erdo.Checked = false;
+            this.inst0_4Rdo.Checked = false;
+            this.inst5_9Rdo.Checked = false;
+            this.instA_ERdo.Checked = false;
 
             this.tgiInstanceTxt.Enabled = false;
             this.fshTypeBox.Enabled = false;
-            this.Inst0_4rdo.Enabled = false;
-            this.Inst5_9rdo.Enabled = false;
-            this.InstA_Erdo.Enabled = false;
+            this.inst0_4Rdo.Enabled = false;
+            this.inst5_9Rdo.Enabled = false;
+            this.instA_ERdo.Enabled = false;
             this.remBtn.Enabled = false;
 
             this.listControlsEnabled = false;
