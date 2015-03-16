@@ -233,7 +233,7 @@ namespace PngtoFshBatchtxt.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Change the end diget of the instance id.
+        ///   Looks up a localized string similar to Change the end digit of the instance id.
         /// </summary>
         internal static string InstanceIDRadioButtons_ToolTip {
             get {

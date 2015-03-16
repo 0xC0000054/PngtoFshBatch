@@ -157,7 +157,7 @@ Dragging files or folders onto the list will create a new list</value>
     <comment>Image File Type Filter</comment>
   </data>
   <data name="InstanceIDRadioButtons_ToolTip" xml:space="preserve">
-    <value>Change the end diget of the instance id</value>
+    <value>Change the end digit of the instance id</value>
   </data>
   <data name="outFolderBtn_ToolTip" xml:space="preserve">
     <value>Change the output folder for the processed files</value>
