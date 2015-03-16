@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("null45")]
 [assembly: AssemblyProduct("PngtoFshBatch")]
-[assembly: AssemblyCopyright("Copyright © 2009-2014 Nicholas Hayes")]
+[assembly: AssemblyCopyright("Copyright © 2009-2015 Nicholas Hayes")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -22,18 +22,20 @@ using System.Runtime.InteropServices;
 // COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
 
+[assembly: System.Resources.NeutralResourcesLanguage("en-US")]
+
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("35a910cc-900e-449e-80b7-6d04f8084a5a")]
 
 // Version information for an assembly consists of the following four values:
 //
 //      Major Version
-//      Minor Version 
+//      Minor Version
 //      Build Number
 //      Revision
 //
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.5.1.7")]
-[assembly: AssemblyFileVersion("1.5.1.7")]
+[assembly: AssemblyVersion("1.5.3.0")]
+[assembly: AssemblyFileVersion("1.5.3.0")]
