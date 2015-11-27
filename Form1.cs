@@ -1798,7 +1798,7 @@ namespace PngtoFshBatchtxt
         {
             string[] files = GetFilesfromDirectory(e.Data.GetData(DataFormats.FileDrop, false) as string[]);
 
-            if (batchListItems.Count > 0)
+            if (batchListItems != null && batchListItems.Count > 0)
             {
                 ClearandReset();
             }
