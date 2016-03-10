@@ -23,7 +23,7 @@ namespace PngtoFshBatchtxt
             taskDialog.InstructionText = taskDialog.InstructionText;
         }
 
-        private static DialogResult ErrorTaskDialog(IWin32Window owner, string message, string caption, TaskDialogStandardIcon icon)
+        private static DialogResult ShowTaskDialog(IWin32Window owner, string message, string caption, TaskDialogStandardIcon icon)
         {
             DialogResult result = DialogResult.None;
 
@@ -55,7 +55,7 @@ namespace PngtoFshBatchtxt
         {
             if (TaskDialogSupported)
             {
-                return ErrorTaskDialog(owner, message, caption, TaskDialogStandardIcon.Error);
+                return ShowTaskDialog(owner, message, caption, TaskDialogStandardIcon.Error);
             }
             else
             {
@@ -67,7 +67,7 @@ namespace PngtoFshBatchtxt
         {
             if (TaskDialogSupported)
             {
-                return ErrorTaskDialog(owner, message, caption, TaskDialogStandardIcon.Warning);
+                return ShowTaskDialog(owner, message, caption, TaskDialogStandardIcon.Warning);
             }
             else
             {
