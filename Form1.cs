@@ -1410,6 +1410,41 @@ namespace PngtoFshBatchtxt
             }
         }
 
+        private unsafe static bool ImageHasTransparency(Bitmap image)
+        {
+            if (Image.IsAlphaPixelFormat(image.PixelFormat))
+            {
+                int width = image.Width;
+                int height = image.Height;
+                BitmapData data = image.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+
+                try
+                {
+                    byte* scan0 = (byte*)data.Scan0;
+                    int stride = data.Stride;
+
+                    for (int y = 0; y < height; y++)
+                    {
+                        byte* ptr = scan0 + (y * stride);
+                        for (int x = 0; x < width; x++)
+                        {
+                            if (ptr[3] < 255)
+                            {
+                                return true;
+                            }
+                            ptr += 4;
+                        }
+                    }
+                }
+                finally
+                {
+                    image.UnlockBits(data);
+                }
+            }
+
+            return false;
+        }
+
         private void AddFilesToListView()
         {
             AddFilesToListView(0);
@@ -1458,7 +1493,7 @@ namespace PngtoFshBatchtxt
                         string ext = Path.GetExtension(path);
                         bool alphaMapExists = File.Exists(Path.Combine(Path.GetDirectoryName(path), fileName + AlphaMapSuffix + ext));
 
-                        if (alphaMapExists || ext.Equals(".png", StringComparison.OrdinalIgnoreCase) && temp.PixelFormat == PixelFormat.Format32bppArgb)
+                        if (alphaMapExists || ext.Equals(".png", StringComparison.OrdinalIgnoreCase) && ImageHasTransparency(temp))
                         {
                             if (fileName.StartsWith("hd", StringComparison.OrdinalIgnoreCase))
                             {
