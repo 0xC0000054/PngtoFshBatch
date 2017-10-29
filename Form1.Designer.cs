@@ -400,6 +400,7 @@ namespace PngtoFshBatchtxt
             // 
             // mipFormatCbo
             // 
+            this.mipFormatCbo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.mipFormatCbo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.mipFormatCbo.FormattingEnabled = true;
             this.mipFormatCbo.Items.AddRange(new object[] {
