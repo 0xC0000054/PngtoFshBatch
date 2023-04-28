@@ -70,10 +70,10 @@
   <ItemGroup>
     <Reference Include="FshDatIO, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\readfshdat\FshDatIO\bin\Release\FshDatIO.dll</HintPath>
+      <HintPath>..\FshDatIO\FshDatIO\bin\Release\FshDatIO.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.WindowsAPICodePack">
-      <HintPath>packages\WindowsAPICodePack-Core.1.1.1\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
+    <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\WindowsAPICodePack-Core.1.1.2\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.WindowsAPICodePack.Shell">
       <HintPath>packages\WindowsAPICodePack-Shell.1.1.1\lib\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
@@ -155,7 +155,7 @@
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
